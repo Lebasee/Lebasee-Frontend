@@ -1,0 +1,10 @@
+@font-face {
+    font-family: 'Ray';
+    src: url('./assets/Ray.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body{
+    direction: rtl;
+}

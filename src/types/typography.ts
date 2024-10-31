@@ -1,72 +1,23 @@
-export type FontWeight = "normal" | "bold";
+type variation = {
+  fontWeight: number;
+  fontSize: string;
+}
 
 export interface Typography {
   fontFamily: string;
   lineHeight?: string;
   letterSpacing?: string;
-  body: {
-    fontWeight: FontWeight;
-    fontSize: string;
-  };
-  bodyBold: {
-    fontWeight: FontWeight;
-    fontSize: string;
-  };
-  h1: {
-    fontWeight: FontWeight;
-    fontSize: string;
-  };
-  h1Bold: {
-    fontWeight: FontWeight;
-    fontSize: string;
-  };
-  h2: {
-    fontWeight: FontWeight;
-    fontSize: string;
-  };
-  h2Bold: {
-    fontWeight: FontWeight;
-    fontSize: string;
-  }
-  h3: {
-    fontWeight: FontWeight;
-    fontSize: string;
-  };
-  h3Bold: {
-    fontWeight: FontWeight;
-    fontSize: string;
-  };
-  h4: {
-    fontWeight: FontWeight;
-    fontSize: string;
-  };
-  h4Bold: {
-    fontWeight: FontWeight;
-    fontSize: string;
-  };
-  h5: {
-    fontWeight: FontWeight;
-    fontSize: string;
-  };
-  h5Bold: {
-    fontWeight: FontWeight;
-    fontSize: string;
-  };
-  title: {
-    fontWeight: FontWeight;
-    fontSize: string;
-  };
-  titleBold: {
-    fontWeight: FontWeight;
-    fontSize: string;
-  };
-  caption: {
-    fontWeight: FontWeight;
-    fontSize: string;
-  };
-  captionBold: {
-    fontWeight: FontWeight;
-    fontSize: string;
-  };
-
+  h1: variation;
+  h2: variation;
+  h3: variation;
+  h4: variation;
+  h5: variation;
+  title: variation;
+  caption: variation;
+  subtitle1: variation;
+  subtitle2: variation;
+  body1: variation;
+  body2: variation;
+  button: variation;
+  overline: variation;
 }

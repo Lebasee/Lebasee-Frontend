@@ -1,8 +1,9 @@
-import { createTheme } from "@mui/material";
+import { createTheme, responsiveFontSizes } from "@mui/material";
 import { pallete } from "../styles/pallete.m";
-import { typography } from "../styles/typography";
+import  typography  from "../styles/typography";
 
-const theme = createTheme({
+let theme = createTheme({
+  direction: "rtl",
   palette: {
     primary: {
       main: pallete.primary[500],
@@ -25,14 +26,64 @@ const theme = createTheme({
       dark: pallete.warning[700],
     },
     error: {
-      main: pallete.error[500],
+      main: pallete.error[400],
       light: pallete.error[300],
       dark: pallete.error[700],
     },
   },
   typography: {
     fontFamily: typography.fontFamily,
+    h1: {
+      fontWeight: typography.h1.fontWeight,
+      fontSize: typography.h1.fontSize,
+    },
+    h2: {
+      fontWeight: typography.h2.fontWeight,
+      fontSize: typography.h2.fontSize,
+    },
+    h3: {
+      fontWeight: typography.h3.fontWeight,
+      fontSize: typography.h3.fontSize,
+    },
+    h4: {
+      fontWeight: typography.h4.fontWeight,
+      fontSize: typography.h4.fontSize,
+    },
+    h5: {
+      fontWeight: typography.h5.fontWeight,
+      fontSize: typography.h5.fontSize,
+    },
+    caption: {
+      fontWeight: typography.caption.fontWeight,
+      fontSize: typography.caption.fontSize,
+    },
+    subtitle1: {
+      fontWeight: typography.subtitle1.fontWeight,
+      fontSize: typography.subtitle1.fontSize,
+    },
+    subtitle2: {
+      fontWeight: typography.subtitle2.fontWeight,
+      fontSize: typography.subtitle2.fontSize,
+    },
+    body1: {
+      fontWeight: typography.body1.fontWeight,
+      fontSize: typography.body1.fontSize,
+    },
+    body2: {
+      fontWeight: typography.body2.fontWeight,
+      fontSize: typography.body2.fontSize,
+    },
+    button: {
+      fontWeight: typography.button.fontWeight,
+      fontSize: typography.button.fontSize,
+    },
+    overline: {
+      fontWeight: typography.overline.fontWeight,
+      fontSize: typography.overline.fontSize,
+    },
   },
 });
+
+theme = responsiveFontSizes(theme);
 
 export default theme;
