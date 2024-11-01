@@ -5,6 +5,23 @@
     font-style: normal;
 }
 
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #28353a;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #00534b;
+    border-radius: 3px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: 003f39;
+  }
+
 body{
     direction: rtl;
 }

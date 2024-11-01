@@ -3,6 +3,31 @@ import { pallete } from "../styles/pallete.m";
 import  typography  from "../styles/typography";
 
 let theme = createTheme({
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        ":root": {
+          /* Target all scrollable elements */
+          "*::-webkit-scrollbar": {
+            width: "8px",
+          },
+          "*::-webkit-scrollbar-track": {
+            background: pallete.secondary[200],
+          },
+          "*::-webkit-scrollbar-thumb": {
+            backgroundColor: pallete.secondary[800],
+            borderRadius: "10px",
+            border: `2px solid ${pallete.secondary[200]}`,
+          },
+          /* Firefox scrollbar customization */
+          "*": {
+            scrollbarWidth: "thin",
+            scrollbarColor: `${pallete.secondary[800]} ${pallete.secondary[200]}`,
+          },
+        },
+      },
+    },
+  },
   direction: "rtl",
   palette: {
     primary: {
