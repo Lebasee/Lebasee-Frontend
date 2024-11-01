@@ -1,10 +1,13 @@
-import { ThemeProvider } from "@emotion/react";
-import theme from "./theme/theme";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
 import Container from "./components/auth/container";
 import LoginForm from "./components/auth/login/loginForm";
 import SignupForm from "./components/auth/signup/signupForm";
 import EmailConfirmationForm from "./components/auth/signup/emailConfirmationForm";
+import Landing from "./pages/landing";
 
 const router = createBrowserRouter([
   {
@@ -19,13 +22,17 @@ const router = createBrowserRouter([
       { path: "confirm-email", element: <EmailConfirmationForm /> },
     ],
   },
+  {
+    path: "/Landing",
+    element: <Landing />,
+  },
+  {
+    path: "/",
+    element: <Navigate to="/landing" />,
+  },
 ]);
 function App() {
-  return (
-    <ThemeProvider theme={theme}>
-      <RouterProvider router={router} />
-    </ThemeProvider>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
