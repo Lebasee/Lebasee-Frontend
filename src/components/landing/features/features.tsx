@@ -6,7 +6,8 @@ const Features: React.FC = () => {
   return (
     <Box
       sx={{
-        width: "80%",
+        maxWidth: "1063px",
+        width: "100%",
         height: "500px",
         display: "flex",
         flexDirection: "column",
@@ -25,7 +26,7 @@ const Features: React.FC = () => {
         sx={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-evenly",
+          justifyContent: "space-between",
           width: "100%",
         }}
       >

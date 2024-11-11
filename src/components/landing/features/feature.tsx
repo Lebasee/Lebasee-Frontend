@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
-import { pallete } from "../../styles/pallete.m";
+import { pallete } from "../../../styles/pallete.m";
 
 interface featureProps {
   //   img?: I;
@@ -11,22 +11,22 @@ const Feature: React.FC<featureProps> = ({ text }) => {
   return (
     <Box
       sx={{
-        height: "300px",
-        width: "300px",
+        height: "330px",
+        width: "330px",
         bgcolor: `${pallete.secondary[800]}`,
         borderRadius: "6px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
-        p: "30px",
-        gap: "40px",
+        justifyContent: "space-between",
+        p: "20px 30px",
+        boxShadow: `8px 8px 20px 0px`,
       }}
     >
       <Box
         sx={{
-          height: "144px",
-          width: "144px",
+          height: "200px",
+          width: "200px",
           bgcolor: `${pallete.secondary[50]}`,
           borderRadius: "6px",
         }}

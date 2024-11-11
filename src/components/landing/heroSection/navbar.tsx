@@ -1,17 +1,24 @@
 import React from "react";
 import { AppBar, Box, Typography, Container, Button } from "@mui/material";
 import LoginIcon from "@mui/icons-material/Login";
-import { pallete } from "../../styles/pallete.m";
+import { pallete } from "../../../styles/pallete.m";
+
+interface NavbarProps {
+  scrollToSection: (ref: React.RefObject<HTMLElement>) => void;
+  sectionRefs: {
+    [key: string]: React.RefObject<HTMLElement>;
+  };
+}
 
 const sections = [
-  { title: "خانه", href: "#home" },
-  { title: "ویژگی ها و مزایا", href: "#home" },
-  { title: "نظرات کاربران", href: "#home" },
-  { title: "درباره ما", href: "#home" },
-  { title: "تماس با ما", href: "#home" },
+  { title: "خانه", id: "home" },
+  { title: "ویژگی ها و مزایا", id: "features" },
+  { title: "نظرات کاربران", id: "testimonials" },
+  { title: "درباره ما", id: "aboutUs" },
+  { title: "تماس با ما", id: "footer" },
 ];
 
-const Navbar: React.FC = () => {
+const Navbar: React.FC<NavbarProps> = ({ scrollToSection, sectionRefs }) => {
   return (
     <AppBar
       position="absolute"
@@ -19,9 +26,11 @@ const Navbar: React.FC = () => {
         mx: "auto",
         width: "90%",
         top: "35px",
-        right: "5%",
+        right: 0,
+        left: 0,
         bgcolor: `${pallete.secondary[800]}`,
         borderRadius: "6px",
+        maxWidth: "1280px",
       }}
     >
       <Container
@@ -56,8 +65,8 @@ const Navbar: React.FC = () => {
         >
           {sections.map((section) => (
             <Button
-              href={section.href}
-              key={section.title}
+              key={section.id}
+              onClick={() => scrollToSection(sectionRefs[section.id])}
               sx={{ color: "white" }}
             >
               {section.title}

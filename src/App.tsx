@@ -12,6 +12,7 @@ import Landing from "./pages/landing";
 const router = createBrowserRouter([
   {
     path: "/",
+    element: <Navigate to="/landing" />,
   },
   {
     path: "/auth",
@@ -25,10 +26,6 @@ const router = createBrowserRouter([
   {
     path: "/Landing",
     element: <Landing />,
-  },
-  {
-    path: "/",
-    element: <Navigate to="/landing" />,
   },
 ]);
 function App() {
