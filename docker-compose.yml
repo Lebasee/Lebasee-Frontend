@@ -1,0 +1,12 @@
+version: '3'
+services:
+  lebasee-front:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3789:80"
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - .env

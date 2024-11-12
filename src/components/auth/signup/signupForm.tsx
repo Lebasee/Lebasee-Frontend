@@ -16,6 +16,7 @@ import CustomTextField from "../../base/customTextField";
 import { useRef, useState } from "react";
 import { validateEmail } from "../../../utils/validationUtils";
 
+
 const LoginForm: React.FC = () => {
   const [focused, setFocused] = useState({
     firstName: false,
