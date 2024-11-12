@@ -11,7 +11,7 @@ import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import LockIcon from "@mui/icons-material/Lock";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import CustomTextField from "../../base/CustomTextField";
+import CustomTextField from "../../base/customTextField";
 import { useRef, useState } from "react";
 
 const LoginForm: React.FC = () => {

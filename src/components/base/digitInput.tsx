@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { TextField, Stack } from "@mui/material";
+import { toPersianNumber } from "../../utils/toPersianNumber";
 
 interface DigitInputProps {
   count?: number;
@@ -17,7 +18,7 @@ const DigitInput: React.FC<DigitInputProps> = ({ count = 4 }) => {
     if (!/^\d$/.test(value) && value !== "") return;
 
     const newCode = [...code];
-    newCode[index] = value;
+    newCode[index] = toPersianNumber(value);
     setCode(newCode);
 
     if (value && index < count - 1) {
