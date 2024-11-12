@@ -12,9 +12,9 @@ import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import LockIcon from "@mui/icons-material/Lock";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import CustomTextField from "../../base/CustomTextField";
 import { useRef, useState } from "react";
 import { validateEmail } from "../../../utils/validationUtils";
+import CustomTextField from "../../base/CustomTextField";
 
 const LoginForm: React.FC = () => {
   const [focused, setFocused] = useState({
