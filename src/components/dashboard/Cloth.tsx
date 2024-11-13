@@ -19,7 +19,7 @@ const Cloth: React.FC<ClothesProps> = ({
         alignItems: "center",
         flexDirection: "row-reverse",
         position: "relative",
-        transition: "opacity 0.8s ease-in-out",
+        transition: "opacity 0.2s ease-in-out",
         opacity: fadeIn ? 1 : 0,
       }}
     >
@@ -27,8 +27,8 @@ const Cloth: React.FC<ClothesProps> = ({
       <Box
         sx={{
           position: "relative",
-          width: 300,
-          height: 300,
+          width: 230,
+          height: 230,
           borderRadius: 3,
           overflow: "hidden",
           zIndex: 1,

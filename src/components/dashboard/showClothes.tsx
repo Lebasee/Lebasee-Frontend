@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Tshirt_1 from "../../assets/Tshirt-1.png";
 import Tshirt_2 from "../../assets/Tshirt-2.png";
 import Tshirt_3 from "../../assets/Tshirt-3.png";
-import Cloth from "./Cloth";
+import Cloth from "./cloth";
 
 const clothes = [
   { name: "T-shirt", image: Tshirt_1, id: 1 },
@@ -47,7 +47,7 @@ const ShowClothes: React.FC = () => {
       sx={{
         maxWidth: "1063px",
         width: "100%",
-        height: "450px",
+        height: "100%",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -71,7 +71,7 @@ const ShowClothes: React.FC = () => {
           display: "flex",
           justifyContent: "center",
           width: "100%",
-          gap: "80px", // Space between the two images
+          gap: "50px", // Space between the two images
         }}
       >
         {/* First image */}
@@ -85,6 +85,12 @@ const ShowClothes: React.FC = () => {
         <Cloth
           name={clothes[getNextIndex(currentIndex)].name}
           image={clothes[getNextIndex(currentIndex)].image}
+          fadeIn={fadeIn}
+        />
+        {/* Second image */}
+        <Cloth
+          name={clothes[getNextIndex(getNextIndex(currentIndex))].name}
+          image={clothes[getNextIndex(getNextIndex(currentIndex))].image}
           fadeIn={fadeIn}
         />
       </Box>

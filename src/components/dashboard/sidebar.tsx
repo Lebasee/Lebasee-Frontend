@@ -20,11 +20,10 @@ const Sidebar: React.FC = () => {
     <Box
       sx={{
         width: "20%",
-        backgroundColor: "#28353a",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        height: "100vh",
+        height: "100%",
         padding: "20px 0",
         boxSizing: "border-box",
       }}
@@ -33,7 +32,6 @@ const Sidebar: React.FC = () => {
       <Typography
         variant="h4"
         sx={{
-          mt: 8,
           color: "white",
           fontWeight: "bold",
           marginBottom: "24px",
@@ -47,6 +45,7 @@ const Sidebar: React.FC = () => {
         src=""
         alt="User Avatar"
         sx={{
+          mt: 7,
           width: 100,
           height: 100,
           border: "2px solid #ecf0f1",

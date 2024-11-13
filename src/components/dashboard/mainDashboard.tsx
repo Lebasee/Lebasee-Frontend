@@ -27,7 +27,7 @@ const MainDashboard: React.FC = () => {
       <Box // right part
         sx={{
           width: "70%",
-          height: 1000,
+          height: '100%',
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-start",
@@ -36,7 +36,7 @@ const MainDashboard: React.FC = () => {
         <Box // top right
           sx={{
             width: "100%",
-            height: "50%",
+            height: "45%",
             display: "flex",
             flexDirection: "row",
           }}
@@ -47,12 +47,11 @@ const MainDashboard: React.FC = () => {
             }}
           >
             <Typography
-              variant="body2"
+              variant="h3"
               sx={{
-                mt: 4,
+                mt: 7,
                 mr: 3,
                 color: "white",
-                fontSize: 45,
               }}
             >
               بدن شما
@@ -120,7 +119,7 @@ const MainDashboard: React.FC = () => {
         <Box // bottom right
           sx={{
             width: "100%",
-            height: "50%",
+            height: "45%",
           }}
         >
           <ShowClothes />
@@ -130,7 +129,7 @@ const MainDashboard: React.FC = () => {
       <Box // left part
         sx={{
           width: "30%",
-          height: 1000,
+          height: '100%',
         }}
       ></Box>
     </Box>
