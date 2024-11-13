@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import React from "react";
-import { pallete } from "../../styles/pallete.m";
+import { pallete } from "../../../styles/pallete.m";
 
 const Sidebar: React.FC = () => {
   return (

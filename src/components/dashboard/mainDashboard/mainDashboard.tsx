@@ -1,5 +1,5 @@
 import { Avatar, Box, Grid, Typography } from "@mui/material";
-import { pallete } from "../../styles/pallete.m";
+import { pallete } from "../../../styles/pallete.m";
 import ShowClothes from "./showClothes";
 
 const datas = [
@@ -9,10 +9,7 @@ const datas = [
   { name: "عرض شانه", id: 1, value: "40", type: "سانتی متر" },
 ];
 
-
-
 const MainDashboard: React.FC = () => {
-
   return (
     <Box
       sx={{
@@ -27,7 +24,7 @@ const MainDashboard: React.FC = () => {
       <Box // right part
         sx={{
           width: "70%",
-          height: '100%',
+          height: "100%",
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-start",
@@ -115,7 +112,6 @@ const MainDashboard: React.FC = () => {
           </Box>
         </Box>
 
-
         <Box // bottom right
           sx={{
             width: "100%",
@@ -129,7 +125,7 @@ const MainDashboard: React.FC = () => {
       <Box // left part
         sx={{
           width: "30%",
-          height: '100%',
+          height: "100%",
         }}
       ></Box>
     </Box>

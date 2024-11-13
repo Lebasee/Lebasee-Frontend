@@ -7,11 +7,7 @@ interface ClothesProps {
   fadeIn: boolean;
 }
 
-const Cloth: React.FC<ClothesProps> = ({
-  name,
-  image,
-  fadeIn,
-}) => {
+const Cloth: React.FC<ClothesProps> = ({ name, image, fadeIn }) => {
   return (
     <Box
       sx={{
@@ -23,7 +19,6 @@ const Cloth: React.FC<ClothesProps> = ({
         opacity: fadeIn ? 1 : 0,
       }}
     >
-
       <Box
         sx={{
           position: "relative",
@@ -45,7 +40,6 @@ const Cloth: React.FC<ClothesProps> = ({
           }}
         />
       </Box>
-
     </Box>
   );
 };

@@ -1,9 +1,9 @@
 import { Box, Typography } from "@mui/material";
-import { pallete } from "../../styles/pallete.m";
+import { pallete } from "../../../styles/pallete.m";
 import { useEffect, useState } from "react";
-import Tshirt_1 from "../../assets/Tshirt-1.png";
-import Tshirt_2 from "../../assets/Tshirt-2.png";
-import Tshirt_3 from "../../assets/Tshirt-3.png";
+import Tshirt_1 from "../../../assets/Tshirt-1.png";
+import Tshirt_2 from "../../../assets/Tshirt-2.png";
+import Tshirt_3 from "../../../assets/Tshirt-3.png";
 import Cloth from "./cloth";
 
 const clothes = [
