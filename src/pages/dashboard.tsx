@@ -3,6 +3,7 @@ import React from "react";
 import { pallete } from "../styles/pallete.m";
 import Sidebar from "../components/dashboard/sidebar";
 import VerticalLine from "../components/dashboard/verticalLine";
+import MainDashboard from "../components/dashboard/mainDashboard";
 
 const Dashboard: React.FC = () => {
   return (
@@ -20,7 +21,7 @@ const Dashboard: React.FC = () => {
 
     <Sidebar />
     <VerticalLine/>
-
+    <MainDashboard />
 
     </Box>
   );

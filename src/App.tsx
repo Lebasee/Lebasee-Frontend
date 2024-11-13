@@ -13,6 +13,7 @@ import Dashboard from "./pages/dashboard";
 const router = createBrowserRouter([
   {
     path: "/",
+    element: <Navigate to="/landing" />,
   },
   {
     path: "/auth",

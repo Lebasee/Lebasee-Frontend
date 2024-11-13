@@ -1,16 +1,17 @@
 import { Box, Button, Typography } from "@mui/material";
 import React from "react";
-import { pallete } from "../../styles/pallete.m";
+import { pallete } from "../../../styles/pallete.m";
 
 const HeroSection: React.FC = () => {
   return (
     <Box
       sx={{
         mt: "105px",
-        width: "80%",
         display: "flex",
         flexDirection: "row",
-        height: "600px",
+        height: "550px",
+        maxWidth: "1063px",
+        width: "100%",
       }}
     >
       <Box

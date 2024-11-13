@@ -1,0 +1,67 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code from the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Set up Node.js environment with version 16
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+
+      # Install the required dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Run tests to ensure everything works correctly
+      # - name: Run tests
+      #   run: npm test
+
+      # Build the app for production
+      - name: Build the app
+        run: npm run build
+
+      # Get version from package.json
+      - name: Get version from package.json
+        id: get_version
+        run: echo "VERSION=$(node -p -e \"require('./package.json').version\")" >> $GITHUB_ENV
+
+      # Get Git commit hash
+      - name: Get Git commit hash
+        id: get_commit
+        run: echo "GIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      # Log in to Docker registry
+      - name: Log in to Docker registry
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      # Build the Docker image using the current context
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/lebasee:${{ env.VERSION }} .
+          docker tag ${{ secrets.DOCKER_USERNAME }}/lebasee:${{ env.VERSION }} ${{ secrets.DOCKER_USERNAME }}/lebasee-front:latest
+      # Push the Docker image to Docker Hub
+      - name: Push Docker image
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/lebasee:${{ env.VERSION }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/lebasee:lates
+
+      # Log out from Docker registry to clean up
+      - name: Log out from Docker registry
+        run: docker logout
