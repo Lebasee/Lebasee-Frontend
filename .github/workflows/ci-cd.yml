@@ -57,12 +57,12 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/lebasee:${{ env.VERSION }} .
-          docker tag ${{ secrets.DOCKER_USERNAME }}/lebasee:${{ env.VERSION }} ${{ secrets.DOCKER_USERNAME }}/lebasee-front:latest
+          docker tag ${{ secrets.DOCKER_USERNAME }}/lebasee:${{ env.VERSION }} ${{ secrets.DOCKER_USERNAME }}/lebasee:latest
       # Push the Docker image to Docker Hub
       - name: Push Docker image
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/lebasee:${{ env.VERSION }}
-          docker push ${{ secrets.DOCKER_USERNAME }}/lebasee:lates
+          docker push ${{ secrets.DOCKER_USERNAME }}/lebasee:latest
 
       # Log out from Docker registry to clean up
       - name: Log out from Docker registry
