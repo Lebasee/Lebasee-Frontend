@@ -66,7 +66,7 @@ const Information: React.FC = () => {
                   min={data.min}
                   max={data.max}
                   step={1}
-                  onChange={(e, newValue) =>
+                  onChange={(_, newValue) =>
                     handleSliderChange(data.id, newValue as number)
                   } // Type assertion for newValue
                   sx={{
