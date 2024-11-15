@@ -8,6 +8,9 @@ import LoginForm from "./components/auth/login/loginForm";
 import SignupForm from "./components/auth/signup/signupForm";
 import EmailConfirmationForm from "./components/auth/signup/emailConfirmationForm";
 import Landing from "./pages/landing";
+import Dashboard from "./pages/dashboard";
+import MainDashboard from "./components/dashboard/mainDashboard/mainDashboard";
+import Information from "./components/dashboard/bodyInformation/information";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +30,20 @@ const router = createBrowserRouter([
     path: "/Landing",
     element: <Landing />,
   },
+  {
+    path: "/",
+    element: <Navigate to="/landing" />,
+  },
+  {
+    path: "/dashboard",
+    element: <Dashboard />,
+    children: [
+      { path: "", element: <MainDashboard />},
+      { path: "info", element: <Information /> },
+      { path: "clothes", element: <EmailConfirmationForm /> },
+      { path: "setting", element: <SignupForm /> },
+    ],
+  }
 ]);
 function App() {
   return <RouterProvider router={router} />;
