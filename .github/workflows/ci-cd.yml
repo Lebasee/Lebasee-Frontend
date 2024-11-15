@@ -62,7 +62,7 @@ jobs:
       - name: Push Docker image
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/lebasee:${{ env.VERSION }}
-          docker push ${{ secrets.DOCKER_USERNAME }}/lebasee:lates
+          docker push ${{ secrets.DOCKER_USERNAME }}/lebasee:latest
 
       # Log out from Docker registry to clean up
       - name: Log out from Docker registry
