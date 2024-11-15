@@ -56,8 +56,7 @@ jobs:
       # Build the Docker image using the current context
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/lebasee:${{ env.VERSION }} .
-          docker tag ${{ secrets.DOCKER_USERNAME }}/lebasee:${{ env.VERSION }} ${{ secrets.DOCKER_USERNAME }}/lebasee:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/lebasee:${{ env.VERSION }} -t ${{ secrets.DOCKER_USERNAME }}/lebasee:latest .
       # Push the Docker image to Docker Hub
       - name: Push Docker image
         run: |
