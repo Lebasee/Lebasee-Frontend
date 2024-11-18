@@ -1,6 +1,8 @@
 import { Box, Button, Typography } from "@mui/material";
 import React from "react";
-import { pallete } from "../../../styles/pallete.m";
+// import { pallete } from "../../../styles/pallete.m";
+import ModelViewer from "../../base/SketchfabEmbed";
+
 
 const HeroSection: React.FC = () => {
   return (
@@ -50,6 +52,15 @@ const HeroSection: React.FC = () => {
         }}
       >
         <Box
+              sx={{
+                mb: -12,
+                height: 500,
+                width: 400,
+              }}
+            >
+              <ModelViewer />
+            </Box>
+        {/* <Box
           bgcolor={pallete.secondary[50]}
           width="415px"
           height="415px"
@@ -61,7 +72,7 @@ const HeroSection: React.FC = () => {
           }}
         >
           <Typography variant="body2">نمونه مدل</Typography>
-        </Box>
+        </Box> */}
       </Box>
     </Box>
   );
