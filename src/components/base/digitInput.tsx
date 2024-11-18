@@ -1,13 +1,18 @@
-import React, { useState, useRef, useEffect } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, {  useRef, useEffect, SetStateAction, Dispatch } from "react";
 import { TextField, Stack } from "@mui/material";
 import { toPersianNumber } from "../../utils/toPersianNumber";
 
 interface DigitInputProps {
-  count?: number;
+  // count?: number;
+  code: any[];
+  setCode: Dispatch<SetStateAction<any[]>>;
 }
 
-const DigitInput: React.FC<DigitInputProps> = ({ count = 4 }) => {
-  const [code, setCode] = useState(Array(count).fill(""));
+
+
+const DigitInput: React.FC<DigitInputProps> = ({ code, setCode }) => {
+  // const [code, setCode] = useState(Array(count).fill(""));
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
 
   useEffect(() => {
@@ -21,7 +26,7 @@ const DigitInput: React.FC<DigitInputProps> = ({ count = 4 }) => {
     newCode[index] = toPersianNumber(value);
     setCode(newCode);
 
-    if (value && index < count - 1) {
+    if (value && index < 4 - 1) {
       inputRefs.current[index + 1]?.focus();
     }
   };
