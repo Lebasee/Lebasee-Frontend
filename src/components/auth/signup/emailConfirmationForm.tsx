@@ -2,10 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Box, Button, Link, Stack, Typography } from "@mui/material";
 import MarkEmailReadIcon from "@mui/icons-material/MarkEmailRead";
 import DigitInput from "../../base/digitInput";
+import VerifyCode from "../../../api/auth/verifyCode";
+import { useNavigate } from "react-router-dom";
 
 const EmailConfirmationForm: React.FC = () => {
   const [countdown, setCountdown] = useState(90);
   const [isResendAvailable, setIsResendAvailable] = useState(false);
+  const [code, setCode] = useState(Array(4).fill(""));
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (countdown > 0) {
@@ -22,6 +26,27 @@ const EmailConfirmationForm: React.FC = () => {
     // Logic to resend the code goes here
     setCountdown(90);
     setIsResendAvailable(false);
+  };
+
+  const handleVerifyCode = async () => {
+    if (!code) {
+      // setError("Please enter the verification code.");
+      return;
+    }
+
+    try {
+      const response = await VerifyCode({ verification_code: code });
+
+
+      // If verification is successful, redirect to Landing page
+      if (response?.status == 200) {
+        navigate("/Landing"); // Redirect to Landing page
+      } else {
+        console.error("Verification failed. Please try again.");
+      }
+    } catch (err) {
+      console.error("An error occurred during verification. Please try again.", err);
+    }
   };
 
   return (
@@ -52,7 +77,7 @@ const EmailConfirmationForm: React.FC = () => {
       >
         کد به آدرس شما ایمیل شد
       </Typography>
-      <DigitInput />
+      <DigitInput code={code} setCode={setCode}/>
       {isResendAvailable ? (
         <Link
           component="button"
@@ -89,6 +114,7 @@ const EmailConfirmationForm: React.FC = () => {
         <Button
           variant="contained"
           fullWidth
+          onClick={handleVerifyCode}
         >
           تایید
         </Button>
