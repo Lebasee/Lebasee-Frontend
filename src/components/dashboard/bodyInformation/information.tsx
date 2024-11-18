@@ -1,5 +1,7 @@
-import { Avatar, Box, Grid, Slider, Typography } from "@mui/material";
+import {  Box, Grid, Slider, Typography } from "@mui/material";
 import React, { useState } from "react";
+import ModelViewer from "../../base/SketchfabEmbed";
+
 
 // Define the data structure
 interface Data {
@@ -108,7 +110,15 @@ const Information: React.FC = () => {
           justifyContent: "center",
         }}
       >
-        <Avatar
+        <Box
+              sx={{
+                height: "90%",
+                width: "70%",
+              }}
+            >
+              <ModelViewer />
+            </Box>
+        {/* <Avatar
           sx={{
             height: "76%",
             width: "75%",
@@ -116,7 +126,7 @@ const Information: React.FC = () => {
           }}
         >
           {/* Avatar content here, if needed */}
-        </Avatar>
+        {/* </Avatar> */}
       </Box>
     </Box>
   );
