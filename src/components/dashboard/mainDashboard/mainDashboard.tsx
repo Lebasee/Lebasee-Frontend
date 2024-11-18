@@ -1,6 +1,8 @@
-import { Avatar, Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { pallete } from "../../../styles/pallete.m";
 import ShowClothes from "./showClothes";
+import ModelViewer from "../../base/SketchfabEmbed";
+
 
 const datas = [
   { name: "قد", id: 1, value: "182", type: "سانتی متر" },
@@ -102,13 +104,23 @@ const MainDashboard: React.FC = () => {
               width: "50%",
             }}
           >
-            <Avatar
+            {/* <div class="sketchfab-embed-wrapper"> <iframe title="Henry male Realistic 3d Models" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src="https://sketchfab.com/models/278d5d98c5f1471e81596e5d14e2a31e/embed"> </iframe> <p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;"> <a href="https://sketchfab.com/3d-models/henry-male-realistic-3d-models-278d5d98c5f1471e81596e5d14e2a31e?utm_medium=embed&utm_campaign=share-popup&utm_content=278d5d98c5f1471e81596e5d14e2a31e" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;"> Henry male Realistic 3d Models </a> by <a href="https://sketchfab.com/meshatrech?utm_medium=embed&utm_campaign=share-popup&utm_content=278d5d98c5f1471e81596e5d14e2a31e" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;"> Mesh Artech </a> on <a href="https://sketchfab.com?utm_medium=embed&utm_campaign=share-popup&utm_content=278d5d98c5f1471e81596e5d14e2a31e" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a></p></div> */}
+            <Box
+              sx={{
+                mb: -12,
+                height: "100%",
+                width: "70%",
+              }}
+            >
+              <ModelViewer />
+            </Box>
+            {/* <Avatar
               sx={{
                 height: "70%",
                 width: "70%",
                 borderRadius: 2,
               }}
-            ></Avatar>
+            ></Avatar> */}
           </Box>
         </Box>
 
