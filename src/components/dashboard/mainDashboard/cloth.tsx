@@ -1,5 +1,6 @@
 import { Box } from "@mui/material";
 import React from "react";
+import x from "../../../assets/Tshirt-1.png";
 
 interface ClothesProps {
   name: string;
@@ -8,6 +9,9 @@ interface ClothesProps {
 }
 
 const Cloth: React.FC<ClothesProps> = ({ name, image, fadeIn }) => {
+  // Use a fallback image if the image is undefined
+  const fallbackImage = x; // Put your fallback image path here
+
   return (
     <Box
       sx={{
@@ -27,12 +31,13 @@ const Cloth: React.FC<ClothesProps> = ({ name, image, fadeIn }) => {
           borderRadius: 3,
           overflow: "hidden",
           zIndex: 1,
+          // bgcolor: 'blue',
         }}
       >
         <img
           width="100%"
           height="100%"
-          src={image}
+          src={image || fallbackImage} // Use fallback if image is undefined
           alt={name}
           style={{
             transition: "transform 0.8s ease-in-out",

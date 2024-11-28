@@ -11,6 +11,9 @@ import Landing from "./pages/landing";
 import Dashboard from "./pages/dashboard";
 import MainDashboard from "./components/dashboard/mainDashboard/mainDashboard";
 import Information from "./components/dashboard/bodyInformation/information";
+import Setting from "./components/dashboard/setting/setting";
+import Clothes from "./components/dashboard/clothes/clothes";
+import Logout from "./components/dashboard/logout/logout";
 
 const router = createBrowserRouter([
   {
@@ -36,8 +39,9 @@ const router = createBrowserRouter([
     children: [
       { path: "", element: <MainDashboard /> },
       { path: "info", element: <Information /> },
-      { path: "clothes", element: <EmailConfirmationForm /> },
-      { path: "setting", element: <SignupForm /> },
+      { path: "clothes", element: <Clothes /> },
+      { path: "setting", element: <Setting /> },
+      { path: "logout", element: <Logout /> },
     ],
   },
 ]);

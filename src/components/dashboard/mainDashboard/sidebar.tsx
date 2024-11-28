@@ -13,7 +13,7 @@ const tabs = [
   { name: "اطلاعات بدن", id: 2, icon: AccessibilityIcon, href: "/info" },
   { name: "لباس ها", id: 3, icon: CheckroomIcon, href: "/clothes" },
   { name: "تنظیمات", id: 4, icon: SettingsIcon, href: "/setting" },
-  { name: "خروج", id: 5, icon: LogoutIcon },
+  { name: "خروج", id: 5, icon: LogoutIcon, href: "/logout" },
 ];
 
 const Sidebar: React.FC = () => {
