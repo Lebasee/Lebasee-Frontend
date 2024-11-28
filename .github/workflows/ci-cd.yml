@@ -80,4 +80,8 @@ jobs:
           LIARA_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
         run: |
           npm i -g @liara/cli@7
-          liara deploy --app="lebasee-app" --api-token="$LIARA_TOKEN" --no-app-logs
+          liara deploy --app="APP_NAME" \
+                       --image="${{ secrets.DOCKER_USERNAME }}/lebasee:latest" \
+                       --api-token="$LIARA_TOKEN" \
+                       --platform=docker \
+                       --no-app-logs
