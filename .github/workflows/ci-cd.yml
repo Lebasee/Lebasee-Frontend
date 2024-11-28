@@ -66,3 +66,24 @@ jobs:
       # Log out from Docker registry to clean up
       - name: Log out from Docker registry
         run: docker logout
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+      - name: update-liara
+        env:
+          LIARA_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
+        run: |
+          npm i -g @liara/cli@7
+          liara deploy --app="lebasee-app" \
+                       --image="${{ secrets.DOCKER_USERNAME }}/lebasee:latest" \
+                       --api-token="$LIARA_TOKEN" \
+                       --platform=docker \
+                       --port=80 \
+                       --no-app-logs
