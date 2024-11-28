@@ -27,23 +27,19 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/Landing",
+    path: "/landing",
     element: <Landing />,
-  },
-  {
-    path: "/",
-    element: <Navigate to="/landing" />,
   },
   {
     path: "/dashboard",
     element: <Dashboard />,
     children: [
-      { path: "", element: <MainDashboard />},
+      { path: "", element: <MainDashboard /> },
       { path: "info", element: <Information /> },
       { path: "clothes", element: <EmailConfirmationForm /> },
       { path: "setting", element: <SignupForm /> },
     ],
-  }
+  },
 ]);
 function App() {
   return <RouterProvider router={router} />;

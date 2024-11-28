@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  CircularProgress,
   IconButton,
   InputAdornment,
   Stack,
@@ -16,7 +17,10 @@ import CustomTextField from "../../base/CustomTextField";
 import { useRef, useState } from "react";
 import { validateEmail } from "../../../utils/validationUtils";
 import SignUp from "../../../api/auth/signUp";
-import { useNavigate } from "react-router-dom"; // Import useNavigate hook
+import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
+import Toast from "../../base/toast";
+import { ToastData } from "../../../types/types";
 
 const SignUpForm: React.FC = () => {
   const [focused, setFocused] = useState({
@@ -25,14 +29,25 @@ const SignUpForm: React.FC = () => {
     email: false,
     password: false,
   });
+  const [textFieldError, setTextFieldError] = useState({
+    firstName: false,
+    lastName: false,
+    email: false,
+    password: false,
+  });
+  const [toastData, setToastData] = useState<ToastData>({
+    open: false,
+    message: "",
+    severity: "error",
+  });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [emailError, setEmailError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const passwordInputRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate(); // Initialize navigate hook
+  const navigate = useNavigate();
 
   const handlePasswordVisibilityToggle = () => {
     const currentPos = passwordInputRef.current?.selectionStart || 0;
@@ -48,33 +63,63 @@ const SignUpForm: React.FC = () => {
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const emailValue = e.target.value;
     setEmail(emailValue);
-    setEmailError(!validateEmail(emailValue)); // Use the validation function here
+    setTextFieldError({ ...textFieldError, email: !validateEmail(emailValue) });
   };
 
   const handleSignUp = async () => {
-    if (!email || !password || !firstName || !lastName) {
-      alert("Please fill out all fields.");
+    if (
+      !email ||
+      !password ||
+      !firstName ||
+      !lastName ||
+      textFieldError.email
+    ) {
+      setTextFieldError({
+        email: email === "",
+        password: password === "",
+        firstName: firstName === "",
+        lastName: lastName === "",
+      });
       return;
     }
 
-    if (emailError) {
-      alert("Please enter a valid email.");
-      return;
-    }
-
-    const person = {
+    const user = {
       first_name: firstName,
       last_name: lastName,
       email: email,
       password: password,
     };
+    try {
+      setLoading(true);
+      localStorage.removeItem("access");
+      localStorage.removeItem("refresh");
 
-    const response = await SignUp(person);
-    if (response?.status == 201) {
-      alert("Sign up successful!");
-      navigate("/auth/confirm-email");
-    } else {
-      alert("Sign up failed.");
+      const response = await SignUp(user);
+      if (response?.status == 201) {
+        setToastData({
+          open: true,
+          message: "ثبت‌‌نام موفقیت آمیز بود",
+          severity: "success",
+        });
+        navigate("/auth/confirm-email");
+      }
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.status === 400) {
+        setToastData({
+          open: true,
+          message: "ایمیل قبلا استفاده شده است.",
+          severity: "error",
+        });
+      } else {
+        setToastData({
+          open: true,
+          message: "خطا در برقراری ارتباط با سرور.",
+          severity: "error",
+        });
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -89,12 +134,16 @@ const SignUpForm: React.FC = () => {
         m: "auto",
       }}
     >
-      <Typography sx={{ mb: 2 }} variant="h4" color="primary.dark">
+      <Typography
+        sx={{ mb: 2 }}
+        variant="h4"
+        color="primary.dark"
+      >
         ثبت نام
       </Typography>
       <Stack
         direction="row"
-        alignItems="center"
+        alignItems="flex-start"
         justifyContent="center"
         sx={{ width: "100%", gap: 1 }}
       >
@@ -103,7 +152,16 @@ const SignUpForm: React.FC = () => {
           variant="outlined"
           label="نام"
           value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
+          error={textFieldError.firstName}
+          helperText={textFieldError.firstName && "لطفا نام خود را وارد کنید."}
+          onChange={(e) => {
+            setFirstName(e.target.value);
+            setTextFieldError({
+              ...textFieldError,
+              firstName: e.target.value === "",
+            });
+          }}
+          sx={{}}
           onFocus={() => setFocused({ ...focused, firstName: true })}
           onBlur={() => setFocused({ ...focused, firstName: false })}
           slotProps={{
@@ -111,7 +169,13 @@ const SignUpForm: React.FC = () => {
               startAdornment: (
                 <InputAdornment position="start">
                   <PersonIcon
-                    color={focused.firstName ? "primary" : undefined}
+                    color={
+                      textFieldError.firstName
+                        ? "error"
+                        : focused.firstName
+                        ? "primary"
+                        : undefined
+                    }
                   />
                 </InputAdornment>
               ),
@@ -123,7 +187,17 @@ const SignUpForm: React.FC = () => {
           variant="outlined"
           label="نام خانوادگی"
           value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
+          error={textFieldError.lastName}
+          helperText={
+            textFieldError.lastName && "لطفا نام‌خانوادگی خود را وارد کنید."
+          }
+          onChange={(e) => {
+            setLastName(e.target.value);
+            setTextFieldError({
+              ...textFieldError,
+              lastName: e.target.value === "",
+            });
+          }}
           onFocus={() => setFocused({ ...focused, lastName: true })}
           onBlur={() => setFocused({ ...focused, lastName: false })}
           slotProps={{
@@ -131,7 +205,13 @@ const SignUpForm: React.FC = () => {
               startAdornment: (
                 <InputAdornment position="start">
                   <SupervisorAccountIcon
-                    color={focused.lastName ? "primary" : undefined}
+                    color={
+                      textFieldError.lastName
+                        ? "error"
+                        : focused.lastName
+                        ? "primary"
+                        : undefined
+                    }
                   />
                 </InputAdornment>
               ),
@@ -144,8 +224,8 @@ const SignUpForm: React.FC = () => {
         variant="outlined"
         label="ایمیل"
         value={email}
-        error={emailError}
-        helperText={emailError ? "ایمیل معتبر نیست" : ""}
+        error={textFieldError.email}
+        helperText={textFieldError.email && "لطفا یک ایمیل معتبر وارد کنید."}
         onChange={handleEmailChange}
         onFocus={() => setFocused({ ...focused, email: true })}
         onBlur={() => setFocused({ ...focused, email: false })}
@@ -155,7 +235,11 @@ const SignUpForm: React.FC = () => {
               <InputAdornment position="start">
                 <AlternateEmailIcon
                   color={
-                    emailError ? "error" : focused.email ? "primary" : undefined
+                    textFieldError.email
+                      ? "error"
+                      : focused.email
+                      ? "primary"
+                      : undefined
                   }
                 />
               </InputAdornment>
@@ -168,7 +252,15 @@ const SignUpForm: React.FC = () => {
         variant="outlined"
         label="رمزعبور"
         value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        error={textFieldError.password}
+        helperText={textFieldError.password && "لطفا رمزعبور مناسب وارد کنید."}
+        onChange={(e) => {
+          setPassword(e.target.value);
+          setTextFieldError({
+            ...textFieldError,
+            password: e.target.value === "",
+          });
+        }}
         onFocus={() => setFocused({ ...focused, password: true })}
         onBlur={() => setFocused({ ...focused, password: false })}
         type={showPassword ? "text" : "password"}
@@ -181,7 +273,15 @@ const SignUpForm: React.FC = () => {
           input: {
             startAdornment: (
               <InputAdornment position="start">
-                <LockIcon color={focused.password ? "primary" : undefined} />
+                <LockIcon
+                  color={
+                    textFieldError.password
+                      ? "error"
+                      : focused.password
+                      ? "primary"
+                      : undefined
+                  }
+                />
               </InputAdornment>
             ),
             endAdornment: (
@@ -203,17 +303,35 @@ const SignUpForm: React.FC = () => {
         justifyContent="center"
         sx={{ width: "100%", gap: 1 }}
       >
-        <Button variant="contained" fullWidth color="secondary" href="login">
+        <Button
+          variant="contained"
+          fullWidth
+          color="secondary"
+          href="login"
+        >
           ورود
         </Button>
         <Button
           variant="contained"
           fullWidth
-          onClick={handleSignUp} // Trigger signup on click
+          onClick={handleSignUp}
         >
-          ثبت نام
+          {loading ? (
+            <CircularProgress
+              size="32.5px"
+              sx={{ color: "#ffffff" }}
+            />
+          ) : (
+            "ثبت نام"
+          )}
         </Button>
       </Stack>
+      <Toast
+        message={toastData.message}
+        open={toastData.open}
+        severity={toastData.severity}
+        onClose={() => setToastData({ ...toastData, open: false })}
+      />
     </Box>
   );
 };

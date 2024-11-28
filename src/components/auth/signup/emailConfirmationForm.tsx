@@ -1,15 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, Link, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Link,
+  Stack,
+  Typography,
+} from "@mui/material";
 import MarkEmailReadIcon from "@mui/icons-material/MarkEmailRead";
 import DigitInput from "../../base/digitInput";
 import VerifyCode from "../../../api/auth/verifyCode";
 import { useNavigate } from "react-router-dom";
+import { persianToNumeric } from "../../../utils/persianToNumeric";
+import { ToastData } from "../../../types/types";
+import Toast from "../../base/toast";
+import { AxiosError } from "axios";
 
 const EmailConfirmationForm: React.FC = () => {
   const [countdown, setCountdown] = useState(90);
   const [isResendAvailable, setIsResendAvailable] = useState(false);
   const [code, setCode] = useState(Array(4).fill(""));
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [toastData, setToastData] = useState<ToastData>({
+    open: false,
+    message: "",
+    severity: "error",
+  });
 
   useEffect(() => {
     if (countdown > 0) {
@@ -30,22 +47,42 @@ const EmailConfirmationForm: React.FC = () => {
 
   const handleVerifyCode = async () => {
     if (!code) {
-      // setError("Please enter the verification code.");
       return;
     }
 
     try {
-      const response = await VerifyCode({ verification_code: code });
+      const parsedCode = persianToNumeric(code);
 
+      setLoading(true);
+      const response = await VerifyCode(parsedCode);
 
-      // If verification is successful, redirect to Landing page
       if (response?.status == 200) {
-        navigate("/Landing"); // Redirect to Landing page
-      } else {
-        console.error("Verification failed. Please try again.");
+        setToastData({
+          open: true,
+          message: "ایمیل با موفقیت تایید شد.",
+          severity: "success",
+        });
+        navigate("/Landing");
       }
-    } catch (err) {
-      console.error("An error occurred during verification. Please try again.", err);
+    } catch (error) {
+      const axiosError = error as AxiosError;
+
+      if (axiosError.status === 404) {
+        setToastData({
+          open: true,
+          message: "کد تایید معتبر نمی باشد.",
+          severity: "error",
+        });
+        setCode(Array(4).fill(""));
+      } else {
+        setToastData({
+          open: true,
+          message: "خطا در برقراری ارتباط با سرور.",
+          severity: "error",
+        });
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -77,7 +114,10 @@ const EmailConfirmationForm: React.FC = () => {
       >
         کد به آدرس شما ایمیل شد
       </Typography>
-      <DigitInput code={code} setCode={setCode}/>
+      <DigitInput
+        code={code}
+        setCode={setCode}
+      />
       {isResendAvailable ? (
         <Link
           component="button"
@@ -116,9 +156,22 @@ const EmailConfirmationForm: React.FC = () => {
           fullWidth
           onClick={handleVerifyCode}
         >
-          تایید
+          {loading ? (
+            <CircularProgress
+              size="32.5px"
+              sx={{ color: "#ffffff" }}
+            />
+          ) : (
+            "تایید"
+          )}
         </Button>
       </Stack>
+      <Toast
+        message={toastData.message}
+        open={toastData.open}
+        severity={toastData.severity}
+        onClose={() => setToastData({ ...toastData, open: false })}
+      />
     </Box>
   );
 };
