@@ -84,5 +84,5 @@ jobs:
                        --image="${{ secrets.DOCKER_USERNAME }}/lebasee:latest" \
                        --api-token="$LIARA_TOKEN" \
                        --platform=docker \
-                       --port=3000 \
+                       --port=80 \
                        --no-app-logs
