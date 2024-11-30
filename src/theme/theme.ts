@@ -55,6 +55,7 @@ let theme = createTheme({
       light: pallete.error[300],
       dark: pallete.error[700],
     },
+
   },
   typography: {
     fontFamily: typography.fontFamily,
