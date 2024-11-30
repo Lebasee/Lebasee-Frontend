@@ -14,6 +14,7 @@ import Information from "./components/dashboard/bodyInformation/information";
 import Setting from "./components/dashboard/setting/setting";
 import Clothes from "./components/dashboard/clothes/clothes";
 import Logout from "./components/dashboard/logout/logout";
+import HomePage from "./pages/home";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
       { path: "setting", element: <Setting /> },
       { path: "logout", element: <Logout /> },
     ],
+  },
+  {
+    path: "/home",
+    element: <HomePage />,
   },
 ]);
 function App() {
