@@ -14,9 +14,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    outputs:
-      version: ${{ steps.get_version.outputs.version }}
-
     steps:
       # Checkout the code from the repository
       - name: Checkout code
@@ -36,14 +33,11 @@ jobs:
       - name: Build the app
         run: npm run build
 
-      # Get version from package.json
+      # Get version from package.json and save it for the next job
       - name: Get version from package.json
-        id: get_version
         run: |
           VERSION=$(jq -r '.version' package.json)
-          echo "VERSION=$VERSION"
-        outputs:
-          version: ${{ steps.get_version.outputs.version }}
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       # Log in to Docker registry
       - name: Log in to Docker registry
@@ -52,12 +46,12 @@ jobs:
       # Build the Docker image using the current context
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/lebasee:${{ steps.get_version.outputs.version }} -t ${{ secrets.DOCKER_USERNAME }}/lebasee:latest .
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/lebasee:${{ env.VERSION }} -t ${{ secrets.DOCKER_USERNAME }}/lebasee:latest .
 
       # Push the Docker image to Docker Hub
       - name: Push Docker image
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/lebasee:${{ steps.get_version.outputs.version }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/lebasee:${{ env.VERSION }}
           docker push ${{ secrets.DOCKER_USERNAME }}/lebasee:latest
 
       # Log out from Docker registry to clean up
@@ -79,14 +73,15 @@ jobs:
         with:
           node-version: "18"
 
-      # Deploy to Liara
+      # Deploy to Liara using the version from the build job
       - name: Deploy to Liara
         env:
           LIARA_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
+          VERSION: ${{ env.VERSION }}
         run: |
           npm i -g @liara/cli@7
           liara deploy --app="lebasee-app" \
-                       --image="${{ secrets.DOCKER_USERNAME }}/lebasee:${{ needs.build.outputs.version }}" \
+                       --image="${{ secrets.DOCKER_USERNAME }}/lebasee:$VERSION" \
                        --api-token="$LIARA_TOKEN" \
                        --platform=docker \
                        --port=80 \
