@@ -71,7 +71,7 @@ const LoginForm: React.FC = () => {
           message: "ورود موفقیت آمیز بود",
           severity: "success",
         });
-        navigate("/landing");
+        navigate("/home");
       }
     } catch (error) {
       const axiosError = error as AxiosError;
