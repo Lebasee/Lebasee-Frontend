@@ -14,6 +14,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+
     steps:
       # Checkout the code from the repository
       - name: Checkout code
@@ -29,10 +32,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # Run tests to ensure everything works correctly
-      # - name: Run tests
-      #   run: npm test
-
       # Build the app for production
       - name: Build the app
         run: npm run build
@@ -42,12 +41,9 @@ jobs:
         id: get_version
         run: |
           VERSION=$(jq -r '.version' package.json)
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-
-      # Get Git commit hash
-      - name: Get Git commit hash
-        id: get_commit
-        run: echo "GIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "VERSION=$VERSION"
+        outputs:
+          version: ${{ steps.get_version.outputs.version }}
 
       # Log in to Docker registry
       - name: Log in to Docker registry
@@ -56,11 +52,12 @@ jobs:
       # Build the Docker image using the current context
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/lebasee:${{ env.VERSION }} -t ${{ secrets.DOCKER_USERNAME }}/lebasee:latest .
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/lebasee:${{ steps.get_version.outputs.version }} -t ${{ secrets.DOCKER_USERNAME }}/lebasee:latest .
+
       # Push the Docker image to Docker Hub
       - name: Push Docker image
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/lebasee:${{ env.VERSION }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/lebasee:${{ steps.get_version.outputs.version }}
           docker push ${{ secrets.DOCKER_USERNAME }}/lebasee:latest
 
       # Log out from Docker registry to clean up
@@ -72,17 +69,24 @@ jobs:
     needs: build
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      # Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: "18"
-      - name: update-liara
+
+      # Deploy to Liara
+      - name: Deploy to Liara
         env:
           LIARA_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
         run: |
           npm i -g @liara/cli@7
           liara deploy --app="lebasee-app" \
-                       --image="${{ secrets.DOCKER_USERNAME }}/lebasee:${{ env.VERSION }}" \
+                       --image="${{ secrets.DOCKER_USERNAME }}/lebasee:${{ needs.build.outputs.version }}" \
                        --api-token="$LIARA_TOKEN" \
                        --platform=docker \
                        --port=80 \
