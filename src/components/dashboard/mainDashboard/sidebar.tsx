@@ -1,6 +1,6 @@
 import React from "react";
 import { Avatar, Box, Typography, ButtonBase } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -17,6 +17,7 @@ const tabs = [
 ];
 
 const Sidebar: React.FC = () => {
+  const location = useLocation();
   return (
     <Box
       sx={{
@@ -77,52 +78,58 @@ const Sidebar: React.FC = () => {
 
       {/* Dynamic Tab Components */}
       <Box sx={{ width: "100%", paddingX: 2 }}>
-        {tabs.map((tab) => (
-          <ButtonBase
-            key={tab.id}
-            sx={{
-              width: "100%", // Ensure the clickable area spans the full width
-              display: "block",
-              textAlign: "left", // Align the text to the left
-              borderRadius: "8px", // Apply rounded corners to the entire button
-              "&:hover": {
-                backgroundColor: "#34495e",
-              },
-              "&:active": {
-                transform: "scale(0.95)", // Scale down slightly on click
-              },
-            }}
-          >
-            <Link
-              to={`/dashboard${tab.href}`}
-              style={{
-                textDecoration: "none",
+        {tabs.map((tab) => {
+          const isActive = location.pathname === `/dashboard${tab.href}`;
+
+          return (
+            <ButtonBase
+              key={tab.id}
+              sx={{
+                width: "100%", // Ensure the clickable area spans the full width
                 display: "block",
-                width: "100%",
-                color: "inherit",
+                textAlign: "left", // Align the text to the left
+                borderRadius: "8px", // Apply rounded corners to the entire button
+                mt: 1,
+                backgroundColor: isActive ? "#2c3e50" : "transparent",
+                "&:hover": {
+                  backgroundColor: "#34495e",
+                },
+                "&:active": {
+                  transform: "scale(0.95)", // Scale down slightly on click
+                },
               }}
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  paddingY: 2,
-                  paddingX: 3,
+              <Link
+                to={`/dashboard${tab.href}`}
+                style={{
+                  textDecoration: "none",
+                  display: "block",
+                  width: "100%",
+                  color: "inherit",
                 }}
               >
-                <tab.icon
-                  sx={{ color: "white", marginRight: 2, fontSize: 20, ml: 1 }}
-                />
-                <Typography
-                  variant="body1"
-                  sx={{ color: "white", fontSize: 14 }}
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    paddingY: 2,
+                    paddingX: 3,
+                  }}
                 >
-                  {tab.name}
-                </Typography>
-              </Box>
-            </Link>
-          </ButtonBase>
-        ))}
+                  <tab.icon
+                    sx={{ color: "white", marginRight: 2, fontSize: 20, ml: 1 }}
+                  />
+                  <Typography
+                    variant="body1"
+                    sx={{ color: "white", fontSize: 14 }}
+                  >
+                    {tab.name}
+                  </Typography>
+                </Box>
+              </Link>
+            </ButtonBase>
+          );
+        })}
       </Box>
     </Box>
   );

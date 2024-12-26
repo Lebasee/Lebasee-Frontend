@@ -2,10 +2,11 @@ import { Box, Grid, Slider, Typography } from "@mui/material";
 import React, { useState } from "react";
 import ModelViewer from "../../base/SketchfabEmbed";
 import { pallete } from "../../../styles/pallete.m";
+import { toPersianNumber } from "../../../utils/toPersianNumber";
 
 interface Data {
   name: string;
-  id: number; // Assuming id is a number as per initialDatas
+  id: string;
   value: number;
   type: string;
   min: number;
@@ -13,22 +14,46 @@ interface Data {
 }
 
 const initialDatas: Data[] = [
-  { name: "قد", id: 1, value: 182, type: "سانتی متر", min: 120, max: 210 },
-  { name: "سن", id: 2, value: 32, type: "سال", min: 1, max: 100 },
-  { name: "وزن", id: 3, value: 73, type: "کیلوگرم", min: 30, max: 150 },
-  { name: "عرض شانه", id: 4, value: 40, type: "سانتی متر", min: 30, max: 80 },
-  { name: "قد", id: 10, value: 182, type: "سانتی متر", min: 120, max: 210 },
-  { name: "سن", id: 5, value: 32, type: "سال", min: 1, max: 100 },
-  { name: "وزن", id: 6, value: 73, type: "کیلوگرم", min: 30, max: 150 },
-  { name: "عرض شانه", id: 9, value: 40, type: "سانتی متر", min: 30, max: 80 },
-  { name: "قد", id: 7, value: 182, type: "سانتی متر", min: 120, max: 210 },
-  { name: "سن", id: 8, value: 32, type: "سال", min: 1, max: 100 },
+  {
+    name: "قد",
+    id: "height",
+    value: 155,
+    type: "سانتی متر",
+    min: 120,
+    max: 210,
+  },
+  { name: "سن", id: "age", value: 20, type: "سال", min: 1, max: 100 },
+  { name: "وزن", id: "weight", value: 90, type: "کیلوگرم", min: 30, max: 150 },
+  {
+    name: "عرض شانه",
+    id: "shoulder_width",
+    value: 50,
+    type: "سانتی متر",
+    min: 30,
+    max: 80,
+  },
+  {
+    name: "دور سینه",
+    id: "chest_circumference",
+    value: 50,
+    type: "سانتی متر",
+    min: 30,
+    max: 100,
+  },
+  {
+    name: "دور بازو",
+    id: "arm_size",
+    value: 20 ,
+    type: "سانتی متر",
+    min: 10,
+    max: 80,
+  },
 ];
 
 const Information: React.FC = () => {
-  const [datas, setDatas] = useState<Data[]>(initialDatas); // State with typed data array
+  const [datas, setDatas] = useState<Data[]>(initialDatas);
 
-  const handleSliderChange = (id: number, newValue: number) => {
+  const handleSliderChange = (id: string, newValue: number) => {
     setDatas((prevDatas) =>
       prevDatas.map((data) =>
         data.id === id ? { ...data, value: newValue } : data
@@ -56,7 +81,11 @@ const Information: React.FC = () => {
           borderRadius: 2,
         }}
       >
-        <Typography variant="h3" color="white" mb={4}>
+        <Typography
+          variant="h3"
+          color="white"
+          mb={4}
+        >
           اطلاعات بدن شما
         </Typography>
 
@@ -79,8 +108,15 @@ const Information: React.FC = () => {
               }}
               key={data.id}
             >
-              <Grid container spacing={2} alignItems="center">
-                <Grid item xs={6}>
+              <Grid
+                container
+                spacing={2}
+                alignItems="center"
+              >
+                <Grid
+                  item
+                  xs={6}
+                >
                   <Box
                     sx={{
                       display: "flex",
@@ -89,8 +125,11 @@ const Information: React.FC = () => {
                     }}
                   >
                     <Typography color="white">{data.name}</Typography>
-                    <Typography noWrap color="white">
-                      {data.value} {data.type}
+                    <Typography
+                      noWrap
+                      color="white"
+                    >
+                      {toPersianNumber(data.value)} {data.type}
                     </Typography>
                   </Box>
                   <Slider
@@ -122,7 +161,10 @@ const Information: React.FC = () => {
                     }}
                   />
                 </Grid>
-                <Grid item xs={2}></Grid>
+                <Grid
+                  item
+                  xs={2}
+                ></Grid>
               </Grid>
             </Box>
           ))}
