@@ -2,6 +2,7 @@ import React from "react";
 import { AppBar, Box, Typography, Container, Button } from "@mui/material";
 import LoginIcon from "@mui/icons-material/Login";
 import { pallete } from "../../../styles/pallete.m";
+import { useNavigate } from "react-router-dom";
 
 interface NavbarProps {
   scrollToSection: (ref: React.RefObject<HTMLElement>) => void;
@@ -19,8 +20,10 @@ const sections = [
 ];
 
 const Navbar: React.FC<NavbarProps> = ({ scrollToSection, sectionRefs }) => {
+  const navigate = useNavigate();
   return (
     <AppBar
+      data-testid="navbar"
       position="absolute"
       sx={{
         mx: "auto",
@@ -75,7 +78,7 @@ const Navbar: React.FC<NavbarProps> = ({ scrollToSection, sectionRefs }) => {
         </Box>
         <Button
           variant="contained"
-          href="/auth/login"
+          onClick={() => navigate("/auth/login")}
         >
           ورود
           <LoginIcon sx={{ mr: 1 }} />

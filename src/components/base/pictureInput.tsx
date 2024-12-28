@@ -47,7 +47,10 @@ const PictureModal: React.FC<PictureModalProps> = ({
   };
 
   const getCroppedImage = async (): Promise<string | null> => {
-    if (!image || !croppedArea) return null;
+    if (!image || !croppedArea) {
+      console.log("No image or cropped area");
+      return null;
+    }
 
     const imageElement = new Image();
     imageElement.src = image;
@@ -65,12 +68,16 @@ const PictureModal: React.FC<PictureModalProps> = ({
 
       ctx.drawImage(imageElement, x, y, width, height, 0, 0, width, height);
 
-      return canvas.toDataURL("image/jpeg");
+      const croppedImage = canvas.toDataURL("image/jpeg");
+      console.log("Cropped image:", croppedImage);
+      return croppedImage;
     }
+    console.log("No context");
     return null;
   };
 
   const handleConfirm = async () => {
+    onConfirm("");
     const croppedImage = await getCroppedImage();
     if (croppedImage && onConfirm) {
       onConfirm(croppedImage);
@@ -123,6 +130,7 @@ const PictureModal: React.FC<PictureModalProps> = ({
                 style={{ display: "none" }}
                 onChange={handleFileChange}
                 id="upload-image"
+                data-testid="base-upload-input"
               />
               <label htmlFor="upload-image">
                 <Box
@@ -140,6 +148,7 @@ const PictureModal: React.FC<PictureModalProps> = ({
                   <Typography
                     variant="body2"
                     sx={{ color: "#888888" }}
+                    data-testid="base-upload-button"
                   >
                     آپلود تصویر
                   </Typography>
@@ -218,6 +227,7 @@ const PictureModal: React.FC<PictureModalProps> = ({
           color="secondary"
           onClick={onClose}
           sx={{ ml: 1 }}
+          data-testid="cancel-button"
         >
           بستن
         </Button>
@@ -225,6 +235,7 @@ const PictureModal: React.FC<PictureModalProps> = ({
           variant="contained"
           color="primary"
           onClick={handleConfirm}
+          data-testid="confirm-button"
         >
           تایید
         </Button>
