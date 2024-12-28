@@ -2,6 +2,8 @@ import { Box, Grid, Typography } from "@mui/material";
 import { pallete } from "../../../styles/pallete.m";
 import ShowClothes from "./showClothes";
 import ModelViewer from "../../base/SketchfabEmbed";
+import { useEffect, useState } from "react";
+import getUserBodyInformation from "../../../api/dashboard/getUserBodyInformation";
 
 
 const datas = [
@@ -12,6 +14,21 @@ const datas = [
 ];
 
 const MainDashboard: React.FC = () => {
+  const [data, setDatas] = useState([]);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await getUserBodyInformation();
+        setDatas(response);
+        console.log(response);
+      } catch (error) {
+        console.error("Error fetching user information:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   return (
     <Box
       sx={{

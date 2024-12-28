@@ -13,4 +13,3 @@ export interface ToastData {
     message: string;
     severity: AlertColor;
   }
-

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, Box, Typography, ButtonBase } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -7,6 +7,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import AccessibilityIcon from "@mui/icons-material/Accessibility";
 import CheckroomIcon from "@mui/icons-material/Checkroom";
 import UserPicture from "../../../assets/user2.jpg";
+import getUserInfo from "../../../api/dashboard/getUserInfo";
 
 const tabs = [
   { name: "داشبود", id: 1, icon: DashboardIcon, href: "" },
@@ -17,7 +18,29 @@ const tabs = [
 ];
 
 const Sidebar: React.FC = () => {
+  const [userInfo, setUserInfo] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+  });
+
   const location = useLocation();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await getUserInfo();
+        const { first_name, last_name } = response;
+        const email = localStorage.getItem("email") || "";
+        setUserInfo({ first_name, last_name, email });
+      } catch (error) {
+        console.error("Error fetching user information:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   return (
     <Box
       sx={{
@@ -63,7 +86,7 @@ const Sidebar: React.FC = () => {
           marginTop: 1,
         }}
       >
-        غلام رضا غلامی
+        {userInfo.first_name || "کاربر"} {userInfo.last_name || "ناشناس"}
       </Typography>
       <Typography
         variant="caption"
@@ -73,7 +96,7 @@ const Sidebar: React.FC = () => {
           marginBottom: "32px",
         }}
       >
-        mamarezatajik@gmail.com
+        {userInfo.email || "ایمیل نامشخص"}
       </Typography>
 
       {/* Dynamic Tab Components */}

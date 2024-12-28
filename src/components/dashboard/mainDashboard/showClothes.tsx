@@ -5,31 +5,43 @@ import Tshirt_1 from "../../../assets/Tshirt-1.png";
 import Tshirt_2 from "../../../assets/Tshirt-2.png";
 import Tshirt_3 from "../../../assets/Tshirt-3.png";
 import Cloth from "./cloth";
+import getUserClothes from "../../../api/dashboard/getUserClothes";
+import { ConstantColorFactor } from "three/src/constants.js";
 
-const clothes = [
-  { name: "T-shirt", image: Tshirt_1, id: 1 },
-  { name: "T-shirt", image: Tshirt_2, id: 2 },
-  { name: "T-shirt", image: Tshirt_3, id: 3 },
-  { name: "T-shirt", image: Tshirt_2, id: 4 },
-  { name: "T-shirt", image: Tshirt_1, id: 5 },
-  { name: "T-shirt", image: Tshirt_3, id: 6 },
-  { name: "T-shirt", image: Tshirt_3, id: 7 },
-];
+// Define the Clothes interface
+interface Clothes {
+  id: number;
+  image?: string;
+  caption?: string;
+}
 
+
+// const clothes = [
+//   { caption: "T-shirt", image: "http://lebasee-backend-production.up.railway.app/media/clothes/1696233043_4013.jpg", id: 1 },
+//   { caption: "T-shirt", image: Tshirt_2, id: 2 },
+//   { caption: "T-shirt", image: Tshirt_3, id: 3 },
+//   { caption: "T-shirt", image: Tshirt_2, id: 4 },
+//   { caption: "T-shirt", image: Tshirt_1, id: 5 },
+//   { caption: "T-shirt", image: Tshirt_3, id: 6 },
+//   { caption: "T-shirt", image: Tshirt_3, id: 7 },
+// ];
 const ShowClothes: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [fadeIn, setFadeIn] = useState(true);
+  const [clothes, setClothes] = useState<Clothes[]>([]); // Initialize with empty array
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setFadeIn(false);
-      setTimeout(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % clothes.length);
-        setFadeIn(true);
-      }, 800);
-    }, 5000);
+    const fetchUserData = async () => {
+      try {
+        console.log("HI");
+        const response = await getUserClothes();
+        setClothes(response);
+      } catch (error) {
+        console.error("Error fetching user information:", error);
+      }
+    };
 
-    return () => clearInterval(interval);
+    fetchUserData();
   }, []);
 
   const handleDotClick = (index: number) => {
@@ -41,6 +53,11 @@ const ShowClothes: React.FC = () => {
   };
 
   const getNextIndex = (index: number) => (index + 1) % clothes.length;
+
+  // Ensure clothes is not empty before rendering
+  if (clothes.length === 0) {
+    return <Typography></Typography>;
+  }
 
   return (
     <Box
@@ -74,25 +91,32 @@ const ShowClothes: React.FC = () => {
           gap: "50px", // Space between the two images
         }}
       >
-        {/* First image */}
-        <Cloth
-          name={clothes[currentIndex].name}
-          image={clothes[currentIndex].image}
-          fadeIn={fadeIn}
-        />
-        
-        {/* Second image */}
-        <Cloth
-          name={clothes[getNextIndex(currentIndex)].name}
-          image={clothes[getNextIndex(currentIndex)].image}
-          fadeIn={fadeIn}
-        />
-        {/* Second image */}
-        <Cloth
-          name={clothes[getNextIndex(getNextIndex(currentIndex))].name}
-          image={clothes[getNextIndex(getNextIndex(currentIndex))].image}
-          fadeIn={fadeIn}
-        />
+        {/* Check if clothes is available before rendering */}
+        {clothes.length > 0 && (
+          <>
+            <Cloth
+              caption={clothes[currentIndex % clothes.length].caption}
+              image={clothes[currentIndex % clothes.length].image}
+              fadeIn={fadeIn}
+            />
+            <Cloth
+              caption={clothes[getNextIndex(currentIndex) % clothes.length].caption}
+              image={clothes[getNextIndex(currentIndex) % clothes.length].image}
+              fadeIn={fadeIn}
+            />
+            <Cloth
+              caption={
+                clothes[getNextIndex(getNextIndex(currentIndex)) % clothes.length]
+                  .caption
+              }
+              image={
+                clothes[getNextIndex(getNextIndex(currentIndex)) % clothes.length]
+                  .image
+              }
+              fadeIn={fadeIn}
+            />
+          </>
+        )}
       </Box>
       <Box
         sx={{
@@ -101,7 +125,8 @@ const ShowClothes: React.FC = () => {
           gap: "8px",
         }}
       >
-        {clothes.map((_, index) => (
+        {clothes.length > 0 &&
+          clothes.map((_, index) => (
             <Box
               key={index}
               onClick={() => handleDotClick(index)}

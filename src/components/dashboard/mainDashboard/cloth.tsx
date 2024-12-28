@@ -3,12 +3,12 @@ import React from "react";
 import x from "../../../assets/Tshirt-1.png";
 
 interface ClothesProps {
-  name: string;
+  caption?  : string;
   image?: string;
   fadeIn: boolean;
 }
 
-const Cloth: React.FC<ClothesProps> = ({ name, image, fadeIn }) => {
+const Cloth: React.FC<ClothesProps> = ({ caption, image, fadeIn }) => {
   // Use a fallback image if the image is undefined
   const fallbackImage = x; // Put your fallback image path here
 
@@ -38,7 +38,7 @@ const Cloth: React.FC<ClothesProps> = ({ name, image, fadeIn }) => {
           width="100%"
           height="100%"
           src={image || fallbackImage} // Use fallback if image is undefined
-          alt={name}
+          alt={caption}
           style={{
             transition: "transform 0.8s ease-in-out",
             transform: fadeIn ? "scale(1)" : "scale(0.95)",

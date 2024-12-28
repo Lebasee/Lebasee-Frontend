@@ -1,10 +1,9 @@
 import { AxiosError } from "axios";
 import baseApi from "../baseApi";
 
-
-const getUserInfo = async () => {
+const getUserBodyInformation = async () => {
   try {
-    const response = await baseApi.get("/api/users/profile/");
+    const response = await baseApi.get("/api/physical-attributes/");
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -12,4 +11,4 @@ const getUserInfo = async () => {
   }
 };
 
-export default getUserInfo;
+export default getUserBodyInformation;
