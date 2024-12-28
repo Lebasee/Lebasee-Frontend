@@ -70,6 +70,7 @@ const DigitInput: React.FC<DigitInputProps> = ({ code, setCode }) => {
             htmlInput: {
               maxLength: 1,
               style: { textAlign: "center", fontSize: "24px" },
+              "data-testid": `digit-input-${index}`,
             },
           }}
           variant="outlined"

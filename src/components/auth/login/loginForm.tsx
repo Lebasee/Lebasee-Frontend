@@ -224,7 +224,7 @@ const LoginForm: React.FC = () => {
           variant="contained"
           fullWidth
           color="secondary"
-          href="/auth/signup"
+          onClick={() => navigate("/auth/signup")}
         >
           ثبت نام
         </Button>
@@ -232,6 +232,7 @@ const LoginForm: React.FC = () => {
           variant="contained"
           fullWidth
           onClick={handleSubmit}
+          data-testid="login-button"
         >
           {loading ? (
             <CircularProgress

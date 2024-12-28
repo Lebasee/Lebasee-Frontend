@@ -12,6 +12,7 @@ import { toPersianNumber } from "../../../utils/toPersianNumber";
 const Footer = () => {
   return (
     <Box
+      data-testid="footer"
       sx={{
         width: "100%",
         height: "340px",

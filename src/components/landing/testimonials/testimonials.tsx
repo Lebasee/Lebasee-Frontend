@@ -56,6 +56,7 @@ const Testimonials: React.FC = () => {
 
   return (
     <Box
+      data-testid="testimonials"
       sx={{
         maxWidth: "1063px",
         width: "100%",

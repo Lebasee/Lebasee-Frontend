@@ -5,6 +5,7 @@ import Counter from "./counter";
 const AboutUs: React.FC = () => {
   return (
     <Box
+      data-testid="aboutUs"
       sx={{
         maxWidth: "1063px",
         width: "100%",

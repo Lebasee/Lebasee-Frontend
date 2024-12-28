@@ -161,7 +161,6 @@ const SignUpForm: React.FC = () => {
               firstName: e.target.value === "",
             });
           }}
-          sx={{}}
           onFocus={() => setFocused({ ...focused, firstName: true })}
           onBlur={() => setFocused({ ...focused, firstName: false })}
           slotProps={{
@@ -179,6 +178,9 @@ const SignUpForm: React.FC = () => {
                   />
                 </InputAdornment>
               ),
+              inputProps: {
+                "data-testid": "name-text-input",
+              },
             },
           }}
         />
@@ -307,7 +309,7 @@ const SignUpForm: React.FC = () => {
           variant="contained"
           fullWidth
           color="secondary"
-          href="login"
+          onClick={() => navigate("/auth/login")}
         >
           ورود
         </Button>
@@ -315,6 +317,7 @@ const SignUpForm: React.FC = () => {
           variant="contained"
           fullWidth
           onClick={handleSignUp}
+          data-testid="signup-button"
         >
           {loading ? (
             <CircularProgress
