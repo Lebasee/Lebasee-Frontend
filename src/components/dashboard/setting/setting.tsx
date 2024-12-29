@@ -3,13 +3,13 @@ import {
   Box,
   Button,
   Grid,
-  TextField,
   Typography,
 } from "@mui/material";
 import React from "react";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import UserPicture from "../../../assets/user2.jpg";
 import { pallete } from "../../../styles/pallete.m";
+import CustomTextField from "../../base/CustomTextField";
 
 const Setting: React.FC = () => {
   return (
@@ -95,97 +95,37 @@ const Setting: React.FC = () => {
           <Grid container spacing={2}>
             {/* First Name and Last Name in a row */}
             <Grid item xs={6}>
-              <TextField
+              <CustomTextField
                 fullWidth
                 label="نام"
-                variant="outlined"
-                InputLabelProps={{
-                  style: { color: "black", textAlign: "right" }, // Right-align label
-                }}
-                InputProps={{
-                  style: {
-                    color: "black", // Input text color
-                    backgroundColor: pallete.secondary[200], // Background color of input fields
-                  },
-                }}
+                variant="filled"
                 sx={{
-                  "& label": {
-                    transformOrigin: "right",
-                    left: "inherit",
-                    right: "2rem",
-                    top: "-0.2rem",
-                    overflow: "unset",
-                  },
-                  "& legend": {
-                    textAlign: "right",
-                    display: "flex",
-                    justifyContent: "center",
-                    fontSize: "16px",
-                  },
+                  bgcolor: pallete.secondary[200],
+                  borderRadius: 1,
                 }}
               />
             </Grid>
             <Grid item xs={6}>
-              <TextField
+              <CustomTextField
                 fullWidth
                 label="نام خانوادگی"
-                variant="outlined"
-                InputLabelProps={{
-                  style: { color: "black", textAlign: "right" }, // Right-align label
-                }}
-                InputProps={{
-                  style: {
-                    color: "black",
-                    backgroundColor: pallete.secondary[200], // Background color of input fields
-                  },
-                }}
+                variant="filled"
                 sx={{
-                  "& label": {
-                    transformOrigin: "right",
-                    left: "inherit",
-                    right: "2rem",
-                    top: "-0.2rem",
-                    overflow: "unset",
-                  },
-                  "& legend": {
-                    textAlign: "right",
-                    display: "flex",
-                    justifyContent: "center",
-                    fontSize: "16px",
-                  },
+                  bgcolor: pallete.secondary[200],
+                  borderRadius: 1,
                 }}
               />
             </Grid>
 
             {/* Email */}
             <Grid item xs={12}>
-              <TextField
+              <CustomTextField
                 fullWidth
                 label="ایمیل"
-                variant="outlined"
-                InputLabelProps={{
-                  style: { color: "black", textAlign: "right" }, // Right-align label
-                }}
-                InputProps={{
-                  style: {
-                    color: "black",
-                    backgroundColor: pallete.secondary[200], // Background color of input fields
-                  },
-                }}
+                variant="filled"
                 sx={{
-                  "& label": {
-                    transformOrigin: "right",
-                    left: "inherit",
-                    right: "2rem",
-                    top: "-0.2rem",
-                    overflow: "unset",
-                  },
-                  "& legend": {
-                    textAlign: "right",
-                    display: "flex",
-                    justifyContent: "center",
-                    fontSize: "16px",
-                  },
+                  bgcolor: pallete.secondary[200],
+                  borderRadius: 1,
                 }}
               />
               {/* Verification Link */}
@@ -205,34 +145,13 @@ const Setting: React.FC = () => {
 
             {/* Password */}
             <Grid item xs={12}>
-              <TextField
+              <CustomTextField
                 fullWidth
                 label="رمز عبور"
-                variant="outlined"
-                type="password"
-                InputLabelProps={{
-                  style: { color: "black", textAlign: "right" }, // Right-align label
-                }}
-                InputProps={{
-                  style: {
-                    color: "black",
-                    backgroundColor: pallete.secondary[200], // Background color of input fields
-                  },
-                }}
+                variant="filled"
                 sx={{
-                  "& label": {
-                    transformOrigin: "right",
-                    left: "inherit",
-                    right: "2rem",
-                    top: "-0.2rem",
-                    overflow: "unset",
-                  },
-                  "& legend": {
-                    textAlign: "right",
-                    display: "flex",
-                    justifyContent: "center",
-                    fontSize: "16px",
-                  },
+                  bgcolor: pallete.secondary[200],
+                  borderRadius: 1,
                 }}
               />
             </Grid>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Avatar, Box, Typography, ButtonBase } from "@mui/material";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -18,6 +18,7 @@ const tabs = [
 ];
 
 const Sidebar: React.FC = () => {
+  const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({
     first_name: "",
     last_name: "",
@@ -40,6 +41,20 @@ const Sidebar: React.FC = () => {
 
     fetchUserData();
   }, []);
+
+  const handleClick = async (tab: {
+    name: string;
+    id: number;
+    href: string;
+  }) => {
+    if (tab.id === 5) {
+      localStorage.clear();
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      navigate("/landing"); // Navigate to landing page after clearing localStorage
+    } else {
+      navigate(`/dashboard${tab.href}`); // Navigate to the appropriate tab
+    }
+  };
 
   return (
     <Box
@@ -103,10 +118,10 @@ const Sidebar: React.FC = () => {
       <Box sx={{ width: "100%", paddingX: 2 }}>
         {tabs.map((tab) => {
           const isActive = location.pathname === `/dashboard${tab.href}`;
-
           return (
             <ButtonBase
               key={tab.id}
+              onClick={() => handleClick(tab)} // Pass the full tab object
               sx={{
                 width: "100%", // Ensure the clickable area spans the full width
                 display: "block",
@@ -122,34 +137,24 @@ const Sidebar: React.FC = () => {
                 },
               }}
             >
-              <Link
-                to={`/dashboard${tab.href}`}
-                style={{
-                  textDecoration: "none",
-                  display: "block",
-                  width: "100%",
-                  color: "inherit",
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  paddingY: 2,
+                  paddingX: 3,
                 }}
               >
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    paddingY: 2,
-                    paddingX: 3,
-                  }}
+                <tab.icon
+                  sx={{ color: "white", marginRight: 2, fontSize: 20, ml: 1 }}
+                />
+                <Typography
+                  variant="body1"
+                  sx={{ color: "white", fontSize: 14 }}
                 >
-                  <tab.icon
-                    sx={{ color: "white", marginRight: 2, fontSize: 20, ml: 1 }}
-                  />
-                  <Typography
-                    variant="body1"
-                    sx={{ color: "white", fontSize: 14 }}
-                  >
-                    {tab.name}
-                  </Typography>
-                </Box>
-              </Link>
+                  {tab.name}
+                </Typography>
+              </Box>
             </ButtonBase>
           );
         })}

@@ -1,12 +1,8 @@
 import { Box, Typography } from "@mui/material";
 import { pallete } from "../../../styles/pallete.m";
 import { useEffect, useState } from "react";
-import Tshirt_1 from "../../../assets/Tshirt-1.png";
-import Tshirt_2 from "../../../assets/Tshirt-2.png";
-import Tshirt_3 from "../../../assets/Tshirt-3.png";
 import Cloth from "./cloth";
 import getUserClothes from "../../../api/dashboard/getUserClothes";
-import { ConstantColorFactor } from "three/src/constants.js";
 
 // Define the Clothes interface
 interface Clothes {
@@ -15,16 +11,6 @@ interface Clothes {
   caption?: string;
 }
 
-
-// const clothes = [
-//   { caption: "T-shirt", image: "http://lebasee-backend-production.up.railway.app/media/clothes/1696233043_4013.jpg", id: 1 },
-//   { caption: "T-shirt", image: Tshirt_2, id: 2 },
-//   { caption: "T-shirt", image: Tshirt_3, id: 3 },
-//   { caption: "T-shirt", image: Tshirt_2, id: 4 },
-//   { caption: "T-shirt", image: Tshirt_1, id: 5 },
-//   { caption: "T-shirt", image: Tshirt_3, id: 6 },
-//   { caption: "T-shirt", image: Tshirt_3, id: 7 },
-// ];
 const ShowClothes: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [fadeIn, setFadeIn] = useState(true);

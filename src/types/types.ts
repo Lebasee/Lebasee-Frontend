@@ -7,9 +7,18 @@ export interface User {
     password?: string;
 }
 
+export interface BodyInformation {
+    name: string;
+    id: string;
+    value: number;
+    type: string;
+    min?: number;
+    max?: number;
+}
+
 
 export interface ToastData {
     open: boolean;
     message: string;
     severity: AlertColor;
-  }
+}
