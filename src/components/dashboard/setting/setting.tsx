@@ -1,17 +1,71 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Grid,
-  Typography,
-} from "@mui/material";
-import React from "react";
+import { Avatar, Box, Button, Grid, Typography } from "@mui/material";
+import React, { useState } from "react";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import UserPicture from "../../../assets/user2.jpg";
 import { pallete } from "../../../styles/pallete.m";
 import CustomTextField from "../../base/CustomTextField";
+import putUserName from "../../../api/dashboard/putUserName";
+import { ToastData } from "../../../types/types";
+import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
+import Toast from "../../base/toast";
+import postUserNewPassword from "../../../api/dashboard/postUserNewPassword";
 
 const Setting: React.FC = () => {
+  const [firstName, setFirstName] = useState(localStorage.getItem("firstName"));
+  const [lastName, setLastName] = useState(localStorage.getItem("lastName"));
+  const [newPassword, setNewPassword] = useState(
+    localStorage.getItem("password")
+  );
+  const currentPassword = localStorage.getItem("password");
+  const [email, setEmail] = useState(localStorage.getItem("email"));
+  const [toastData, setToastData] = useState<ToastData>({
+    open: false,
+    message: "",
+    severity: "error",
+  });
+  const navigate = useNavigate();
+
+  const handleSubmit = async () => {
+    try {
+      if (firstName != "" || lastName != "") {
+        const response = await putUserName({
+          first_name: firstName,
+          last_name: lastName,
+        });
+        if (response.status !== 200) {
+          throw new Error();
+        }
+      }
+      if (newPassword != "") {
+        const response = await postUserNewPassword({
+          new_password: newPassword,
+          current_password: currentPassword,
+        });
+        if (response.status !== 200) {
+          throw new Error();
+        }
+      }
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.status === 401) {
+        setToastData({
+          open: true,
+          message: "نشست شما منقضی شده است.",
+          severity: "error",
+        });
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        navigate("/auth/login");
+      } else {
+        setToastData({
+          open: true,
+          message: "خطا در برقراری ارتباط با سرور.",
+          severity: "error",
+        });
+      }
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -83,6 +137,13 @@ const Setting: React.FC = () => {
           </Box>
         </Box>
 
+        <Toast
+          message={toastData.message}
+          open={toastData.open}
+          severity={toastData.severity}
+          onClose={() => setToastData({ ...toastData, open: false })}
+        />
+
         {/* Form Section */}
         <Box
           sx={{
@@ -99,6 +160,8 @@ const Setting: React.FC = () => {
                 fullWidth
                 label="نام"
                 variant="filled"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
                 sx={{
                   bgcolor: pallete.secondary[200],
                   borderRadius: 1,
@@ -110,22 +173,27 @@ const Setting: React.FC = () => {
                 fullWidth
                 label="نام خانوادگی"
                 variant="filled"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
                 sx={{
                   bgcolor: pallete.secondary[200],
                   borderRadius: 1,
                 }}
               />
             </Grid>
-
-            {/* Email */}
             <Grid item xs={12}>
               <CustomTextField
                 fullWidth
                 label="ایمیل"
                 variant="filled"
+                value={email} // Bind to the email state
+                onChange={(e) => setEmail(e.target.value)} // Update the email state on change
                 sx={{
                   bgcolor: pallete.secondary[200],
                   borderRadius: 1,
+                }}
+                inputProps={{
+                  dir: "ltr", // Align content from left-to-right
                 }}
               />
               {/* Verification Link */}
@@ -139,19 +207,23 @@ const Setting: React.FC = () => {
                 }}
                 onClick={() => window.open("https://example.com", "_blank")}
               >
-                ایمیل شما تایید نشده است !
+                ایمیل شما تایید نشده است!
               </Typography>
             </Grid>
 
-            {/* Password */}
             <Grid item xs={12}>
               <CustomTextField
                 fullWidth
                 label="رمز عبور"
                 variant="filled"
+                value={newPassword} // Bind to the newPassword state
+                onChange={(e) => setNewPassword(e.target.value)} // Update the password state on change
                 sx={{
                   bgcolor: pallete.secondary[200],
                   borderRadius: 1,
+                }}
+                inputProps={{
+                  dir: "ltr", // Align content from left-to-right
                 }}
               />
             </Grid>
@@ -177,6 +249,7 @@ const Setting: React.FC = () => {
               <Button
                 variant="contained"
                 color="primary"
+                onClick={() => handleSubmit()}
                 sx={{
                   width: 120, // Increased width
                   backgroundColor: pallete.primary[600], // Background color for ذخیره

@@ -4,7 +4,7 @@ import baseApi from "../baseApi";
 const getUserInfo = async () => {
   try {
     const response = await baseApi.get("/api/users/profile/");
-    localStorage.setItem("active", response.data.is_active ? "yes" : "no");
+    console.log(response);
     return response.data;
   } catch (error) {
     throw error as AxiosError;

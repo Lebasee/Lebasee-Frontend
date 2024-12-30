@@ -19,7 +19,6 @@ const ShowClothes: React.FC = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        console.log("HI");
         const response = await getUserClothes();
         setClothes(response);
       } catch (error) {

@@ -256,6 +256,7 @@ const SignUpForm: React.FC = () => {
         helperText={textFieldError.password && "لطفا رمزعبور مناسب وارد کنید."}
         onChange={(e) => {
           setPassword(e.target.value);
+          localStorage.setItem("password", e.target.value);
           setTextFieldError({
             ...textFieldError,
             password: e.target.value === "",

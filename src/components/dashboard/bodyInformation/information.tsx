@@ -66,7 +66,6 @@ const Information: React.FC = () => {
       setDatas(formattedData);
     } catch (error) {
       const axiosError = error as AxiosError;
-      console.log(axiosError);
       if (axiosError.status === 401) {
         setToastData({
           open: true,

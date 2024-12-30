@@ -6,7 +6,6 @@ const getUserBodyInformationDashboard = async () => {
   try {
     const response = await baseApi.get("/api/physical-attributes/");
     const data = response.data;
-    console.log(data);
     const datas: BodyInformation[] = [
       {
         name: "قد",
