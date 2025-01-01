@@ -7,6 +7,9 @@ const putUserName = async (data: {first_name: string | null, last_name: string |
       first_name: data.first_name,
       last_name: data.last_name
     });
+    console.log(response);
+    localStorage.setItem("firstName", response.data.first_name);
+    localStorage.setItem("lastName", response.data.last_name);
     return response;
   } catch (error) {
     throw error as AxiosError;

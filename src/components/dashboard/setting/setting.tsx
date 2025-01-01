@@ -1,5 +1,5 @@
-import { Avatar, Box, Button, Grid, Typography } from "@mui/material";
-import React, { useState } from "react";
+import { Avatar, Box, Button, Grid, IconButton, InputAdornment, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import UserPicture from "../../../assets/user2.jpg";
 import { pallete } from "../../../styles/pallete.m";
@@ -10,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import Toast from "../../base/toast";
 import postUserNewPassword from "../../../api/dashboard/postUserNewPassword";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 const Setting: React.FC = () => {
   const [firstName, setFirstName] = useState(localStorage.getItem("firstName"));
@@ -24,11 +26,19 @@ const Setting: React.FC = () => {
     message: "",
     severity: "error",
   });
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+  }, []);
 
   const handleSubmit = async () => {
     try {
-      if (firstName != "" || lastName != "") {
+      if (
+        firstName != localStorage.getItem("firstName") ||
+        lastName != localStorage.getItem("lastName")
+      ) {
         const response = await putUserName({
           first_name: firstName,
           last_name: lastName,
@@ -37,7 +47,7 @@ const Setting: React.FC = () => {
           throw new Error();
         }
       }
-      if (newPassword != "") {
+      if (newPassword != currentPassword) {
         const response = await postUserNewPassword({
           new_password: newPassword,
           current_password: currentPassword,
@@ -194,6 +204,7 @@ const Setting: React.FC = () => {
                 }}
                 inputProps={{
                   dir: "ltr", // Align content from left-to-right
+                  readOnly: true,
                 }}
               />
               {/* Verification Link */}
@@ -216,14 +227,31 @@ const Setting: React.FC = () => {
                 fullWidth
                 label="رمز عبور"
                 variant="filled"
+                type={showPassword ? "text" : "password"} // Toggle type based on state
                 value={newPassword} // Bind to the newPassword state
                 onChange={(e) => setNewPassword(e.target.value)} // Update the password state on change
                 sx={{
                   bgcolor: pallete.secondary[200],
                   borderRadius: 1,
                 }}
-                inputProps={{
+                InputProps={{
                   dir: "ltr", // Align content from left-to-right
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                      sx={{
+                        mr:6,
+                      }}
+                        onClick={() => setShowPassword(!showPassword)} // Toggle visibility on click
+                        edge="end"
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                InputLabelProps={{
+                  shrink: true, // Keep the label above the input field
                 }}
               />
             </Grid>
