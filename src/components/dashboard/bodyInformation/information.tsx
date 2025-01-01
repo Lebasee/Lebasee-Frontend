@@ -1,39 +1,87 @@
 import { Box, Grid, Slider, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ModelViewer from "../../base/SketchfabEmbed";
 import { pallete } from "../../../styles/pallete.m";
-
-interface Data {
-  name: string;
-  id: number; // Assuming id is a number as per initialDatas
-  value: number;
-  type: string;
-  min: number;
-  max: number;
-}
-
-const initialDatas: Data[] = [
-  { name: "قد", id: 1, value: 182, type: "سانتی متر", min: 120, max: 210 },
-  { name: "سن", id: 2, value: 32, type: "سال", min: 1, max: 100 },
-  { name: "وزن", id: 3, value: 73, type: "کیلوگرم", min: 30, max: 150 },
-  { name: "عرض شانه", id: 4, value: 40, type: "سانتی متر", min: 30, max: 80 },
-  { name: "قد", id: 10, value: 182, type: "سانتی متر", min: 120, max: 210 },
-  { name: "سن", id: 5, value: 32, type: "سال", min: 1, max: 100 },
-  { name: "وزن", id: 6, value: 73, type: "کیلوگرم", min: 30, max: 150 },
-  { name: "عرض شانه", id: 9, value: 40, type: "سانتی متر", min: 30, max: 80 },
-  { name: "قد", id: 7, value: 182, type: "سانتی متر", min: 120, max: 210 },
-  { name: "سن", id: 8, value: 32, type: "سال", min: 1, max: 100 },
-];
+import { toPersianNumber } from "../../../utils/toPersianNumber";
+import getUserBodyInformation from "../../../api/dashboard/getUserBodyInformation";
+import patchUserBodyInformation from "../../../api/dashboard/patchUserBodyInformation";
+import { BodyInformation, ToastData } from "../../../types/types";
+import { AxiosError } from "axios";
+import Toast from "../../base/toast";
+import { useNavigate } from "react-router-dom";
 
 const Information: React.FC = () => {
-  const [datas, setDatas] = useState<Data[]>(initialDatas); // State with typed data array
+  const [datas, setDatas] = useState<BodyInformation[]>([]);
+  const navigate = useNavigate();
+  const [toastData, setToastData] = useState<ToastData>({
+    open: false,
+    message: "",
+    severity: "error",
+  });
 
-  const handleSliderChange = (id: number, newValue: number) => {
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await getUserBodyInformation();
+        const formattedData = response.map((data: BodyInformation) => ({
+          ...data,
+          value: Number(data.value), // Ensure value is a number, fallback to min
+        }));
+        setDatas(formattedData);
+      } catch (error) {
+        const axiosError = error as AxiosError;
+        if (axiosError.status === 401) {
+          setToastData({
+            open: true,
+            message: "نشست شما منقضی شده است.",
+            severity: "error",
+          });
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          navigate("/auth/login");
+        } else {
+          setToastData({
+            open: true,
+            message: "خطا در برقراری ارتباط با سرور.",
+            severity: "error",
+          });
+        }
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  const handleSliderChange = async (id: string, newValue: number) => {
     setDatas((prevDatas) =>
       prevDatas.map((data) =>
         data.id === id ? { ...data, value: newValue } : data
       )
     );
+    try {
+      const response = await patchUserBodyInformation({ id, newValue }); // Post the updated value
+      const formattedData = response.map((data) => ({
+        ...data,
+        value: Number(data.value), // Ensure value is a number, fallback to min
+      }));
+      setDatas(formattedData);
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.status === 401) {
+        setToastData({
+          open: true,
+          message: "نشست شما منقضی شده است.",
+          severity: "error",
+        });
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        navigate("/auth/login");
+      } else {
+        setToastData({
+          open: true,
+          message: "خطا در برقراری ارتباط با سرور.",
+          severity: "error",
+        });
+      }
+    }
   };
 
   return (
@@ -46,7 +94,7 @@ const Information: React.FC = () => {
         width: "100%",
       }}
     >
-      <Box // right part
+      <Box
         sx={{
           width: "100%",
           maxWidth: 600,
@@ -64,21 +112,20 @@ const Information: React.FC = () => {
           sx={{
             overflowX: "hidden",
             height: "calc(100vh - 20rem)",
-            overflowY: "scroll", // Enable vertical scrolling
-            "&::-webkit-scrollbar": {
-              display: "none", // Hide scrollbar in WebKit browsers
-            },
-            "-ms-overflow-style": "none", // Hide scrollbar in IE and Edge
-            "scrollbar-width": "none", // Hide scrollbar in Firefox
+            overflowY: "scroll",
+            "&::-webkit-scrollbar": { display: "none" },
+            "-ms-overflow-style": "none",
+            "scrollbar-width": "none",
           }}
         >
+          <Toast
+            message={toastData.message}
+            open={toastData.open}
+            severity={toastData.severity}
+            onClose={() => setToastData({ ...toastData, open: false })}
+          />
           {datas.map((data) => (
-            <Box
-              sx={{
-                mb: 3,
-              }}
-              key={data.id}
-            >
+            <Box key={data.id} sx={{ mb: 3 }}>
               <Grid container spacing={2} alignItems="center">
                 <Grid item xs={6}>
                   <Box
@@ -90,7 +137,7 @@ const Information: React.FC = () => {
                   >
                     <Typography color="white">{data.name}</Typography>
                     <Typography noWrap color="white">
-                      {data.value} {data.type}
+                      {toPersianNumber(data.value)} {data.type}
                     </Typography>
                   </Box>
                   <Slider
@@ -100,8 +147,9 @@ const Information: React.FC = () => {
                     step={1}
                     onChange={(_, newValue) =>
                       handleSliderChange(data.id, newValue as number)
-                    } // Type assertion for newValue
+                    }
                     sx={{
+                      mr: 2,
                       color: pallete.primary[400],
                       width: "30rem",
                       "& .MuiSlider-thumb": {
@@ -112,9 +160,7 @@ const Information: React.FC = () => {
                         },
                         transform: "translateX(8px) translateY(-8px)",
                       },
-                      "& .MuiSlider-track": {
-                        border: "none",
-                      },
+                      "& .MuiSlider-track": { border: "none" },
                       "& .MuiSlider-rail": {
                         backgroundColor: "white",
                         opacity: 0.8,
@@ -122,14 +168,13 @@ const Information: React.FC = () => {
                     }}
                   />
                 </Grid>
-                <Grid item xs={2}></Grid>
               </Grid>
             </Box>
           ))}
         </Grid>
       </Box>
 
-      <Box // left part
+      <Box
         sx={{
           display: "flex",
           height: "100%",

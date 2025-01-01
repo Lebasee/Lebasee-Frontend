@@ -2,16 +2,25 @@ import { Box, Grid, Typography } from "@mui/material";
 import { pallete } from "../../../styles/pallete.m";
 import ShowClothes from "./showClothes";
 import ModelViewer from "../../base/SketchfabEmbed";
-
-
-const datas = [
-  { name: "قد", id: 1, value: "182", type: "سانتی متر" },
-  { name: "سن", id: 1, value: "32", type: "سال" },
-  { name: "وزن", id: 1, value: "73", type: "کیلوگرم" },
-  { name: "عرض شانه", id: 1, value: "40", type: "سانتی متر" },
-];
+import { useEffect, useState } from "react";
+import getUserBodyInformationDashboard from "../../../api/dashboard/getUserBodyInformationDashboard";
+import { BodyInformation } from "../../../types/types";
 
 const MainDashboard: React.FC = () => {
+  const [datas, setDatas] = useState<BodyInformation[]>([]);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await getUserBodyInformationDashboard();
+        setDatas(response);
+      } catch (error) {
+        console.error("Error fetching user information:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   return (
     <Box
       sx={{

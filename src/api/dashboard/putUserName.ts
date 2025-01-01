@@ -1,17 +1,19 @@
 import { AxiosError } from "axios";
-import { User } from "../../types/types";
 import baseApi from "../baseApi";
 
-export const Signup = async (user: User) => {
+const putUserName = async (data: {first_name: string | null, last_name: string | null}) => {
   try {
-    const response = await baseApi.post("/api/signup", user);
+    const response = await baseApi.put("/api/users/profile/", {
+      first_name: data.first_name,
+      last_name: data.last_name
+    });
+    console.log(response);
     localStorage.setItem("firstName", response.data.first_name);
     localStorage.setItem("lastName", response.data.last_name);
-    localStorage.setItem("email", response.data.email);
     return response;
   } catch (error) {
     throw error as AxiosError;
   }
 };
 
-export default Signup;
+export default putUserName;

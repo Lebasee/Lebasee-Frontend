@@ -13,7 +13,6 @@ import MainDashboard from "./components/dashboard/mainDashboard/mainDashboard";
 import Information from "./components/dashboard/bodyInformation/information";
 import Setting from "./components/dashboard/setting/setting";
 import Clothes from "./components/dashboard/clothes/clothes";
-import Logout from "./components/dashboard/logout/logout";
 import HomePage from "./pages/home";
 
 const router = createBrowserRouter([
@@ -42,7 +41,6 @@ const router = createBrowserRouter([
       { path: "info", element: <Information /> },
       { path: "clothes", element: <Clothes /> },
       { path: "setting", element: <Setting /> },
-      { path: "logout", element: <Logout /> },
     ],
   },
   {

@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, Box, Typography, ButtonBase } from "@mui/material";
-import { Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccessibilityIcon from "@mui/icons-material/Accessibility";
 import CheckroomIcon from "@mui/icons-material/Checkroom";
 import UserPicture from "../../../assets/user2.jpg";
+import getUserInfo from "../../../api/dashboard/getUserInfo";
 
 const tabs = [
   { name: "داشبود", id: 1, icon: DashboardIcon, href: "" },
@@ -17,6 +18,44 @@ const tabs = [
 ];
 
 const Sidebar: React.FC = () => {
+  const navigate = useNavigate();
+  const [userInfo, setUserInfo] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+  });
+
+  const location = useLocation();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await getUserInfo();
+        const { first_name, last_name } = response;
+        const email = localStorage.getItem("email") || "";
+        setUserInfo({ first_name, last_name, email });
+      } catch (error) {
+        console.error("Error fetching user information:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  const handleClick = async (tab: {
+    name: string;
+    id: number;
+    href: string;
+  }) => {
+    if (tab.id === 5) {
+      localStorage.clear();
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      navigate("/landing"); // Navigate to landing page after clearing localStorage
+    } else {
+      navigate(`/dashboard${tab.href}`); // Navigate to the appropriate tab
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -62,7 +101,7 @@ const Sidebar: React.FC = () => {
           marginTop: 1,
         }}
       >
-        غلام رضا غلامی
+        {userInfo.first_name || "کاربر"} {userInfo.last_name || "ناشناس"}
       </Typography>
       <Typography
         variant="caption"
@@ -72,34 +111,30 @@ const Sidebar: React.FC = () => {
           marginBottom: "32px",
         }}
       >
-        mamarezatajik@gmail.com
+        {userInfo.email || "ایمیل نامشخص"}
       </Typography>
 
       {/* Dynamic Tab Components */}
       <Box sx={{ width: "100%", paddingX: 2 }}>
-        {tabs.map((tab) => (
-          <ButtonBase
-            key={tab.id}
-            sx={{
-              width: "100%", // Ensure the clickable area spans the full width
-              display: "block",
-              textAlign: "left", // Align the text to the left
-              borderRadius: "8px", // Apply rounded corners to the entire button
-              "&:hover": {
-                backgroundColor: "#34495e",
-              },
-              "&:active": {
-                transform: "scale(0.95)", // Scale down slightly on click
-              },
-            }}
-          >
-            <Link
-              to={`/dashboard${tab.href}`}
-              style={{
-                textDecoration: "none",
+        {tabs.map((tab) => {
+          const isActive = location.pathname === `/dashboard${tab.href}`;
+          return (
+            <ButtonBase
+              key={tab.id}
+              onClick={() => handleClick(tab)} // Pass the full tab object
+              sx={{
+                width: "100%", // Ensure the clickable area spans the full width
                 display: "block",
-                width: "100%",
-                color: "inherit",
+                textAlign: "left", // Align the text to the left
+                borderRadius: "8px", // Apply rounded corners to the entire button
+                mt: 1,
+                backgroundColor: isActive ? "#2c3e50" : "transparent",
+                "&:hover": {
+                  backgroundColor: "#34495e",
+                },
+                "&:active": {
+                  transform: "scale(0.95)", // Scale down slightly on click
+                },
               }}
             >
               <Box
@@ -120,9 +155,9 @@ const Sidebar: React.FC = () => {
                   {tab.name}
                 </Typography>
               </Box>
-            </Link>
-          </ButtonBase>
-        ))}
+            </ButtonBase>
+          );
+        })}
       </Box>
     </Box>
   );

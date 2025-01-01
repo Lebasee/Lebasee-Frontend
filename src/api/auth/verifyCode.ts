@@ -6,7 +6,6 @@ const VerifyCode = async (verificationCode: string) => {
     const response = await baseApi.post("/api/auth/verify_code/", {
       verification_code: verificationCode,
     });
-
     return response;
   } catch (error) {
     throw error as AxiosError;

@@ -1,17 +1,81 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Grid,
-  TextField,
-  Typography,
-} from "@mui/material";
-import React from "react";
+import { Avatar, Box, Button, Grid, IconButton, InputAdornment, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import UserPicture from "../../../assets/user2.jpg";
 import { pallete } from "../../../styles/pallete.m";
+import CustomTextField from "../../base/CustomTextField";
+import putUserName from "../../../api/dashboard/putUserName";
+import { ToastData } from "../../../types/types";
+import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
+import Toast from "../../base/toast";
+import postUserNewPassword from "../../../api/dashboard/postUserNewPassword";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 const Setting: React.FC = () => {
+  const [firstName, setFirstName] = useState(localStorage.getItem("firstName"));
+  const [lastName, setLastName] = useState(localStorage.getItem("lastName"));
+  const [newPassword, setNewPassword] = useState(
+    localStorage.getItem("password")
+  );
+  const currentPassword = localStorage.getItem("password");
+  const [email, setEmail] = useState(localStorage.getItem("email"));
+  const [toastData, setToastData] = useState<ToastData>({
+    open: false,
+    message: "",
+    severity: "error",
+  });
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+  }, []);
+
+  const handleSubmit = async () => {
+    try {
+      if (
+        firstName != localStorage.getItem("firstName") ||
+        lastName != localStorage.getItem("lastName")
+      ) {
+        const response = await putUserName({
+          first_name: firstName,
+          last_name: lastName,
+        });
+        if (response.status !== 200) {
+          throw new Error();
+        }
+      }
+      if (newPassword != currentPassword) {
+        const response = await postUserNewPassword({
+          new_password: newPassword,
+          current_password: currentPassword,
+        });
+        if (response.status !== 200) {
+          throw new Error();
+        }
+      }
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.status === 401) {
+        setToastData({
+          open: true,
+          message: "نشست شما منقضی شده است.",
+          severity: "error",
+        });
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        navigate("/auth/login");
+      } else {
+        setToastData({
+          open: true,
+          message: "خطا در برقراری ارتباط با سرور.",
+          severity: "error",
+        });
+      }
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -83,6 +147,13 @@ const Setting: React.FC = () => {
           </Box>
         </Box>
 
+        <Toast
+          message={toastData.message}
+          open={toastData.open}
+          severity={toastData.severity}
+          onClose={() => setToastData({ ...toastData, open: false })}
+        />
+
         {/* Form Section */}
         <Box
           sx={{
@@ -95,97 +166,45 @@ const Setting: React.FC = () => {
           <Grid container spacing={2}>
             {/* First Name and Last Name in a row */}
             <Grid item xs={6}>
-              <TextField
+              <CustomTextField
                 fullWidth
                 label="نام"
-                variant="outlined"
-                InputLabelProps={{
-                  style: { color: "black", textAlign: "right" }, // Right-align label
-                }}
-                InputProps={{
-                  style: {
-                    color: "black", // Input text color
-                    backgroundColor: pallete.secondary[200], // Background color of input fields
-                  },
-                }}
+                variant="filled"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
                 sx={{
-                  "& label": {
-                    transformOrigin: "right",
-                    left: "inherit",
-                    right: "2rem",
-                    top: "-0.2rem",
-                    overflow: "unset",
-                  },
-                  "& legend": {
-                    textAlign: "right",
-                    display: "flex",
-                    justifyContent: "center",
-                    fontSize: "16px",
-                  },
+                  bgcolor: pallete.secondary[200],
+                  borderRadius: 1,
                 }}
               />
             </Grid>
             <Grid item xs={6}>
-              <TextField
+              <CustomTextField
                 fullWidth
                 label="نام خانوادگی"
-                variant="outlined"
-                InputLabelProps={{
-                  style: { color: "black", textAlign: "right" }, // Right-align label
-                }}
-                InputProps={{
-                  style: {
-                    color: "black",
-                    backgroundColor: pallete.secondary[200], // Background color of input fields
-                  },
-                }}
+                variant="filled"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
                 sx={{
-                  "& label": {
-                    transformOrigin: "right",
-                    left: "inherit",
-                    right: "2rem",
-                    top: "-0.2rem",
-                    overflow: "unset",
-                  },
-                  "& legend": {
-                    textAlign: "right",
-                    display: "flex",
-                    justifyContent: "center",
-                    fontSize: "16px",
-                  },
+                  bgcolor: pallete.secondary[200],
+                  borderRadius: 1,
                 }}
               />
             </Grid>
-
-            {/* Email */}
             <Grid item xs={12}>
-              <TextField
+              <CustomTextField
                 fullWidth
                 label="ایمیل"
-                variant="outlined"
-                InputLabelProps={{
-                  style: { color: "black", textAlign: "right" }, // Right-align label
-                }}
-                InputProps={{
-                  style: {
-                    color: "black",
-                    backgroundColor: pallete.secondary[200], // Background color of input fields
-                  },
-                }}
+                variant="filled"
+                value={email} // Bind to the email state
+                onChange={(e) => setEmail(e.target.value)} // Update the email state on change
                 sx={{
-                  "& label": {
-                    transformOrigin: "right",
-                    left: "inherit",
-                    right: "2rem",
-                    top: "-0.2rem",
-                    overflow: "unset",
-                  },
-                  "& legend": {
-                    textAlign: "right",
-                    display: "flex",
-                    justifyContent: "center",
-                    fontSize: "16px",
-                  },
+                  bgcolor: pallete.secondary[200],
+                  borderRadius: 1,
+                }}
+                inputProps={{
+                  dir: "ltr", // Align content from left-to-right
+                  readOnly: true,
                 }}
               />
               {/* Verification Link */}
@@ -199,40 +218,40 @@ const Setting: React.FC = () => {
                 }}
                 onClick={() => window.open("https://example.com", "_blank")}
               >
-                ایمیل شما تایید نشده است !
+                ایمیل شما تایید نشده است!
               </Typography>
             </Grid>
 
-            {/* Password */}
             <Grid item xs={12}>
-              <TextField
+              <CustomTextField
                 fullWidth
                 label="رمز عبور"
-                variant="outlined"
-                type="password"
-                InputLabelProps={{
-                  style: { color: "black", textAlign: "right" }, // Right-align label
+                variant="filled"
+                type={showPassword ? "text" : "password"} // Toggle type based on state
+                value={newPassword} // Bind to the newPassword state
+                onChange={(e) => setNewPassword(e.target.value)} // Update the password state on change
+                sx={{
+                  bgcolor: pallete.secondary[200],
+                  borderRadius: 1,
                 }}
                 InputProps={{
-                  style: {
-                    color: "black",
-                    backgroundColor: pallete.secondary[200], // Background color of input fields
-                  },
+                  dir: "ltr", // Align content from left-to-right
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                      sx={{
+                        mr:6,
+                      }}
+                        onClick={() => setShowPassword(!showPassword)} // Toggle visibility on click
+                        edge="end"
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
                 }}
-                sx={{
-                  "& label": {
-                    transformOrigin: "right",
-                    left: "inherit",
-                    right: "2rem",
-                    top: "-0.2rem",
-                    overflow: "unset",
-                  },
-                  "& legend": {
-                    textAlign: "right",
-                    display: "flex",
-                    justifyContent: "center",
-                    fontSize: "16px",
-                  },
+                InputLabelProps={{
+                  shrink: true, // Keep the label above the input field
                 }}
               />
             </Grid>
@@ -258,6 +277,7 @@ const Setting: React.FC = () => {
               <Button
                 variant="contained"
                 color="primary"
+                onClick={() => handleSubmit()}
                 sx={{
                   width: 120, // Increased width
                   backgroundColor: pallete.primary[600], // Background color for ذخیره

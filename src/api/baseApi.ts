@@ -14,10 +14,8 @@ const baseApi = axios.create({
     "Content-Type": "application/json",
 
     Authorization: token ? `Bearer ${token}` : null,
-
   },
 });
-
 
 baseApi.interceptors.response.use(
   (response) => response,
