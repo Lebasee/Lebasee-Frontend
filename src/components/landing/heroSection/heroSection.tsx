@@ -3,10 +3,10 @@ import React from "react";
 // import { pallete } from "../../../styles/pallete.m";
 import ModelViewer from "../../base/SketchfabEmbed";
 
-
 const HeroSection: React.FC = () => {
   return (
     <Box
+      data-testid="hero-section"
       sx={{
         mt: "105px",
         display: "flex",
@@ -52,14 +52,14 @@ const HeroSection: React.FC = () => {
         }}
       >
         <Box
-              sx={{
-                mb: -12,
-                height: 500,
-                width: 400,
-              }}
-            >
-              <ModelViewer />
-            </Box>
+          sx={{
+            mb: -12,
+            height: 500,
+            width: 400,
+          }}
+        >
+          <ModelViewer />
+        </Box>
         {/* <Box
           bgcolor={pallete.secondary[50]}
           width="415px"

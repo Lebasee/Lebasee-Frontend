@@ -14,6 +14,7 @@ const steps = [
 const Tutorial: React.FC = () => {
   return (
     <Box
+      data-testid="tutorial"
       sx={{
         maxWidth: "1063px",
         width: "100%",

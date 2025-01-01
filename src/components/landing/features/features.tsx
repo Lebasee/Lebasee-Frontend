@@ -23,6 +23,7 @@ const Features: React.FC = () => {
         مزایا و ویژگی ها
       </Typography>
       <Box
+        data-testid="features"
         sx={{
           display: "flex",
           alignItems: "center",
