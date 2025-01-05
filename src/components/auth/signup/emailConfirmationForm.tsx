@@ -57,6 +57,7 @@ const EmailConfirmationForm: React.FC = () => {
       const response = await VerifyCode(parsedCode);
 
       if (response?.status == 200) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         setToastData({
           open: true,
           message: "ایمیل با موفقیت تایید شد.",

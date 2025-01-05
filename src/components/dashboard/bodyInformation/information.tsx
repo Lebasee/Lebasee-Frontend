@@ -1,6 +1,5 @@
+import React, { useEffect, useState, useCallback } from "react";
 import { Box, Grid, Slider, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import ModelViewer from "../../base/SketchfabEmbed";
 import { pallete } from "../../../styles/pallete.m";
 import { toPersianNumber } from "../../../utils/toPersianNumber";
 import getUserBodyInformation from "../../../api/dashboard/getUserBodyInformation";
@@ -9,7 +8,9 @@ import { BodyInformation, ToastData } from "../../../types/types";
 import { AxiosError } from "axios";
 import Toast from "../../base/toast";
 import { useNavigate } from "react-router-dom";
-
+import ModelViewer from "../../base/SketchfabEmbed";
+import debounce from "lodash.debounce"; // Install lodash if not already
+``
 const Information: React.FC = () => {
   const [datas, setDatas] = useState<BodyInformation[]>([]);
   const navigate = useNavigate();
@@ -39,6 +40,7 @@ const Information: React.FC = () => {
           await new Promise((resolve) => setTimeout(resolve, 2000));
           navigate("/auth/login");
         } else {
+          await new Promise((resolve) => setTimeout(resolve, 1500));
           setToastData({
             open: true,
             message: "خطا در برقراری ارتباط با سرور.",
@@ -51,37 +53,47 @@ const Information: React.FC = () => {
     fetchUserData();
   }, []);
 
-  const handleSliderChange = async (id: string, newValue: number) => {
+  const debouncedApiCall = useCallback(
+    debounce(async (id: string, newValue: number) => {
+      try {
+        const response = await patchUserBodyInformation({ id, newValue });
+        const formattedData = response.map((data: BodyInformation) => ({
+          ...data,
+          value: Number(data.value),
+        }));
+        setDatas(formattedData);
+      } catch (error) {
+        const axiosError = error as AxiosError;
+        if (axiosError.status === 401) {
+          setToastData({
+            open: true,
+            message: "نشست شما منقضی شده است.",
+            severity: "error",
+          });
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          navigate("/auth/login");
+        } else {
+          setToastData({
+            open: true,
+            message: "خطا در برقراری ارتباط با سرور.",
+            severity: "error",
+          });
+        }
+      }
+    }, 500), // Debounce delay: 500ms
+    []
+  );
+
+  const handleSliderChange = (id: string, newValue: number) => {
+    // Update the local state immediately
     setDatas((prevDatas) =>
       prevDatas.map((data) =>
         data.id === id ? { ...data, value: newValue } : data
       )
     );
-    try {
-      const response = await patchUserBodyInformation({ id, newValue }); // Post the updated value
-      const formattedData = response.map((data) => ({
-        ...data,
-        value: Number(data.value), // Ensure value is a number, fallback to min
-      }));
-      setDatas(formattedData);
-    } catch (error) {
-      const axiosError = error as AxiosError;
-      if (axiosError.status === 401) {
-        setToastData({
-          open: true,
-          message: "نشست شما منقضی شده است.",
-          severity: "error",
-        });
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        navigate("/auth/login");
-      } else {
-        setToastData({
-          open: true,
-          message: "خطا در برقراری ارتباط با سرور.",
-          severity: "error",
-        });
-      }
-    }
+
+    // Trigger the debounced API call
+    debouncedApiCall(id, newValue);
   };
 
   return (

@@ -6,7 +6,7 @@ const postUserNewPassword = async (data: {
   current_password: string | null;
 }) => {
   try {
-    const response = await baseApi.post("/api/auth/users/set_password", {
+    const response = await baseApi.post("/api/auth/users/set_password/", {
       new_password: data.new_password,
       current_password: data.current_password,
     });
