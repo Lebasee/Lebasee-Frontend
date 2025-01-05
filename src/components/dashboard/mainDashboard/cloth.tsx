@@ -31,7 +31,6 @@ const Cloth: React.FC<ClothesProps> = ({ caption, image, fadeIn }) => {
           borderRadius: 3,
           overflow: "hidden",
           zIndex: 1,
-          // bgcolor: 'blue',
         }}
       >
         <img

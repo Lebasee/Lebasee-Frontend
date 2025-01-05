@@ -96,6 +96,7 @@ const SignUpForm: React.FC = () => {
 
       const response = await SignUp(user);
       if (response?.status == 201) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         setToastData({
           open: true,
           message: "ثبت‌‌نام موفقیت آمیز بود",

@@ -1,4 +1,12 @@
-import { Avatar, Box, Button, Grid, IconButton, InputAdornment, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Typography,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import UserPicture from "../../../assets/user2.jpg";
@@ -12,10 +20,12 @@ import Toast from "../../base/toast";
 import postUserNewPassword from "../../../api/dashboard/postUserNewPassword";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import getUserInfo from "../../../api/dashboard/getUserInfo";
 
 const Setting: React.FC = () => {
   const [firstName, setFirstName] = useState(localStorage.getItem("firstName"));
   const [lastName, setLastName] = useState(localStorage.getItem("lastName"));
+  const [profileImage, setProfileImage] = useState("");
   const [newPassword, setNewPassword] = useState(
     localStorage.getItem("password")
   );
@@ -31,34 +41,55 @@ const Setting: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await getUserInfo();
+        const { first_name, last_name, profile_image } = response;
+        setFirstName(first_name);
+        setLastName(last_name);
+        setProfileImage(
+          `https://lebasee-backend-production.up.railway.app/${profile_image}`
+        );
+      } catch (error) {
+        console.error("Error fetching user information:", error);
+      }
+    };
+
+    fetchUserData();
   }, []);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (operation: number) => {
     try {
-      if (
-        firstName != localStorage.getItem("firstName") ||
-        lastName != localStorage.getItem("lastName")
-      ) {
-        const response = await putUserName({
-          first_name: firstName,
-          last_name: lastName,
-        });
-        if (response.status !== 200) {
-          throw new Error();
-        }
+      if (operation === 0) {
+        window.location.reload();
+        return;
+      }
+      const response = await putUserName({
+        first_name: firstName ?? "",
+        last_name: lastName ?? "",
+      });
+      if (response.status !== 200) {
+        throw new Error();
       }
       if (newPassword != currentPassword) {
-        const response = await postUserNewPassword({
-          new_password: newPassword,
-          current_password: currentPassword,
+        const response = await putUserName({
+          password: newPassword,
         });
         if (response.status !== 200) {
           throw new Error();
         }
+        localStorage.setItem("password", newPassword ?? "");
       }
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setToastData({
+        open: true,
+        message: "اطلاعات شما با موفقیت به روز شد.",
+        severity: "success",
+      });
     } catch (error) {
       const axiosError = error as AxiosError;
       if (axiosError.status === 401) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         setToastData({
           open: true,
           message: "نشست شما منقضی شده است.",
@@ -67,12 +98,56 @@ const Setting: React.FC = () => {
         await new Promise((resolve) => setTimeout(resolve, 2000));
         navigate("/auth/login");
       } else {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         setToastData({
           open: true,
           message: "خطا در برقراری ارتباط با سرور.",
           severity: "error",
         });
       }
+    }
+  };
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("profile_image", file); // Ensure "profile_image" matches the backend key.
+
+      try {
+        const response = await putUserName(formData); // Pass FormData to the API
+        if (response?.status === 200) {
+          // Revoke the previous object URL to release memory
+          if (profileImage) {
+            URL.revokeObjectURL(profileImage);
+          }
+
+          // Update the profile picture preview
+          const newImageURL = URL.createObjectURL(file);
+          setProfileImage(newImageURL);
+          setToastData({
+            open: true,
+            message: "تصویر پروفایل با موفقیت به‌روز شد.",
+            severity: "success",
+          });
+        } else {
+          throw new Error("Failed to update the profile image.");
+        }
+      } catch (error) {
+        console.error("Error uploading profile picture:", error);
+        setToastData({
+          open: true,
+          message: "خطا در آپلود تصویر پروفایل.",
+          severity: "error",
+        });
+      } finally {
+        // Reset the file input value
+        event.target.value = "";
+      }
+    } else {
+      console.log("Failed to update the profile");
     }
   };
 
@@ -104,6 +179,7 @@ const Setting: React.FC = () => {
           تنظیمات
         </Typography>
 
+        {/* Profile Picture Section */}
         <Box>
           <Avatar
             sx={{
@@ -115,13 +191,13 @@ const Setting: React.FC = () => {
               zIndex: 0,
               position: "relative",
             }}
-            src={UserPicture}
+            src={profileImage}
           />
           <Box
             sx={{
-              position: "absolute",
-              top: "75%",
-              left: "75%",
+              // position: "absolute",
+              // top: "75%",
+              // left: "75%",
               transform: "translate(-50%, -50%)",
               zIndex: 1,
               backgroundColor: pallete.primary[500],
@@ -131,19 +207,33 @@ const Setting: React.FC = () => {
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
-              mt: -47.5,
-              ml: -52,
+              mt: -1.5,
+              mr: "54%",
               borderRadius: 1.5,
+              transition: "background-color 0.3s ease",
+              "&:hover": {
+                backgroundColor: pallete.primary[700], // Change background on hover
+              },
             }}
-            onClick={() => console.log("Edit icon clicked!")}
           >
-            <ModeEditOutlinedIcon
-              sx={{
-                color: "black",
-                width: 25,
-                height: 25,
-              }}
-            />
+            <label htmlFor="upload-profile-picture">
+              <input
+                id="upload-profile-picture"
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={handleFileChange}
+              />
+              <ModeEditOutlinedIcon
+                sx={{
+                  mt: 1,
+                  color: "black",
+                  cursor: "pointer",
+                  width: 25,
+                  height: 25,
+                }}
+              />
+            </label>
           </Box>
         </Box>
 
@@ -173,8 +263,15 @@ const Setting: React.FC = () => {
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 sx={{
+                  "& .MuiInputBase-input": {
+                    ml: 3,
+                  },
                   bgcolor: pallete.secondary[200],
                   borderRadius: 1,
+                }}
+                inputProps={{
+                  dir: "ltr", // Align content from left-to-right
+                  // readOnly: true, // Make the input read-only
                 }}
               />
             </Grid>
@@ -184,10 +281,19 @@ const Setting: React.FC = () => {
                 label="نام خانوادگی"
                 variant="filled"
                 value={lastName}
+                // placeholder="توضیحات مربوط به لباس جدید را وارد کنید"
                 onChange={(e) => setLastName(e.target.value)}
+                multiline
                 sx={{
                   bgcolor: pallete.secondary[200],
                   borderRadius: 1,
+                  "& .MuiInputBase-input": {
+                    ml: 3,
+                  },
+                }}
+                inputProps={{
+                  dir: "ltr", // Align content from left-to-right
+                  // readOnly: true, // Make the input read-only
                 }}
               />
             </Grid>
@@ -196,17 +302,23 @@ const Setting: React.FC = () => {
                 fullWidth
                 label="ایمیل"
                 variant="filled"
-                value={email} // Bind to the email state
-                onChange={(e) => setEmail(e.target.value)} // Update the email state on change
+                value={email}
+                // placeholder="توضیحات مربوط به لباس جدید را وارد کنید"
+                onChange={(e) => setEmail(e.target.value)}
+                multiline
                 sx={{
+                  "& .MuiInputBase-input": {
+                    ml: 3,
+                  },
                   bgcolor: pallete.secondary[200],
                   borderRadius: 1,
                 }}
                 inputProps={{
                   dir: "ltr", // Align content from left-to-right
-                  readOnly: true,
+                  readOnly: true, // Make the input read-only
                 }}
               />
+
               {/* Verification Link */}
               <Typography
                 variant="body2"
@@ -233,15 +345,18 @@ const Setting: React.FC = () => {
                 sx={{
                   bgcolor: pallete.secondary[200],
                   borderRadius: 1,
+                  "& .MuiInputBase-input": {
+                    ml: 3,
+                  },
                 }}
                 InputProps={{
                   dir: "ltr", // Align content from left-to-right
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
-                      sx={{
-                        mr:6,
-                      }}
+                        sx={{
+                          mr: 6,
+                        }}
                         onClick={() => setShowPassword(!showPassword)} // Toggle visibility on click
                         edge="end"
                       >
@@ -265,6 +380,7 @@ const Setting: React.FC = () => {
               <Button
                 variant="outlined"
                 color="secondary"
+                onClick={() => handleSubmit(0)}
                 sx={{
                   width: 120, // Increased width
                   color: "black", // Text color
@@ -277,7 +393,7 @@ const Setting: React.FC = () => {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => handleSubmit()}
+                onClick={() => handleSubmit(1)}
                 sx={{
                   width: 120, // Increased width
                   backgroundColor: pallete.primary[600], // Background color for ذخیره

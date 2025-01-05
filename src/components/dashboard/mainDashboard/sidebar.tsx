@@ -6,7 +6,6 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccessibilityIcon from "@mui/icons-material/Accessibility";
 import CheckroomIcon from "@mui/icons-material/Checkroom";
-import UserPicture from "../../../assets/user2.jpg";
 import getUserInfo from "../../../api/dashboard/getUserInfo";
 
 const tabs = [
@@ -19,11 +18,10 @@ const tabs = [
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
-  const [userInfo, setUserInfo] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
-  });
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const email = localStorage.getItem("email");
+    const [profileImage, setProfileImage] = useState("");
 
   const location = useLocation();
 
@@ -31,15 +29,25 @@ const Sidebar: React.FC = () => {
     const fetchUserData = async () => {
       try {
         const response = await getUserInfo();
-        const { first_name, last_name } = response;
-        const email = localStorage.getItem("email") || "";
-        setUserInfo({ first_name, last_name, email });
+        const { first_name, last_name, profile_image } = response;
+        setFirstName(first_name);
+        setLastName(last_name);
+        setProfileImage(`https://lebasee-backend-production.up.railway.app/${profile_image}`);
       } catch (error) {
         console.error("Error fetching user information:", error);
       }
     };
-
+  
+    // Initial fetch
     fetchUserData();
+  
+    // Set interval to fetch data every 10 seconds
+    const intervalId = setInterval(fetchUserData, 10000);
+  
+    // Cleanup the interval on component unmount
+    return () => {
+      clearInterval(intervalId);
+    };
   }, []);
 
   const handleClick = async (tab: {
@@ -49,7 +57,7 @@ const Sidebar: React.FC = () => {
   }) => {
     if (tab.id === 5) {
       localStorage.clear();
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       navigate("/landing"); // Navigate to landing page after clearing localStorage
     } else {
       navigate(`/dashboard${tab.href}`); // Navigate to the appropriate tab
@@ -82,7 +90,7 @@ const Sidebar: React.FC = () => {
 
       {/* User Avatar Section */}
       <Avatar
-        src={UserPicture}
+        src={profileImage}
         alt="User Avatar"
         sx={{
           mt: 7,
@@ -101,7 +109,7 @@ const Sidebar: React.FC = () => {
           marginTop: 1,
         }}
       >
-        {userInfo.first_name || "کاربر"} {userInfo.last_name || "ناشناس"}
+        {firstName || "کاربر"} {lastName || "ناشناس"}
       </Typography>
       <Typography
         variant="caption"
@@ -111,7 +119,7 @@ const Sidebar: React.FC = () => {
           marginBottom: "32px",
         }}
       >
-        {userInfo.email || "ایمیل نامشخص"}
+        {email || "ایمیل نامشخص"}
       </Typography>
 
       {/* Dynamic Tab Components */}
