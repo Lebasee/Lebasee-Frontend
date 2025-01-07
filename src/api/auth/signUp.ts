@@ -4,6 +4,7 @@ import baseApi from "../baseApi";
 
 export const Signup = async (user: User) => {
   try {
+    localStorage.clear();
     const response = await baseApi.post("/api/signup", user);
     localStorage.setItem("firstName", response.data.first_name);
     localStorage.setItem("lastName", response.data.last_name);

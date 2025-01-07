@@ -1,31 +1,35 @@
 import React, { useEffect, useRef, useState } from "react";
-import Cloth from "./cloth";
 import {
-  Avatar,
   Box,
-  Button,
-  CircularProgress,
-  IconButton,
+  ImageList,
+  ImageListItem,
+  Typography,
+  useMediaQuery,
+  Skeleton,
 } from "@mui/material";
-import { ClothType } from "../../../types/types";
+import { ClothType, ToastData } from "../../../types/types";
 import getUserClothes from "../../../api/dashboard/getUserClothes";
 import { pallete } from "../../../styles/pallete.m";
-import { TextField } from "@mui/material";
-import Tshirt_1 from "../../../assets/Tshirt-1.png";
-import Tshirt_2 from "../../../assets/Tshirt-2.png";
-import Tshirt_3 from "../../../assets/Tshirt-3.png";
-import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import postUserCloth from "../../../api/dashboard/postUserCloth";
-import CustomTextField from "../../base/CustomTextField";
+import "react-image-lightbox/style.css";
+import Toast from "../../base/toast";
+import FullScreenLoader from "../../base/FullScreenLoader";
+import CustomGallery from "./CustomGallery";
+import CustomImageListBar from "./CustomImageListBar";
 
 const Clothes: React.FC = () => {
-  const [clothes, setClothes] = useState<ClothType[]>([]); // Initialize with an empty array
-  const [isLoading, setIsLoading] = useState<boolean>(true); // Add loading state
-
+  const [clothes, setClothes] = useState<ClothType[]>([]);
+  const [firstLoading, setFirstLoading] = useState<boolean>(true);
+  const [reloadImage, setReloadImage] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [toastData, setToastData] = useState<ToastData>({
+    open: false,
+    message: "",
+    severity: "error",
+  });
   const [newCloth, setNewCloth] = useState({
-    name: "",
-    description: "",
+    caption: "",
     image: null as File | null,
   });
 
@@ -39,263 +43,215 @@ const Clothes: React.FC = () => {
   };
 
   const handleAddCloth = async () => {
-    if (newCloth.name && newCloth.description && newCloth.image) {
+    setIsLoading(true);
+    if (newCloth.image && newCloth.caption) {
       const formData = new FormData();
-      formData.append("caption", newCloth.description); // Adding description as caption
-      formData.append("image", newCloth.image as File); // Ensure `image` is a File object
+      formData.append("caption", newCloth.caption ?? "-");
+      formData.append("image", newCloth.image);
 
       try {
         const response = await postUserCloth(formData);
-
         if (response?.status === 200 || response?.status === 201) {
-          // Status 201 is also common for POST requests
-          alert("Cloth added successfully!");
-          // Reset the form
-          setNewCloth({ name: "", description: "", image: null });
-          // Optionally reload or fetch the updated clothes list
+          setReloadImage(true);
+          setToastData({
+            open: true,
+            message: "لباس با موفقیت افزوده شد.",
+            severity: "success",
+          });
+          setNewCloth({ caption: "", image: null });
         } else {
-          alert("Failed to add cloth. Please try again.");
+          throw new Error("Failed to upload");
         }
       } catch (error) {
-        console.error("Error uploading cloth:", error);
-        alert("An error occurred while adding the cloth. Please try again.");
+        setToastData({
+          open: true,
+          message: "خطا در برقراری ارتباط با سرور.",
+          severity: "error",
+        });
+      } finally {
+        setIsLoading(false);
       }
     } else {
-      alert("Please fill in all fields and upload an image.");
-    }
-  };
-
-  const handleDelete = () => {
-    setNewCloth({ name: "", description: "", image: null }); // Reset newCloth state
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ""; // Clear file input
+      setToastData({
+        open: true,
+        message: "لطفا تصویر و توضیحات لباس را وارد کنید.",
+        severity: "error",
+      });
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     const fetchClothes = async () => {
       try {
+        if (!firstLoading) {
+            setIsLoading(true);
+        }
         const fetchedClothes = await getUserClothes();
         setClothes(
-          fetchedClothes.map((cloth) => ({
-            ...cloth,
-            description: cloth.description || "", // Ensure description is always a string
-            image: cloth.image || "", // Ensure image is always a string
-            name: cloth.name || "", // Ensure name is always a string
+          fetchedClothes.map((cloth: ClothType) => ({
+            id: cloth.id,
+            image: cloth.image,
+            caption: cloth.caption,
           }))
         );
-        setIsLoading(false); // Set loading to false when data is fetched
       } catch (error) {
-        console.error("Error fetching clothes:", error);
-        setIsLoading(false); // Set loading to false in case of error
+        console.error("Failed to fetch clothes", error);
+      } finally {
+        setIsLoading(false);
+        setFirstLoading(false);
+        setReloadImage(false);
       }
     };
 
     fetchClothes();
-  }, []);
+  }, [reloadImage]);
 
-  if (isLoading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          width: "100%",
-          px: "25px",
-          height: "100%",
-          alignItems: "center",
-          justifyContent: "space-evenly",
-          gap: "15px",
-        }}
-      >
-        <CircularProgress color="primary" /> {/* Loading spinner */}
-      </Box>
-    );
-  }
+  const isSmallScreen = useMediaQuery("(max-width:600px)");
+  const isMediumScreen = useMediaQuery("(max-width:960px)");
+  const isLargeScreen = useMediaQuery("(max-width:1260px)");
+
+  const getCols = () => {
+    if (isSmallScreen) return 1;
+    if (isMediumScreen) return 2;
+    if (isLargeScreen) return 3;
+    return 4;
+  };
 
   return (
     <Box
       sx={{
-        display: "flex",
-        flexWrap: "wrap",
+        flexDirection: "column",
         width: "100%",
-        px: "25px",
-        height: "100%",
+        p: "25px",
+        height: "100vh",
         alignItems: "center",
-        justifyContent: "space-evenly",
-        gap: "15px",
+        overflowY: "auto",
+        scrollbarWidth: "none",
+        "&::-webkit-scrollbar": {
+          display: "none",
+        },
       }}
     >
-      {clothes.map((cloth) => (
-        <Cloth
-          description={cloth.description ? cloth.description : ""} // Guaranteed to be a string
-          image={cloth.image} // Guaranteed to be a string
-          name={cloth.name} // Guaranteed to be a string
-          key={cloth.id}
-        />
-      ))}
+      <Toast
+        message={toastData.message}
+        open={toastData.open}
+        severity={toastData.severity}
+        onClose={() => setToastData({ ...toastData, open: false })}
+      />
 
-      {/* Add New Picture Avatar with Name and Description */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-        }}
-      >
-        {/* Add Picture Avatar */}
-        <Box
+      {isLoading && <FullScreenLoader />}
+
+      {firstLoading ? (
+        <ImageList cols={getCols()} gap={16}>
+          {Array.from({ length: 8 }).map((_, index) => (
+            <ImageListItem key={index}>
+              <Skeleton
+                variant="rectangular"
+                width="100%"
+                height={200}
+                sx={{ borderRadius: 2 }}
+              />
+              <Skeleton variant="text" width="60%" sx={{ mt: 1 }} />
+              <Skeleton variant="text" width="40%" />
+            </ImageListItem>
+          ))}
+        </ImageList>
+      ) : (
+        <ImageList
+          cols={getCols()}
+          gap={16}
           sx={{
-            height: 270,
-            width: 270,
-            mr: "5%",
-            borderRadius: 2,
-            border: `2px dashed ${pallete.primary[500]}`,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
             cursor: "pointer",
-            position: "relative",
+            p: 2,
+            overflow: "hidden",
           }}
         >
-          {/* File Input */}
-          <input
-            type="file"
-            accept="image/*"
-            ref={fileInputRef} // Attach ref to the file input
-            style={{
-              position: "absolute",
-              opacity: 0,
-              width: "100%",
-              height: "100%",
-              cursor: "pointer",
-            }}
-            onChange={handleFileChange}
+          <CustomGallery
+            clothes={clothes}
+            setReloadImage={setReloadImage}
+            setToastData={setToastData}
+            setIsLoading={setIsLoading}
           />
-          {/* Show uploaded image or placeholder */}
-          {newCloth.image ? (
-            <Avatar
-              src={URL.createObjectURL(newCloth.image)}
-              sx={{ height: "100%", width: "100%", borderRadius: 2 }}
-            />
-          ) : (
-            <IconButton>
-              <input
-                type="file"
-                accept="image/*"
-                ref={fileInputRef} // Attach ref to the file input
-                style={{
-                  position: "absolute",
-                  opacity: 0,
+
+          <ImageListItem
+            sx={{
+              position: "relative",
+              height: "auto",
+              width: "100%",
+              overflow: "hidden",
+              borderRadius: 2,
+              transition: "transform 0.3s ease, box-shadow 0.3s ease",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              cursor: "pointer",
+              border: !newCloth.image
+                ? `2px dashed ${pallete.primary[400]}`
+                : "",
+            }}
+          >
+            {newCloth.image ? (
+              <img src={URL.createObjectURL(newCloth.image)} alt="New cloth" />
+            ) : (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                   width: "100%",
                   height: "100%",
                   cursor: "pointer",
                 }}
-                onChange={handleFileChange}
+              >
+                <Typography
+                  variant="h5"
+                  sx={{
+                    color: "white",
+                  }}
+                >
+                  افزورن لباس
+                </Typography>
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  style={{
+                    position: "absolute",
+                    opacity: 0,
+                    width: "100%",
+                    height: "100%",
+                    cursor: "pointer",
+                  }}
+                  onChange={handleFileChange}
+                />
+                <AddIcon
+                  sx={{
+                    height: { sm: 100, md: 200, lg: 350 },
+                    fontSize: 50,
+                    color: "white",
+                  }}
+                />
+              </Box>
+            )}
+            {newCloth.image && (
+              <CustomImageListBar
+                cloth={{
+                  id: -1,
+                  image: newCloth.image,
+                  caption: "",
+                }}
+                setReloadImage={setReloadImage}
+                setToastData={setToastData}
+                setIsLoading={setIsLoading}
+                setNewCloth={setNewCloth}
+                fileInputRef={fileInputRef}
+                handleAddCloth={handleAddCloth}
               />
-              <AddIcon sx={{ fontSize: 50, color: pallete.primary[500] }} />
-            </IconButton>
-          )}
-        </Box>
-
-        {/* Fields for Name and Description with Buttons */}
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            width: "60%",
-            mr: 10,
-          }}
-        >
-          {/* Fields */}
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              width: "70%",
-            }}
-          >
-            {/* Picture Name Field */}
-            <CustomTextField
-              fullWidth
-              label="نام لباس"
-              variant="filled"
-              value={newCloth.name}
-              placeholder="نام لباس جدید را وارد کنید"
-              onChange={(e) =>
-                setNewCloth({ ...newCloth, name: e.target.value })
-              }
-              sx={{
-                bgcolor: pallete.secondary[200],
-                borderRadius: 1,
-                mb: 2,
-              }}
-            />
-
-            {/* Description Field */}
-            <CustomTextField
-              fullWidth
-              label="توضیحات لباس"
-              variant="filled"
-              value={newCloth.description}
-              placeholder="توضیحات مربوط به لباس جدید را وارد کنید"
-              onChange={(e) =>
-                setNewCloth({ ...newCloth, description: e.target.value })
-              }
-              multiline
-              rows={4}
-              sx={{
-                bgcolor: pallete.secondary[200],
-                borderRadius: 1,
-              }}
-            />
-          </Box>
-          {/* Buttons */}
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              mr: 5,
-            }}
-          >
-            {/* Add Button */}
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleAddCloth}
-              sx={{
-                mb: 2,
-                width: 120, // Increased width
-                backgroundColor: pallete.primary[600], // Background color for ذخیره
-                color: "white", // White text for contrast
-                "&:hover": { backgroundColor: pallete.primary[800] }, // Slightly lighter black on hover
-              }}
-            >
-              افزودن
-            </Button>
-
-            {/* Cancel Button */}
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={handleDelete}
-              sx={{
-                width: 120, // Increased width
-                color: "black", // Text color
-                backgroundColor: pallete.secondary[400], // Background color for انصراف
-                "&:hover": { backgroundColor: pallete.secondary[600] }, // Slightly lighter black on hover
-              }}
-            >
-              لغو
-            </Button>
-          </Box>
-        </Box>
-      </Box>
+            )}
+          </ImageListItem>
+        </ImageList>
+      )}
     </Box>
   );
 };

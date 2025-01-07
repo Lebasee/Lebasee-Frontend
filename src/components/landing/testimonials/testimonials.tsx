@@ -99,6 +99,7 @@ const Testimonials: React.FC = () => {
             <Box
               key={index}
               onClick={() => handleDotClick(index)}
+              aria-label={`Show item ${index + 1}`}
               sx={{
                 width: index === currentIndex ? "40px" : "12px",
                 height: "12px",
