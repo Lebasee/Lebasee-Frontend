@@ -18,10 +18,10 @@ const tabs = [
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const email = localStorage.getItem("email");
-    const [profileImage, setProfileImage] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const email = localStorage.getItem("email");
+  const [profileImage, setProfileImage] = useState("");
 
   const location = useLocation();
 
@@ -32,18 +32,20 @@ const Sidebar: React.FC = () => {
         const { first_name, last_name, profile_image } = response;
         setFirstName(first_name);
         setLastName(last_name);
-        setProfileImage(`https://lebasee-backend-production.up.railway.app/${profile_image}`);
+        setProfileImage(
+          `https://lebasee-backend-production.up.railway.app/${profile_image}`
+        );
       } catch (error) {
         console.error("Error fetching user information:", error);
       }
     };
-  
+
     // Initial fetch
     fetchUserData();
-  
+
     // Set interval to fetch data every 10 seconds
     const intervalId = setInterval(fetchUserData, 10000);
-  
+
     // Cleanup the interval on component unmount
     return () => {
       clearInterval(intervalId);

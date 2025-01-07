@@ -18,9 +18,9 @@ export interface BodyInformation {
 
 export interface ClothType {
   id: number;
-  image: string;
-  caption?: string;
-  name: string;
+  image: string | File | null;
+  caption: string;
+  name?: string;
   description?: string;
 }
 
