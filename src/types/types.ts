@@ -5,6 +5,7 @@ export interface User {
   last_name?: string | null;
   email?: string | null;
   password?: string | null;
+  profile_image?: string | null;
 }
 
 export interface BodyInformation {
@@ -29,3 +30,4 @@ export interface ToastData {
   message: string;
   severity: AlertColor;
 }
+
