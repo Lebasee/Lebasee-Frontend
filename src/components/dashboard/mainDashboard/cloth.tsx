@@ -3,12 +3,11 @@ import React from "react";
 import x from "../../../assets/Tshirt-1.png";
 
 interface ClothesProps {
-  caption?  : string | null | undefined;
   image?: string | null;
   fadeIn: boolean;
 }
 
-const Cloth: React.FC<ClothesProps> = ({ caption, image, fadeIn }) => {
+const Cloth: React.FC<ClothesProps> = ({ image, fadeIn }) => {
   // Use a fallback image if the image is undefined
   const fallbackImage = x; // Put your fallback image path here
 

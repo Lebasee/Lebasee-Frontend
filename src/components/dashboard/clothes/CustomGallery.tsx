@@ -43,6 +43,7 @@ const CustomGallery = ({
             loading="lazy"
             style={{
               width: "100%",
+              minHeight: "300px",
               height: "auto",
               display: "block",
               transition: "transform 0.3s ease", // Smooth image zoom

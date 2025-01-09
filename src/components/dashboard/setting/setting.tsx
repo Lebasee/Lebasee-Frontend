@@ -5,11 +5,12 @@ import {
   Grid,
   IconButton,
   InputAdornment,
+  Stack,
   Typography,
+  Modal,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
-import UserPicture from "../../../assets/user2.jpg";
 import { pallete } from "../../../styles/pallete.m";
 import CustomTextField from "../../base/CustomTextField";
 import putUserName from "../../../api/dashboard/putUserName";
@@ -21,8 +22,14 @@ import postUserNewPassword from "../../../api/dashboard/postUserNewPassword";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import getUserInfo from "../../../api/dashboard/getUserInfo";
+import DigitInput from "../../base/digitInput";
+import { persianToNumeric } from "../../../utils/persianToNumeric";
+import VerifyCode from "../../../api/auth/verifyCode";
+import resendVerifyCode from "../../../api/auth/resendVerifyCode";
 
 const Setting: React.FC = () => {
+  const [isActive, setIsActive] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [firstName, setFirstName] = useState(localStorage.getItem("firstName"));
   const [lastName, setLastName] = useState(localStorage.getItem("lastName"));
   const [profileImage, setProfileImage] = useState("");
@@ -64,16 +71,17 @@ const Setting: React.FC = () => {
         window.location.reload();
         return;
       }
-      const response = await putUserName({
-        first_name: firstName ?? "",
-        last_name: lastName ?? "",
-      });
+      const formData = new FormData();
+      formData.append("first_name", firstName ?? "");
+      formData.append("last_name", lastName ?? "");
+      const response = await putUserName(formData);
       if (response.status !== 200) {
         throw new Error();
       }
       if (newPassword != currentPassword) {
-        const response = await putUserName({
-          password: newPassword,
+        const response = await postUserNewPassword({
+          new_password: newPassword,
+          current_password: currentPassword,
         });
         if (response.status !== 200) {
           throw new Error();
@@ -151,6 +159,59 @@ const Setting: React.FC = () => {
     }
   };
 
+  const handleClick = async () => {
+    if (isActive) {
+      return;
+    }
+    const response = await resendVerifyCode(email);
+  }
+
+  const [isVerifying, setIsVerifying] = useState(false); // Toggle between link and verification fields
+  const [code, setCode] = useState(Array(4).fill(""));
+
+
+  const handleVerifyCode = async () => {
+    if (!code) {
+      return;
+    }
+
+    try {
+      const parsedCode = persianToNumeric(code);
+
+      setLoading(true);
+      const response = await VerifyCode(parsedCode);
+
+      if (response?.status == 200) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        setToastData({
+          open: true,
+          message: "ایمیل با موفقیت تایید شد.",
+          severity: "success",
+        });
+        setIsVerifying(false);
+      }
+    } catch (error) {
+      const axiosError = error as AxiosError;
+
+      if (axiosError.status === 404) {
+        setToastData({
+          open: true,
+          message: "کد تایید معتبر نمی باشد.",
+          severity: "error",
+        });
+        setCode(Array(4).fill(""));
+      } else {
+        setToastData({
+          open: true,
+          message: "خطا در برقراری ارتباط با سرور.",
+          severity: "error",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -195,9 +256,6 @@ const Setting: React.FC = () => {
           />
           <Box
             sx={{
-              // position: "absolute",
-              // top: "75%",
-              // left: "75%",
               transform: "translate(-50%, -50%)",
               zIndex: 1,
               backgroundColor: pallete.primary[500],
@@ -261,7 +319,9 @@ const Setting: React.FC = () => {
                 label="نام"
                 variant="filled"
                 value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setFirstName(e.target.value)
+                }
                 sx={{
                   "& .MuiInputBase-input": {
                     ml: 3,
@@ -297,7 +357,7 @@ const Setting: React.FC = () => {
                 }}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={6}>
               <CustomTextField
                 fullWidth
                 label="ایمیل"
@@ -318,21 +378,62 @@ const Setting: React.FC = () => {
                   readOnly: true, // Make the input read-only
                 }}
               />
-
-              {/* Verification Link */}
-              <Typography
-                variant="body2"
-                sx={{
-                  color: pallete.warning[100], // Styled as a link
-                  textAlign: "right", // Align text to the right
-                  mt: 1,
-                  cursor: "pointer",
-                }}
-                onClick={() => window.open("https://example.com", "_blank")}
-              >
-                ایمیل شما تایید نشده است!
-              </Typography>
             </Grid>
+
+
+
+            <Grid item xs={6}>
+              {/* Verification Link */}
+              <Box sx={{ textAlign: "right", mt: 2 }}>
+                {isVerifying ? (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignContent: "center",
+                      mt: -2,
+                    }}
+                  >
+                    {/* Verify Button */}
+                    <Box
+                      sx={{
+                        bgcolor: pallete.secondary[200],
+                        p: 0.5,
+                        borderRadius: 1,
+                      }}
+                      >
+                    {/* Verification Fields */}
+                    <DigitInput
+                      code={code}
+                      setCode={setCode}
+                      />
+                      </Box>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleVerifyCode}
+                      sx={{ mr: 4 }}
+                    >
+                      تایید
+                    </Button>
+
+                  </Box>
+                ) : (
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: isActive ? "primary" : "warning.main", // Styled as a link
+                      cursor: "pointer",
+                    }}
+                    onClick={handleClick}
+                  >
+                    ایمیل شما تایید {isActive ? "شده" : "نشده"} است!
+                  </Typography>
+                )}
+              </Box>
+            </Grid>
+
+
 
             <Grid item xs={12}>
               <CustomTextField
@@ -340,8 +441,10 @@ const Setting: React.FC = () => {
                 label="رمز عبور"
                 variant="filled"
                 type={showPassword ? "text" : "password"} // Toggle type based on state
-                value={newPassword} // Bind to the newPassword state
-                onChange={(e) => setNewPassword(e.target.value)} // Update the password state on change
+                // Bind to the newPassword state
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setNewPassword(e.target.value)
+                } // Update the password state on change
                 sx={{
                   bgcolor: pallete.secondary[200],
                   borderRadius: 1,

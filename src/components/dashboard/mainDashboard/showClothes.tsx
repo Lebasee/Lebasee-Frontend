@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Skeleton } from "@mui/material";
 import { pallete } from "../../../styles/pallete.m";
 import { useEffect, useState, useRef } from "react";
 import Cloth from "./cloth";
@@ -7,6 +7,7 @@ import { ClothType } from "../../../types/types";
 
 const ShowClothes: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [loading, setLoading] = useState<boolean>(true);
   const [fadeIn, setFadeIn] = useState(true);
   const [clothes, setClothes] = useState<ClothType[]>([]);
   const hasFetchedData = useRef(false); // Ensure fetchUserData runs only once
@@ -20,6 +21,7 @@ const ShowClothes: React.FC = () => {
       } catch (error) {
         console.error("Error fetching user clothes:", error);
       }
+      setLoading(false);
     };
 
     if (!hasFetchedData.current) {
@@ -47,18 +49,6 @@ const ShowClothes: React.FC = () => {
   };
 
   const getNextIndex = (index: number) => (index + 1) % clothes.length;
-
-  if (clothes.length === 0) {
-    return (
-      <Typography
-        color="white"
-        variant="h6"
-        sx={{ textAlign: "center", mt: 4 }}
-      >
-        هیچ لباسی یافت نشد!
-      </Typography>
-    );
-  }
 
   return (
     <Box
@@ -92,23 +82,50 @@ const ShowClothes: React.FC = () => {
           gap: "50px",
         }}
       >
-        <Cloth
-          caption={clothes[currentIndex]?.caption}
-          image={clothes[currentIndex]?.image  as string | undefined}
-          fadeIn={fadeIn}
-        />
-        <Cloth
-          caption={clothes[getNextIndex(currentIndex)]?.caption}
-          image={clothes[getNextIndex(currentIndex)]?.image  as string | undefined}
-          fadeIn={fadeIn}
-        />
-        <Cloth
-          caption={clothes[getNextIndex(getNextIndex(currentIndex))]?.caption}
-          image={
-            clothes[getNextIndex(getNextIndex(currentIndex))]?.image  as string | undefined
-          }
-          fadeIn={fadeIn}
-        />
+        {/* Show skeleton loader for each clothing item */}
+        {loading ? (
+          <>
+            <Skeleton
+              variant="rectangular"
+              width={230}
+              height={230}
+              sx={{ borderRadius: 3 }}
+            />
+            <Skeleton
+              variant="rectangular"
+              width={230}
+              height={230}
+              sx={{ borderRadius: 3 }}
+            />
+            <Skeleton
+              variant="rectangular"
+              width={230}
+              height={230}
+              sx={{ borderRadius: 3 }}
+            />
+          </>
+        ) : (
+          <>
+            <Cloth
+              image={clothes[currentIndex]?.image as string | undefined}
+              fadeIn={fadeIn}
+            />
+            <Cloth
+              image={
+                clothes[getNextIndex(currentIndex)]?.image as string | undefined
+              }
+              fadeIn={fadeIn}
+            />
+            <Cloth
+              image={
+                clothes[getNextIndex(getNextIndex(currentIndex))]?.image as
+                  | string
+                  | undefined
+              }
+              fadeIn={fadeIn}
+            />
+          </>
+        )}
       </Box>
       <Box
         sx={{

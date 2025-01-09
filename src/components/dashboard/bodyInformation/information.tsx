@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Box, Grid, Slider, Typography } from "@mui/material";
+import { Box, Grid, Skeleton, Slider, Typography } from "@mui/material";
 import { pallete } from "../../../styles/pallete.m";
 import { toPersianNumber } from "../../../utils/toPersianNumber";
 import getUserBodyInformation from "../../../api/dashboard/getUserBodyInformation";
@@ -9,10 +9,11 @@ import { AxiosError } from "axios";
 import Toast from "../../base/toast";
 import { useNavigate } from "react-router-dom";
 import ModelViewer from "../../base/SketchfabEmbed";
-import debounce from "lodash.debounce"; // Install lodash if not already
-``
+import debounce from "lodash.debounce";
+
 const Information: React.FC = () => {
   const [datas, setDatas] = useState<BodyInformation[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const [toastData, setToastData] = useState<ToastData>({
     open: false,
@@ -22,6 +23,7 @@ const Information: React.FC = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
+      setLoading(true);
       try {
         const response = await getUserBodyInformation();
         const formattedData = response.map((data: BodyInformation) => ({
@@ -48,6 +50,7 @@ const Information: React.FC = () => {
           });
         }
       }
+      setLoading(false);
     };
 
     fetchUserData();
@@ -136,8 +139,16 @@ const Information: React.FC = () => {
             severity={toastData.severity}
             onClose={() => setToastData({ ...toastData, open: false })}
           />
-          {datas.map((data) => (
-            <Box key={data.id} sx={{ mb: 3 }}>
+          {loading &&
+            [...Array(8)].map((_) => (
+              <Skeleton
+                variant="text"
+                width="70%"
+                sx={{ margin: "20px 80px", borderRadius: 3, mt: 4 }}
+              />
+            ))}
+          {datas.map((data, index) => (
+            <Box key={index} sx={{ mb: 3 }}>
               <Grid container spacing={2} alignItems="center">
                 <Grid item xs={6}>
                   <Box
@@ -149,16 +160,16 @@ const Information: React.FC = () => {
                   >
                     <Typography color="white">{data.name}</Typography>
                     <Typography noWrap color="white">
-                      {toPersianNumber(data.value)} {data.type}
+                      {toPersianNumber(data.value ?? 0)} {data.type}
                     </Typography>
                   </Box>
                   <Slider
-                    value={data.value}
-                    min={data.min}
-                    max={data.max}
+                    value={data.value ?? 0}
+                    min={data.min ?? 0}
+                    max={data.max ?? 1}
                     step={1}
                     onChange={(_, newValue) =>
-                      handleSliderChange(data.id, newValue as number)
+                      handleSliderChange(data.id ?? "", newValue as number)
                     }
                     sx={{
                       mr: 2,
@@ -199,9 +210,22 @@ const Information: React.FC = () => {
           sx={{
             height: "90%",
             width: "70%",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          <ModelViewer />
+          {loading ? (
+            <Skeleton
+              variant="rectangular"
+              sx={{
+                height: "100%",
+                width: "100%",
+                borderRadius: 5,
+              }}
+            />
+          ) : (
+            <ModelViewer />
+          )}
         </Box>
       </Box>
     </Box>
