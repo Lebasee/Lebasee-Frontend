@@ -38,5 +38,12 @@ export interface generatedImage{
   description?:	string;
   num_inference_steps?: number;
   seed?: number;
+}
+
+export interface generatedImageResponse{
+  image: {
+    file_name:string 
+    url: string
   }
+}
 
