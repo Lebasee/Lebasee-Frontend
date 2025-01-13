@@ -119,12 +119,11 @@ const PopupMenu: React.FC<PopupMenuProps> = ({
           </ListItemIcon>
           <ListItemText>
             {userProfile.first_name} {userProfile.last_name}
+            <br />
+            {userProfile.email}
           </ListItemText>
         </MenuItem>
-        <Divider
-          sx={{ width: 160 }}
-          component="li"
-        />
+        <Divider component="li" />
         {menuSections.map((section, index) => {
           return (
             <MenuItem
@@ -136,10 +135,7 @@ const PopupMenu: React.FC<PopupMenuProps> = ({
             </MenuItem>
           );
         })}
-        <Divider
-          sx={{ width: 160 }}
-          component="li"
-        />
+        <Divider component="li" />
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <LogoutIcon fontSize="small" />

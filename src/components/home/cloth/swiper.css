@@ -1,0 +1,13 @@
+.custom-swiper .swiper-button-next,
+.custom-swiper .swiper-button-prev {
+  color: #009688; 
+}
+.padding {
+    padding: 0 40px;
+}
+
+
+.custom-swiper{
+    min-height: 322px;
+}
+

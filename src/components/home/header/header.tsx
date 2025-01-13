@@ -33,7 +33,7 @@ const Header = () => {
           justifyContent: "space-between",
           alignItems: "center",
           p: 1,
-          maxWidth: "1126px",
+          maxWidth: "1226px",
           margin: "auto",
         }}
       >

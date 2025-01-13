@@ -63,7 +63,7 @@ const EmailConfirmationForm: React.FC = () => {
           message: "ایمیل با موفقیت تایید شد.",
           severity: "success",
         });
-        navigate("/auth/login"); // navigate to dashboard or main page
+        navigate("/home");
       }
     } catch (error) {
       const axiosError = error as AxiosError;

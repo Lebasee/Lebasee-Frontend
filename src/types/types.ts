@@ -23,6 +23,7 @@ export interface ClothType {
   caption: string;
   name?: string;
   description?: string;
+  is_outfit?: boolean;
 }
 
 export interface ToastData {
