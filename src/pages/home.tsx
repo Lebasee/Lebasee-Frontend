@@ -14,6 +14,7 @@ import { ClothType, generatedImage, ToastData } from "../types/types";
 import Toast from "../components/base/toast";
 import { AxiosError } from "axios";
 import tryon from "../api/home/tryon";
+import getUserOutfits from "../api/dashboard/getUserOutfits";
 
 const HomePage: React.FC = () => {
   const [outfits, setOutfits] = useState<ClothType[]>([]);
@@ -33,9 +34,8 @@ const HomePage: React.FC = () => {
     const fetchClothes = async () => {
       try {
         setLoading(true);
-        const response = await getUserClothes();
-        const outfits = response.filter((cloth) => cloth.is_outfit);
-        const clothes = response.filter((cloth) => !cloth.is_outfit);
+        const clothes = await getUserClothes();
+        const outfits = await getUserOutfits();
         setOutfits(outfits);
         setClothes(clothes);
         setLoading(false);
