@@ -91,9 +91,8 @@ const SignUpForm: React.FC = () => {
     };
     try {
       setLoading(true);
-      localStorage.removeItem("access");
-      localStorage.removeItem("refresh");
 
+      localStorage.clear();
       const response = await SignUp(user);
       if (response?.status == 201) {
         await new Promise((resolve) => setTimeout(resolve, 1000));

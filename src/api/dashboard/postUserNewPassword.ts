@@ -10,8 +10,7 @@ const postUserNewPassword = async (data: {
       new_password: data.new_password,
       current_password: data.current_password,
     });
-    console.log(response);
-    return response.data;
+    return response;
   } catch (error) {
     throw error as AxiosError;
   }

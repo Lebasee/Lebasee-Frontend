@@ -8,18 +8,18 @@ import {
   Skeleton,
 } from "@mui/material";
 import { ClothType, ToastData } from "../../../types/types";
-import getUserClothes from "../../../api/dashboard/getUserClothes";
 import { pallete } from "../../../styles/pallete.m";
 import AddIcon from "@mui/icons-material/Add";
 import postUserCloth from "../../../api/dashboard/postUserCloth";
 import "react-image-lightbox/style.css";
 import Toast from "../../base/toast";
 import FullScreenLoader from "../../base/FullScreenLoader";
-import CustomGallery from "./CustomGallery";
-import CustomImageListBar from "./CustomImageListBar";
+import CustomGallery from "../clothes/CustomGallery";
+import CustomImageListBar from "../clothes/CustomImageListBar";
+import getUserOutfits from "../../../api/dashboard/getUserOutfits";
 
-const Clothes: React.FC = () => {
-  const [clothes, setClothes] = useState<ClothType[]>([]);
+const Outfits: React.FC = () => {
+  const [outfits, setOutfits] = useState<ClothType[]>([]);
   const [firstLoading, setFirstLoading] = useState<boolean>(true);
   const [reloadImage, setReloadImage] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -48,6 +48,7 @@ const Clothes: React.FC = () => {
       const formData = new FormData();
       formData.append("caption", newCloth.caption ?? "-");
       formData.append("image", newCloth.image);
+      formData.append("is_outfit", "true");
 
       try {
         const response = await postUserCloth(formData);
@@ -87,8 +88,8 @@ const Clothes: React.FC = () => {
         if (!firstLoading) {
           setIsLoading(true);
         }
-        const fetchedClothes = await getUserClothes();
-        setClothes(
+        const fetchedClothes = await getUserOutfits();
+        setOutfits(
           fetchedClothes.map((cloth: ClothType) => ({
             id: cloth.id,
             image: cloth.image,
@@ -96,7 +97,7 @@ const Clothes: React.FC = () => {
           }))
         );
       } catch (error) {
-        console.error("Failed to fetch clothes", error);
+        console.error("Failed to fetch outfits", error);
       } finally {
         setIsLoading(false);
         setFirstLoading(false);
@@ -168,7 +169,7 @@ const Clothes: React.FC = () => {
           }}
         >
           <CustomGallery
-            clothes={clothes}
+            clothes={outfits}
             setReloadImage={setReloadImage}
             setToastData={setToastData}
             setIsLoading={setIsLoading}
@@ -210,7 +211,7 @@ const Clothes: React.FC = () => {
                     color: "white",
                   }}
                 >
-                  افزورن لباس
+                  افزودن استایل
                 </Typography>
                 <input
                   type="file"
@@ -256,4 +257,4 @@ const Clothes: React.FC = () => {
   );
 };
 
-export default Clothes;
+export default Outfits;

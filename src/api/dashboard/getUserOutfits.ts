@@ -8,7 +8,7 @@ interface ClothesApiResponse {
   is_outfit: boolean | null;
 }
 
-const getUserClothes = async (): Promise<ClothType[]> => {
+const getUserOutfits = async (): Promise<ClothType[]> => {
   try {
     const response = await baseApi.get<ClothesApiResponse>("/api/clothes/");
     console.log(response);
@@ -17,7 +17,7 @@ const getUserClothes = async (): Promise<ClothType[]> => {
     let j = 2;
     while (true) {
       for (let i = 0; i < datas.data.results.length; i++) {
-        if (datas.data.results[i].is_outfit === false) {
+        if (datas.data.results[i].is_outfit === true) {
           images.push({
             id: datas.data.results[i].id,
             image: datas.data.results[i].image,
@@ -38,4 +38,4 @@ const getUserClothes = async (): Promise<ClothType[]> => {
   }
 };
 
-export default getUserClothes;
+export default getUserOutfits;

@@ -23,8 +23,7 @@ export interface ClothType {
   caption: string;
   name?: string;
   description?: string;
-  is_outfit?: boolean;
-}
+  is_outfit?: boolean | null;
 
 export interface ToastData {
   open: boolean;

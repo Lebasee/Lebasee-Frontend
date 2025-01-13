@@ -7,11 +7,14 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import AccessibilityIcon from "@mui/icons-material/Accessibility";
 import CheckroomIcon from "@mui/icons-material/Checkroom";
 import getUserInfo from "../../../api/dashboard/getUserInfo";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
 
 const tabs = [
   { name: "داشبود", id: 1, icon: DashboardIcon, href: "" },
   { name: "اطلاعات بدن", id: 2, icon: AccessibilityIcon, href: "/info" },
   { name: "لباس ها", id: 3, icon: CheckroomIcon, href: "/clothes" },
+  { name: "استایل ها", id: 6, icon: AccessibilityNewIcon, href: "/styles" },
   { name: "تنظیمات", id: 4, icon: SettingsIcon, href: "/setting" },
   { name: "خروج", id: 5, icon: LogoutIcon, href: "/logout" },
 ];
@@ -44,11 +47,20 @@ const Sidebar: React.FC = () => {
     fetchUserData();
 
     // Set interval to fetch data every 10 seconds
-    const intervalId = setInterval(fetchUserData, 10000);
+    const intervalId = setInterval(fetchUserData, 10000000);
 
-    // Cleanup the interval on component unmount
+    // Listen for custom event
+    const handleCustomEvent = () => {
+      console.log("Custom event triggered, refetching user data...");
+      fetchUserData();
+    };
+
+    window.addEventListener("refetchUserData", handleCustomEvent);
+
+    // Cleanup the interval and event listener on component unmount
     return () => {
       clearInterval(intervalId);
+      window.removeEventListener("refetchUserData", handleCustomEvent);
     };
   }, []);
 
@@ -76,8 +88,43 @@ const Sidebar: React.FC = () => {
         height: "100%",
         padding: "20px 0",
         boxSizing: "border-box",
+        position: "relative", // Add relative positioning to the parent container
       }}
     >
+      {/* برگشت Button */}
+      <ButtonBase
+        onClick={() => navigate("/home")} // Navigate to home
+        sx={{
+          position: "absolute", // Place it in the top-right corner
+          top: 10, // Adjust vertical position
+          right: 10, // Adjust horizontal position
+          display: "flex",
+          alignItems: "center",
+          gap: 0.5,
+          color: "white",
+          padding: "5px 10px", // Add padding
+          borderRadius: "8px", // Rounded corners
+          cursor: "pointer",
+          backgroundColor: "transparent",
+          "&:hover": {
+            backgroundColor: "#34495e",
+          },
+          "&:active": {
+            transform: "scale(0.95)", // Scale down slightly on click
+          },
+        }}
+      >
+        <ArrowForwardIcon sx={{ fontSize: 16 }} />
+        <Typography
+          variant="body2"
+          sx={{
+            fontSize: 14,
+          }}
+        >
+          برگشت
+        </Typography>
+      </ButtonBase>
+
       {/* Sidebar Title */}
       <Typography
         variant="h3"

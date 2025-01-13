@@ -148,7 +148,7 @@ const EmailConfirmationForm: React.FC = () => {
           variant="contained"
           fullWidth
           color="secondary"
-          onClick={() => navigate("/home")}
+          onClick={() => navigate("/landing")}
         >
           انصراف
         </Button>
