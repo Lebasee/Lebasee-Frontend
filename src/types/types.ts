@@ -5,6 +5,7 @@ export interface User {
   last_name?: string | null;
   email?: string | null;
   password?: string | null;
+  profile_image?: string | null;
 }
 
 export interface BodyInformation {
@@ -22,6 +23,7 @@ export interface ClothType {
   caption: string;
   name?: string;
   description?: string;
+  is_outfit?: boolean;
 }
 
 export interface ToastData {
@@ -29,3 +31,12 @@ export interface ToastData {
   message: string;
   severity: AlertColor;
 }
+
+export interface generatedImage{
+  human_image_url:	string;
+  garment_image_url:	string;
+  description?:	string;
+  num_inference_steps?: number;
+  seed?: number;
+  }
+

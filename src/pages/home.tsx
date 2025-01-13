@@ -1,65 +1,95 @@
-import React, { useState } from "react";
 import {
   Box,
+  Button,
+  CircularProgress,
+  Skeleton,
   Typography,
-  Avatar,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  IconButton,
 } from "@mui/material";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import WestIcon from "@mui/icons-material/West";
-import EastIcon from "@mui/icons-material/East";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CancelIcon from "@mui/icons-material/Cancel";
 import { pallete } from "../styles/pallete.m";
-import CustomTextField from "../components/base/CustomTextField";
-import { toPersianNumber } from "../utils/toPersianNumber";
-import PictureInput from "../components/base/pictureInput";
-
-const cloths = [
-  {
-    index: 0,
-    type: "پیراهن",
-    description: "",
-    image: "",
-  },
-  {
-    index: 1,
-    type: "شلوار",
-    description: "",
-    image: "",
-  },
-  {
-    index: 2,
-    type: "کت",
-    description: "",
-    image: "",
-  },
-  {
-    index: 3,
-    type: "کفش",
-    description: "",
-    image: "",
-  },
-];
+import Header from "../components/home/header/header";
+import ClothSlider from "../components/home/cloth/clothSlider";
+import { useEffect, useState } from "react";
+import getUserClothes from "../api/dashboard/getUserClothes";
+import { ClothType, generatedImage, ToastData } from "../types/types";
+import Toast from "../components/base/toast";
+import { AxiosError } from "axios";
+import tryon from "../api/home/tryon";
 
 const HomePage: React.FC = () => {
-  const [index, setIndex] = useState(0);
-  const [ismodealOpen, setIsmodalOpen] = useState(false);
-  const [clothsState, setClothsState] = useState(cloths);
+  const [outfits, setOutfits] = useState<ClothType[]>([]);
+  const [clothes, setClothes] = useState<ClothType[]>([]);
+  const [selectedCloth, setSelectedCloth] = useState<ClothType>();
+  const [selectedOutfit, setSelectedOutfit] = useState<ClothType>();
+  const [generatedImage, setGeneratedImage] = useState<generatedImage>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [generating, setGenerating] = useState<boolean>(false);
+  const [toastData, setToastData] = useState<ToastData>({
+    open: false,
+    message: "",
+    severity: "error",
+  });
 
-  const handleImageConfirm = (imageFile: string) => {
-    const newCloths = [...clothsState];
-    newCloths[index] = {
-      ...newCloths[index],
-      image: imageFile,
+  useEffect(() => {
+    const fetchClothes = async () => {
+      try {
+        setLoading(true);
+        const response = await getUserClothes();
+        const outfits = response.filter((cloth) => cloth.is_outfit);
+        const clothes = response.filter((cloth) => !cloth.is_outfit);
+        setOutfits(outfits);
+        setClothes(clothes);
+        setLoading(false);
+      } catch (e) {
+        const axoiosError = e as AxiosError;
+        if (axoiosError.status === 401) {
+          setToastData({
+            open: true,
+            message: "نشست شما منقضی شده است. لطفا دوباره وارد شوید.",
+            severity: "error",
+          });
+          setTimeout(() => {
+            window.location.href = "auth/login";
+          }, 3000);
+        } else {
+          setToastData({
+            open: true,
+            message: "خطا در برقراری ارتباط با سرور.",
+            severity: "error",
+          });
+        }
+      }
     };
-    setClothsState(newCloths);
-    setIsmodalOpen(false);
+    fetchClothes();
+  }, []);
+
+  const handleClick = async () => {
+    if (!selectedCloth || !selectedOutfit) {
+      setToastData({
+        open: true,
+        message: "ابتدا یک لباس و استایل انتخب کنید.",
+        severity: "warning",
+      });
+      return;
+    }
+    try {
+      const data: generatedImage = {
+        human_image_url: selectedOutfit.image as string,
+        garment_image_url: selectedCloth.image as string,
+      };
+      setGenerating(true);
+      const response = await tryon(data);
+      setGeneratedImage(response);
+      setGenerating(false);
+    } catch (e) {
+      setGenerating(false);
+      setToastData({
+        open: true,
+        message: "خطا در تولید عکس لطفا مجددا سعی کنید.",
+        severity: "error",
+      });
+    }
   };
+
   return (
     <Box
       sx={{
@@ -68,195 +98,138 @@ const HomePage: React.FC = () => {
         height: "100vh",
         justifyContent: "space-between",
         overflow: "hidden",
+        backgroundColor: pallete.secondary[900],
       }}
     >
+      <Header />
       <Box
         sx={{
+          maxWidth: "1226px",
+          width: "100%",
+          height: " 100%",
+          margin: "auto",
+          padding: "16px",
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
-          px: 4,
-          py: 2,
         }}
       >
-        <Typography
-          variant="h4"
-          sx={{
-            color: pallete.primary[500],
-            fontWeight: "bold",
-            textAlign: "right",
-          }}
-        >
-          لباسی
-        </Typography>
-        <Avatar alt="Sajad" />
-      </Box>
-
-      {/* Main Content */}
-      <Box
-        flex={1}
-        sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
-      >
-        <Typography
-          variant="h4"
-          sx={{
-            fontWeight: "bold",
-            textAlign: "right",
-          }}
-        >
-          نمایش مدل
-        </Typography>
-      </Box>
-
-      {/* Collapsible Section */}
-      <Box>
-        <Accordion
-          sx={{
-            bgcolor: pallete.secondary[900],
-            "&:first-of-type": {
-              borderTopLeftRadius: 6,
-              borderTopRightRadius: 6,
-            },
-            "&:last-of-type": {
-              borderBottomRightRadius: 0,
-              borderBottomLeftRadius: 0,
-            },
-            "& .MuiAccordionDetails-root": {
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 2,
-            },
-          }}
-          TransitionProps={{ unmountOnExit: true }}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandLessIcon sx={{ color: "#ffffff" }} />}
-            aria-controls="panel1-content"
-            id="panel1-header"
+        <Box sx={{ width: "60%", height: " 100%", p: "2rem 0" }}>
+          <Box
             sx={{
-              "& .MuiAccordionSummary-content": {
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 5,
-              },
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: "1rem",
             }}
           >
-            <IconButton
-              disabled={index === cloths.length - 1}
-              onClick={(e) => {
-                e.stopPropagation();
-                setIndex((index + 1) % cloths.length);
-              }}
+            <Typography
+              variant="h5"
+              color="white"
             >
-              <EastIcon sx={{ color: "#ffffff" }} />
-            </IconButton>
-            <Typography sx={{ color: "#ffffff" }}>
-              {toPersianNumber(cloths.length + " / " + (index + 1))}
-              {"  "}
-              {cloths[index].type}
+              استایل های شما
             </Typography>
-            <IconButton
-              disabled={index === 0}
-              onClick={(e) => {
-                e.stopPropagation();
-                setIndex((index - 1) % cloths.length);
-              }}
+            <Button
+              variant="outlined"
+              href="/dashboard/styles"
             >
-              <WestIcon sx={{ color: "#ffffff" }} />
-            </IconButton>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Box
-              sx={{
-                width: "215px",
-                height: "215px",
-                borderRadius: "6px",
-                bgcolor: pallete.secondary[200],
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
+              استایل جدید
+            </Button>
+          </Box>
+          <ClothSlider
+            clothes={outfits}
+            loading={loading}
+            selectedCloth={selectedOutfit}
+            setselectedCloth={setSelectedOutfit}
+          />
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: "1rem",
+              mt: "2rem",
+            }}
+          >
+            <Typography
+              variant="h5"
+              color="white"
             >
-              <CustomTextField
-                multiline
-                rows={6}
-                label="توضیحات"
-                sx={{
-                  "& .MuiInputBase-input-MuiOutlinedInput-input": {
-                    width: "95%",
-                  },
-                }}
+              لباس های شما
+            </Typography>
+            <Button
+              variant="outlined"
+              href="/dashboard/clothes"
+            >
+              لباس جدید
+            </Button>
+          </Box>
+          <ClothSlider
+            clothes={clothes}
+            loading={loading}
+            selectedCloth={selectedCloth}
+            setselectedCloth={setSelectedCloth}
+          />
+        </Box>
+        <Box
+          sx={{
+            width: "35%",
+            height: " 100%",
+            p: "2rem 0",
+          }}
+        >
+          <Box
+            sx={{
+              width: "100%",
+              minHeight: 500,
+              borderRadius: "8px",
+            }}
+          >
+            {generating || !generatedImage ? (
+              <Skeleton
+                variant="rectangular"
+                width="100%"
+                height="500px"
+                animation="wave"
+                sx={{ borderRadius: "8px", bgcolor: pallete.secondary[800] }}
               />
-            </Box>
-            <Box
-              onClick={() => setIsmodalOpen(true)}
-              sx={{
-                width: "215px",
-                height: "215px",
-                bgcolor: pallete.primary[500],
-                borderRadius: "6px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexDirection: "column",
-                ":hover": {
-                  cursor: "pointer",
-                },
-              }}
-            >
-              {clothsState[index].image ? (
-                <img
-                  src={clothsState[index].image}
-                  alt="Preview"
-                  style={{
-                    borderRadius: "6px",
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                  }}
-                />
-              ) : (
-                <>
-                  <AddPhotoAlternateIcon sx={{ color: "#FFFFFF" }} />
-                  <Typography
-                    variant="body1"
-                    sx={{ color: "#ffffff" }}
-                  >
-                    افزودن تصویر
-                  </Typography>
-                </>
-              )}
-            </Box>
-            <Box
-              sx={{
-                position: "absolute",
-                left: "calc(50% - 273px)",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <IconButton>
-                <CheckCircleIcon sx={{ color: "#FFFFFF" }} />
-              </IconButton>
-              <IconButton>
-                <CancelIcon sx={{ color: "#FFFFFF" }} />
-              </IconButton>
-            </Box>
-            <PictureInput
-              open={ismodealOpen}
-              onClose={() => {
-                setIsmodalOpen(false);
-              }}
-              onConfirm={handleImageConfirm}
-            />
-          </AccordionDetails>
-        </Accordion>
+            ) : (
+              <img
+                src={generatedImage?.human_image_url}
+                alt={generatedImage?.description}
+                style={{
+                  boxSizing: "border-box",
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  borderRadius: "8px",
+                }}
+                loading="lazy"
+              />
+            )}
+          </Box>
+          <Button
+            variant="contained"
+            fullWidth
+            sx={{ mt: "10px" }}
+            onClick={handleClick}
+          >
+            {generating ? (
+              <CircularProgress
+                size="32.5px"
+                sx={{ color: "#ffffff" }}
+              />
+            ) : (
+              "پرو مجازی"
+            )}
+          </Button>
+        </Box>
       </Box>
+      <Toast
+        message={toastData.message}
+        open={toastData.open}
+        severity={toastData.severity}
+        onClose={() => setToastData({ ...toastData, open: false })}
+      />
     </Box>
   );
 };
