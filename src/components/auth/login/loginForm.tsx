@@ -59,8 +59,7 @@ const LoginForm: React.FC = () => {
 
     try {
       setLoading(true);
-      localStorage.removeItem("access");
-      localStorage.removeItem("refresh");
+      localStorage.clear();
       const response = await Login(user);
 
       if (response?.status === 200) {

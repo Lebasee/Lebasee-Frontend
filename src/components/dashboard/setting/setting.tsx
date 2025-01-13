@@ -5,9 +5,7 @@ import {
   Grid,
   IconButton,
   InputAdornment,
-  Stack,
   Typography,
-  Modal,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
@@ -29,21 +27,20 @@ import resendVerifyCode from "../../../api/auth/resendVerifyCode";
 
 const Setting: React.FC = () => {
   const [isActive, setIsActive] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
   const [firstName, setFirstName] = useState(localStorage.getItem("firstName"));
   const [lastName, setLastName] = useState(localStorage.getItem("lastName"));
   const [profileImage, setProfileImage] = useState("");
-  const [newPassword, setNewPassword] = useState(
-    localStorage.getItem("password")
-  );
-  const currentPassword = localStorage.getItem("password");
+  const [newPassword, setNewPassword] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const correctPassword = localStorage.getItem("password");
   const [email, setEmail] = useState(localStorage.getItem("email"));
   const [toastData, setToastData] = useState<ToastData>({
     open: false,
     message: "",
     severity: "error",
   });
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const [showPassword1, setShowPassword1] = useState(false); // State to toggle password visibility
+  const [showPassword2, setShowPassword2] = useState(false); // State to toggle password visibility
 
   const navigate = useNavigate();
 
@@ -51,9 +48,10 @@ const Setting: React.FC = () => {
     const fetchUserData = async () => {
       try {
         const response = await getUserInfo();
-        const { first_name, last_name, profile_image } = response;
+        const { first_name, last_name, profile_image, is_verified } = response;
         setFirstName(first_name);
         setLastName(last_name);
+        setIsActive(is_verified);
         setProfileImage(
           `https://lebasee-backend-production.up.railway.app/${profile_image}`
         );
@@ -68,32 +66,114 @@ const Setting: React.FC = () => {
   const handleSubmit = async (operation: number) => {
     try {
       if (operation === 0) {
-        window.location.reload();
+        setFirstName(localStorage.getItem("firstName"));
+        setLastName(localStorage.getItem("lastName"));
         return;
       }
-      const formData = new FormData();
-      formData.append("first_name", firstName ?? "");
-      formData.append("last_name", lastName ?? "");
-      const response = await putUserName(formData);
-      if (response.status !== 200) {
-        throw new Error();
-      }
-      if (newPassword != currentPassword) {
-        const response = await postUserNewPassword({
-          new_password: newPassword,
-          current_password: currentPassword,
-        });
+
+      let changed = false;
+      if (
+        firstName !== localStorage.getItem("firstName") ||
+        lastName !== localStorage.getItem("lastName")
+      ) {
+        console.log("hi");
+        const formData = new FormData();
+        formData.append("first_name", firstName ?? "");
+        formData.append("last_name", lastName ?? "");
+        const response = await putUserName(formData);
+
         if (response.status !== 200) {
           throw new Error();
         }
-        localStorage.setItem("password", newPassword ?? "");
+        localStorage.setItem("firstName", firstName ?? "");
+        localStorage.setItem("lastName", lastName ?? "");
+        changed = true;
       }
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      if (changed) {
+        console.log("changed");
+        setToastData({
+          open: true,
+          message: "اطلاعات شما با موفقیت به روز شد.",
+          severity: "success",
+        });
+        const customEvent = new Event("refetchUserData");
+        window.dispatchEvent(customEvent);
+        setNewPassword("");
+        setCurrentPassword("");
+        return;
+      }
+
+      if (!changed && newPassword.length === 0) {
+        return;
+      }
+
+      if (correctPassword != currentPassword) {
+        setToastData({
+          open: true,
+          message: "رمز عبور فعلی مطابقت ندارد",
+          severity: "error",
+        });
+        return;
+      }
+
+      const moreThan8 = newPassword.length >= 8;
+      const haveLowerCase = /[a-z]/.test(newPassword);
+      const haveUpperCase = /[A-Z]/.test(newPassword);
+      const haveSymbol = /[^a-zA-Z0-9]/.test(newPassword); // Matches any non-alphanumeric character
+
+      if (!moreThan8) {
+        setToastData({
+          open: true,
+          message: "رمز عبور جدید کمتر از 8 کاراکتر است",
+          severity: "warning",
+        });
+        return;
+      }
+
+      if (!haveLowerCase) {
+        setToastData({
+          open: true,
+          message: "رمز عبور جدید حرف کوچک ندارد",
+          severity: "warning",
+        });
+        return;
+      }
+
+      if (!haveUpperCase) {
+        setToastData({
+          open: true,
+          message: "رمز عبور جدید حرف بزرگ ندارد",
+          severity: "warning",
+        });
+        return;
+      }
+
+      if (!haveSymbol) {
+        setToastData({
+          open: true,
+          message: "رمز عبور جدید فقط شامل حروف است",
+          severity: "warning",
+        });
+        return;
+      }
+
+      const passwordResponse = await postUserNewPassword({
+        new_password: newPassword,
+        current_password: currentPassword,
+      });
+      if (passwordResponse.status !== 204) {
+        throw new Error();
+      }
+      localStorage.setItem("password", newPassword ?? "");
+      setNewPassword("");
+      setCurrentPassword("");
       setToastData({
         open: true,
-        message: "اطلاعات شما با موفقیت به روز شد.",
+        message: "رمز عبور شما با موفقیت عوض شد",
         severity: "success",
       });
+      return;
     } catch (error) {
       const axiosError = error as AxiosError;
       if (axiosError.status === 401) {
@@ -140,6 +220,8 @@ const Setting: React.FC = () => {
             message: "تصویر پروفایل با موفقیت به‌روز شد.",
             severity: "success",
           });
+          const customEvent = new Event("refetchUserData");
+          window.dispatchEvent(customEvent);
         } else {
           throw new Error("Failed to update the profile image.");
         }
@@ -163,22 +245,33 @@ const Setting: React.FC = () => {
     if (isActive) {
       return;
     }
-    const response = await resendVerifyCode(email);
-  }
+    setIsVerifying(true);
+    try {
+      const response = await resendVerifyCode(email);
+      if (response.status === 200) {
+        setIsVerifying(true);
+        setToastData({
+          open: true,
+          message: "ایمیل تایید با موفقیت ارسال شد.",
+          severity: "success",
+        });
+      }
+    } catch (error) {
+      setToastData({
+        open: true,
+        message: "خطا در برقراری ارتباط با سرور.",
+        severity: "error",
+      });
+      setIsVerifying(false);
+    }
+  };
 
   const [isVerifying, setIsVerifying] = useState(false); // Toggle between link and verification fields
   const [code, setCode] = useState(Array(4).fill(""));
 
-
   const handleVerifyCode = async () => {
-    if (!code) {
-      return;
-    }
-
     try {
       const parsedCode = persianToNumeric(code);
-
-      setLoading(true);
       const response = await VerifyCode(parsedCode);
 
       if (response?.status == 200) {
@@ -189,6 +282,7 @@ const Setting: React.FC = () => {
           severity: "success",
         });
         setIsVerifying(false);
+        setIsActive(true);
       }
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -207,8 +301,6 @@ const Setting: React.FC = () => {
           severity: "error",
         });
       }
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -228,6 +320,7 @@ const Setting: React.FC = () => {
           width: "65%",
           height: "100vh",
           mr: 3,
+          // bgcolor: "white",
         }}
       >
         <Typography
@@ -241,22 +334,27 @@ const Setting: React.FC = () => {
         </Typography>
 
         {/* Profile Picture Section */}
-        <Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "relative", // Make the container relative for absolute positioning
+          }}
+        >
           <Avatar
             sx={{
               border: "2px solid #ecf0f1",
               height: 220,
               width: 220,
-              mr: 44,
-              mt: -2,
-              zIndex: 0,
-              position: "relative",
             }}
             src={profileImage}
           />
           <Box
             sx={{
-              transform: "translate(-50%, -50%)",
+              position: "absolute",
+              bottom: 3,
+              mr: 15,
               zIndex: 1,
               backgroundColor: pallete.primary[500],
               width: 35,
@@ -265,8 +363,6 @@ const Setting: React.FC = () => {
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
-              mt: -1.5,
-              mr: "54%",
               borderRadius: 1.5,
               transition: "background-color 0.3s ease",
               "&:hover": {
@@ -284,7 +380,7 @@ const Setting: React.FC = () => {
               />
               <ModeEditOutlinedIcon
                 sx={{
-                  mt: 1,
+                  mt: 1.3,
                   color: "black",
                   cursor: "pointer",
                   width: 25,
@@ -380,8 +476,6 @@ const Setting: React.FC = () => {
               />
             </Grid>
 
-
-
             <Grid item xs={6}>
               {/* Verification Link */}
               <Box sx={{ textAlign: "right", mt: 2 }}>
@@ -401,13 +495,10 @@ const Setting: React.FC = () => {
                         p: 0.5,
                         borderRadius: 1,
                       }}
-                      >
-                    {/* Verification Fields */}
-                    <DigitInput
-                      code={code}
-                      setCode={setCode}
-                      />
-                      </Box>
+                    >
+                      {/* Verification Fields */}
+                      <DigitInput code={code} setCode={setCode} />
+                    </Box>
                     <Button
                       variant="contained"
                       color="primary"
@@ -416,13 +507,12 @@ const Setting: React.FC = () => {
                     >
                       تایید
                     </Button>
-
                   </Box>
                 ) : (
                   <Typography
                     variant="body2"
                     sx={{
-                      color: isActive ? "primary" : "warning.main", // Styled as a link
+                      color: isActive ? pallete.primary[200] : "warning.main", // Styled as a link
                       cursor: "pointer",
                     }}
                     onClick={handleClick}
@@ -433,14 +523,54 @@ const Setting: React.FC = () => {
               </Box>
             </Grid>
 
-
-
-            <Grid item xs={12}>
+            <Grid item xs={6}>
               <CustomTextField
                 fullWidth
-                label="رمز عبور"
+                label="رمز عبور فعلی"
                 variant="filled"
-                type={showPassword ? "text" : "password"} // Toggle type based on state
+                value={currentPassword}
+                type={showPassword1 ? "text" : "password"} // Toggle type based on state
+                // Bind to the newPassword state
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setCurrentPassword(e.target.value)
+                } // Update the password state on change
+                sx={{
+                  bgcolor: pallete.secondary[200],
+                  borderRadius: 1,
+                  "& .MuiInputBase-input": {
+                    ml: 3,
+                  },
+                }}
+                InputProps={{
+                  dir: "ltr", // Align content from left-to-right
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        sx={{
+                          mr: 2,
+                          mb: -2,
+                        }}
+                        onClick={() => setShowPassword1(!showPassword1)} // Toggle visibility on click
+                        edge="end"
+                      >
+                        {showPassword1 ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                InputLabelProps={{
+                  shrink: true, // Keep the label above the input field
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={6}>
+              <CustomTextField
+                fullWidth
+                label="رمز عبور جدید"
+                variant="filled"
+                value={newPassword}
+                type={showPassword2 ? "text" : "password"} // Toggle type based on state
                 // Bind to the newPassword state
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setNewPassword(e.target.value)
@@ -458,12 +588,13 @@ const Setting: React.FC = () => {
                     <InputAdornment position="end">
                       <IconButton
                         sx={{
-                          mr: 6,
+                          mr: 2,
+                          mb: -2,
                         }}
-                        onClick={() => setShowPassword(!showPassword)} // Toggle visibility on click
+                        onClick={() => setShowPassword2(!showPassword2)} // Toggle visibility on click
                         edge="end"
                       >
-                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                        {showPassword2 ? <Visibility /> : <VisibilityOff />}
                       </IconButton>
                     </InputAdornment>
                   ),

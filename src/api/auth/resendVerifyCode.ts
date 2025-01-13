@@ -3,10 +3,9 @@ import baseApi from "../baseApi";
 
 const resendVerifyCode = async (email: string | null) => {
   try {
-    const response = await baseApi.post("/api/auth/users/resend_activation/", {
+    const response = await baseApi.post("/api/auth/send_code/", {
       email: email,
     });
-    console.log(response);
     return response;
   } catch (error) {
     throw error as AxiosError;

@@ -60,7 +60,7 @@ const MainDashboard: React.FC = () => {
         }
       }
     };
-    const interval = setInterval(scrollImages, 20); // Adjust interval for smoothness
+    const interval = setInterval(scrollImages, 30); // Adjust interval for smoothness
     return () => clearInterval(interval);
   }, []);
 
