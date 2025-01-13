@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { ClothType } from "../../../types/types";
 import { Box, Skeleton, Typography } from "@mui/material";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -10,13 +9,19 @@ import "./swiper.css";
 interface ClothSliderProps {
   loading: boolean;
   clothes: ClothType[];
+  selectedCloth: ClothType | undefined;
+  setselectedCloth: (arg0: ClothType | undefined) => void;
 }
 
-const ClothSlider = ({ loading, clothes }: ClothSliderProps) => {
-  const [selectedClothId, setSelectedClothId] = useState<number | null>(null);
-
+const ClothSlider = ({
+  loading,
+  clothes,
+  selectedCloth,
+  setselectedCloth,
+}: ClothSliderProps) => {
   const handleSelect = (id: number) => {
-    setSelectedClothId(id);
+    const selected = clothes.find((x) => x.id === id);
+    setselectedCloth(selected);
   };
 
   return (
@@ -76,7 +81,8 @@ const ClothSlider = ({ loading, clothes }: ClothSliderProps) => {
                 borderRadius: 10,
                 transition: "transform 0.3s ease, box-shadow 0.3s ease",
                 "&:hover": {
-                  transform: selectedClothId === cloth.id ? "" : "scale(1.05)",
+                  transform:
+                    selectedCloth?.id === cloth.id ? "" : "scale(1.05)",
                 },
               }}
               onClick={() => handleSelect(cloth.id)}
@@ -90,13 +96,14 @@ const ClothSlider = ({ loading, clothes }: ClothSliderProps) => {
                   height: "280px",
                   objectFit: "cover",
                   borderRadius: "8px",
-                  transform: selectedClothId === cloth.id ? "scale(1.05)" : "",
+                  transform:
+                    selectedCloth?.id === cloth.id ? "scale(1.05)" : "",
                   border:
-                    selectedClothId === cloth.id
+                    selectedCloth?.id === cloth.id
                       ? "2px solid" + pallete.primary[500]
                       : "none",
                   boxShadow:
-                    selectedClothId === cloth.id
+                    selectedCloth?.id === cloth.id
                       ? "0 0 6px" + pallete.primary[500]
                       : "none",
                 }}

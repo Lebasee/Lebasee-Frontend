@@ -19,6 +19,7 @@ const getUserClothes = async (): Promise<ClothType[]> => {
           id: datas.data.results[i].id,
           image: datas.data.results[i].image,
           caption: datas.data.results[i].caption,
+          is_outfit: datas.data.results[i].is_outfit,
         });
       }
       if (datas.data.next == null) {

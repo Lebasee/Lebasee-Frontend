@@ -32,3 +32,11 @@ export interface ToastData {
   severity: AlertColor;
 }
 
+export interface generatedImage{
+  human_image_url:	string;
+  garment_image_url:	string;
+  description?:	string;
+  num_inference_steps?: number;
+  seed?: number;
+  }
+
