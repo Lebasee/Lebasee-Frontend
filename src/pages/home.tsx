@@ -20,7 +20,7 @@ const HomePage: React.FC = () => {
   const [clothes, setClothes] = useState<ClothType[]>([]);
   const [selectedCloth, setSelectedCloth] = useState<ClothType>();
   const [selectedOutfit, setSelectedOutfit] = useState<ClothType>();
-  const [generatedImage, setGeneratedImage] = useState<generatedImage>();
+  const [generatedImage, setGeneratedImage] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
   const [generating, setGenerating] = useState<boolean>(false);
   const [toastData, setToastData] = useState<ToastData>({
@@ -78,9 +78,11 @@ const HomePage: React.FC = () => {
       };
       setGenerating(true);
       const response = await tryon(data);
+      console.log(response);
       setGeneratedImage(response);
       setGenerating(false);
     } catch (e) {
+      console.log(e);
       setGenerating(false);
       setToastData({
         open: true,
@@ -194,8 +196,8 @@ const HomePage: React.FC = () => {
               />
             ) : (
               <img
-                src={generatedImage?.human_image_url}
-                alt={generatedImage?.description}
+                src={generatedImage}
+                alt={""}
                 style={{
                   boxSizing: "border-box",
                   width: "100%",
