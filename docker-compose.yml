@@ -1,12 +1,11 @@
-version: '3'
+version: '3.8'
 services:
   lebasee-front:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: sajadmrjl/lebasee:latest
     ports:
       - "3000:80"
     environment:
       - NODE_ENV=production
     env_file:
       - .env
+    restart: unless-stopped

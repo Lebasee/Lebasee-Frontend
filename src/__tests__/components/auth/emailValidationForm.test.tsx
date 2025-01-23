@@ -81,6 +81,6 @@ describe("EmailConfirmationForm", () => {
     const cancelButton = screen.getByRole("button", { name: /انصراف/i });
     fireEvent.click(cancelButton);
 
-    expect(window.location.pathname).toBe("/home");
+    expect(window.location.pathname).toBe("/landing");
   });
 });
