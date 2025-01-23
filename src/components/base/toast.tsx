@@ -21,7 +21,6 @@ const Toast: React.FC<ToastProps> = ({ open, message, severity, onClose }) => {
         severity={severity}
         variant="filled"
         sx={{
-          width: "100%",
           "& .MuiAlert-icon": {
             ml: "12px",
             mr: 0,

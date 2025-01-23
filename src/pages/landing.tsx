@@ -38,7 +38,7 @@ const Landing: React.FC = () => {
         scrollToSection={scrollToSection}
         sectionRefs={sectionRefs}
       />
-      <Box
+      {/* <Box
         sx={{ maxWidth: "1063px", width: "100%" }}
         ref={sectionRefs.home}
       >
@@ -73,7 +73,7 @@ const Landing: React.FC = () => {
         ref={sectionRefs.footer}
       >
         <Footer />
-      </Box>
+      </Box> */}
     </Box>
   );
 };

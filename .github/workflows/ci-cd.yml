@@ -71,21 +71,3 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set up Node.js
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18"
-
-      # Deploy to Liara using the version from the build job
-      - name: Deploy to Liara
-        env:
-          LIARA_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
-        run: |
-          npm i -g @liara/cli@7
-          liara deploy --app="lebasee-app" \
-                       --image="${{ secrets.DOCKER_USERNAME }}/lebasee:latest" \
-                       --api-token="$LIARA_TOKEN" \
-                       --platform=docker \
-                       --port=80 \
-                       --no-app-logs
