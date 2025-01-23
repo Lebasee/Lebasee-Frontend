@@ -63,10 +63,6 @@ const LoginForm: React.FC = () => {
       const response = await Login(user);
 
       if (response?.status === 200) {
-        localStorage.setItem("access", response.data.access);
-        localStorage.setItem("refresh", response.data.refresh);
-        localStorage.setItem("email", email);
-        localStorage.setItem("password", user.password ?? "");
         setToastData({
           open: true,
           message: "ورود موفقیت آمیز بود",

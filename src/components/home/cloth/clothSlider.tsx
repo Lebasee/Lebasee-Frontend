@@ -8,6 +8,7 @@ import "./swiper.css";
 
 interface ClothSliderProps {
   loading: boolean;
+  itemPerView: number;
   clothes: ClothType[];
   selectedCloth: ClothType | undefined;
   setselectedCloth: (arg0: ClothType | undefined) => void;
@@ -17,6 +18,7 @@ const ClothSlider = ({
   loading,
   clothes,
   selectedCloth,
+  itemPerView,
   setselectedCloth,
 }: ClothSliderProps) => {
   const handleSelect = (id: number) => {
@@ -29,7 +31,7 @@ const ClothSlider = ({
       modules={[Navigation, A11y]}
       navigation
       spaceBetween={loading ? 16 : 0}
-      slidesPerView={3}
+      slidesPerView={itemPerView}
       className={`custom-swiper ${!loading && "padding"}`}
     >
       {loading ? (

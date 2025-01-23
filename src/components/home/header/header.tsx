@@ -32,7 +32,7 @@ const Header = () => {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          p: 1,
+          p: { md: 1, xs: "8px 20px" },
           maxWidth: "1226px",
           margin: "auto",
         }}
