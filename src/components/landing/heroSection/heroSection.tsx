@@ -1,35 +1,37 @@
 import { Box, Button, Typography } from "@mui/material";
 import React from "react";
 // import { pallete } from "../../../styles/pallete.m";
-import ModelViewer from "../../base/SketchfabEmbed";
+import { useNavigate } from "react-router-dom";
+import LoginImage from "../../../assets/LoginImage.png";
 
 const HeroSection: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <Box
       data-testid="hero-section"
       sx={{
-        mt: "105px",
+        mt: { xs: "95px", md: "105px" },
         display: "flex",
-        flexDirection: "row",
-        height: "550px",
-        maxWidth: "1063px",
-        width: "100%",
+        flexDirection: { xs: "column", md: "row" },
+        minHeight: { xs: "450px", md: "550px" },
+        px: { xs: 2, md: 0 },
+        gap: { xs: 2, md: 1 },
       }}
     >
       <Box
         sx={{
-          flexGrow: 1,
-          height: "100%",
           display: "flex",
           flexDirection: "column",
           alignItems: "flex-start",
           justifyContent: "center",
-          gap: "30px",
+          gap: { xs: 1, md: 4 },
         }}
       >
         <Typography
           variant="h1"
           color="white"
+          sx={{ fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" } }}
         >
           تجربه‌ای نوین در انتخاب لباس
         </Typography>
@@ -37,42 +39,32 @@ const HeroSection: React.FC = () => {
           variant="body1"
           fontWeight="bold"
           color="white"
+          sx={{ fontSize: { xs: "1rem", md: "1.125rem" } }}
         >
-          لباس‌های خود را بر روی مدل سه‌بعدی بدن خود ببینید
+          لباس‌های خود را بر روی عکس دلخواه خود ببینید
         </Typography>
-        <Button variant="contained">مشاهده‌ی دموی رایگان</Button>
+        <Button
+          variant="contained"
+          onClick={() => navigate("/auth/login")}
+        >
+          شروع کنید
+        </Button>
       </Box>
       <Box
         sx={{
-          flexShrink: 1,
-          height: "100%",
+          flex: 1,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          width: "100%",
+          height: "100%",
         }}
       >
-        <Box
-          sx={{
-            mb: -12,
-            height: 500,
-            width: 400,
-          }}
-        >
-          <ModelViewer />
-        </Box>
-        {/* <Box
-          bgcolor={pallete.secondary[50]}
-          width="415px"
-          height="415px"
-          borderRadius="6px"
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Typography variant="body2">نمونه مدل</Typography>
-        </Box> */}
+        <img
+          src={LoginImage}
+          alt="Login"
+          style={{ objectFit: "contain", width: "100%", height: "100%" }}
+        />
       </Box>
     </Box>
   );

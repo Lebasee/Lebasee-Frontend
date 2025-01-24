@@ -11,7 +11,7 @@ import { ClothType, ToastData } from "../../../types/types";
 import getUserClothes from "../../../api/dashboard/getUserClothes";
 import { pallete } from "../../../styles/pallete.m";
 import AddIcon from "@mui/icons-material/Add";
-import postUserCloth from "../../../api/dashboard/postUserCloth";
+import postUserCloth from "../../../api/dashboard/postUserCloth"
 import Toast from "../../base/toast";
 import FullScreenLoader from "../../base/FullScreenLoader";
 import CustomGallery from "./CustomGallery";

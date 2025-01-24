@@ -11,30 +11,34 @@ const Feature: React.FC<featureProps> = ({ text }) => {
   return (
     <Box
       sx={{
-        height: "330px",
-        width: "330px",
-        bgcolor: `${pallete.secondary[800]}`,
+        height: { xs: 280, md: 330 },
+        width: { xs: "100%", md: 330 },
+        maxWidth: 330,
+        bgcolor: pallete.secondary[800],
         borderRadius: "6px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "space-between",
-        p: "20px 30px",
-        boxShadow: `8px 8px 20px 0px`,
+        p: { xs: 2, md: "20px 30px" },
+        boxShadow: 8,
       }}
     >
       <Box
         sx={{
-          height: "200px",
-          width: "200px",
-          bgcolor: `${pallete.secondary[50]}`,
+          height: { xs: 200, md: 200 },
+          width: { xs: "80%", md: 200 },
+          bgcolor: pallete.secondary[50],
           borderRadius: "6px",
         }}
       ></Box>
       <Typography
         textAlign="center"
         color="white"
-        variant="body1"
+        sx={{
+          fontSize: { xs: "0.875rem", md: "1rem" },
+          px: 1,
+        }}
       >
         {text}
       </Typography>
