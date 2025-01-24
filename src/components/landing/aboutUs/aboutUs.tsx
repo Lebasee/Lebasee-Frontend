@@ -7,41 +7,50 @@ const AboutUs: React.FC = () => {
     <Box
       data-testid="aboutUs"
       sx={{
-        maxWidth: "1063px",
         width: "100%",
-        height: "550px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
+        py: { xs: 4, md: 8 },
+        px: { xs: 2, md: 0 },
       }}
     >
       <Typography
         color="white"
         variant="h3"
+        sx={{
+          mb: { xs: 3, md: 5 },
+          fontSize: { xs: "1.5rem", md: "2rem" },
+          textAlign: "center",
+        }}
       >
         درباره ما
       </Typography>
       <Box
         sx={{
           display: "flex",
-          flexDirection: "row",
-          width: "100%",
+          flexDirection: { xs: "column", md: "row" },
+          gap: { xs: 3, md: 6 },
           alignItems: "center",
-          justifyContent: "space-between",
         }}
       >
-        <img
-          height="380px"
-          width="525px"
+        <Box
+          component="img"
           src={AboutUsBanner}
           alt="درباره ما"
+          sx={{
+            width: { xs: "100%", md: 525 },
+            height: { xs: 250, md: 380 },
+            objectFit: "cover",
+            borderRadius: 2,
+          }}
         />
-        <Box>
+        <Box sx={{ flex: 1 }}>
           <Typography
             variant="body1"
             color="white"
-            sx={{ mb: 5 }}
+            sx={{
+              mb: { xs: 3, md: 5 },
+              fontSize: { xs: "0.875rem", md: "1rem" },
+              textAlign: { xs: "center", md: "right" },
+            }}
           >
             لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با
             استفاده از طراحان گرافیک است.
@@ -51,7 +60,6 @@ const AboutUs: React.FC = () => {
               display: "grid",
               gridTemplateColumns: "repeat(2, 1fr)",
               gap: 2,
-              flex: "1 1 0",
             }}
           >
             <Counter

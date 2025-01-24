@@ -2,16 +2,18 @@ import React from "react";
 import { Box } from "@mui/material";
 import CheckroomIcon from "@mui/icons-material/Checkroom";
 import PersonIcon from "@mui/icons-material/Person";
-import StraightenIcon from "@mui/icons-material/Straighten";
 import { StepIconProps } from "@mui/material/StepIcon";
+import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { pallete } from "../../../styles/pallete.m";
 
 const steps = [
-  { label: "ابعاد بدن خود را وارد کنید", icon: StraightenIcon },
-  { label: "مدل سه‌بعدی منحصر به فرد خود را بسازید", icon: PersonIcon },
-  { label: "لباس‌ها را بر روی مدل خود امتحان کنید", icon: CheckroomIcon },
+  { label: "عکس خود را بارگذاری کنید.", icon: CameraAltIcon },
+  {
+    label: "لباس‌هایی که می‌خواهید امتحان کنید اضافه کنید.",
+    icon: CheckroomIcon,
+  },
+  { label: "تصویر نهایی را ببینید.", icon: PersonIcon },
 ];
-
 const CustomStepIcon: React.FC<StepIconProps> = ({
   icon,
   active = false,
@@ -25,8 +27,8 @@ const CustomStepIcon: React.FC<StepIconProps> = ({
   return (
     <Box
       sx={{
-        width: "80px",
-        height: "80px",
+        width: { md: "80px", xs: "60px" },
+        height: { md: "80px", xs: "60px" },
         borderRadius: "50%",
         backgroundColor: pallete.secondary[800],
         color:
@@ -42,7 +44,7 @@ const CustomStepIcon: React.FC<StepIconProps> = ({
         ...sx,
       }}
     >
-      <StepIcon sx={{ fontSize: "36px", color: "inherit" }} />
+      <StepIcon sx={{ fontSize: { md: "36", xs: "25" }, color: "inherit" }} />
     </Box>
   );
 };

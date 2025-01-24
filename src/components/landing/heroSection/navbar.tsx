@@ -2,18 +2,20 @@ import React from "react";
 import {
   AppBar,
   Box,
-  Typography,
   Container,
   Button,
   Drawer,
   IconButton,
   createTheme,
   ThemeProvider,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import LoginIcon from "@mui/icons-material/Login";
 import { pallete } from "../../../styles/pallete.m";
 import { useNavigate } from "react-router-dom";
-import MenuIcon from "@mui/icons-material/Menu";
+import MenuOpenIcon from "@mui/icons-material/MenuOpen";
+import Logo from "../../../assets/logo_primary.svg";
 
 interface NavbarProps {
   scrollToSection: (ref: React.RefObject<HTMLElement>) => void;
@@ -33,9 +35,12 @@ const sections = [
 const Navbar: React.FC<NavbarProps> = ({ scrollToSection, sectionRefs }) => {
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const mainTheme = createTheme({
-    direction: "ltr",
+  const parentTheme = useTheme(); // Get the parent theme
+  const mergedTheme = createTheme({
+    ...parentTheme, // Spread the parent theme properties
+    direction: "ltr", // Add your custom override
   });
+  const isMobile = useMediaQuery("(max-width:600px)");
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -43,8 +48,8 @@ const Navbar: React.FC<NavbarProps> = ({ scrollToSection, sectionRefs }) => {
 
   const drawer = (
     <Box
+      data-testid="navbar"
       sx={{
-        p: 2,
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",
@@ -52,18 +57,51 @@ const Navbar: React.FC<NavbarProps> = ({ scrollToSection, sectionRefs }) => {
         bgcolor: pallete.secondary[800],
       }}
     >
-      {sections.map((section) => (
-        <Button
-          key={section.id}
-          onClick={() => {
-            scrollToSection(sectionRefs[section.id]);
-            setMobileOpen(false);
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          width: "100%",
+          height: "64px",
+          p: 2,
+          bgcolor: pallete.secondary[900],
+        }}
+      >
+        <img
+          src={Logo}
+          alt="لباسی"
+          style={{
+            height: "25px", // Adjust the height as needed
+            width: "auto", // Adjust the width as needed
+            color: "white", // If you want to change the color of the SVG
           }}
-          sx={{ color: "white", width: "100%", justifyContent: "flex-start" }}
+        />
+        <IconButton
+          onClick={handleDrawerToggle}
+          sx={{
+            color: "white",
+            transform: mobileOpen ? "rotate(0deg)" : "rotate(180deg)",
+            transition: "transform 0.2s ease-in-out",
+          }}
         >
-          {section.title}
-        </Button>
-      ))}
+          <MenuOpenIcon />
+        </IconButton>
+      </Box>
+      <Box sx={{ p: 2, width: "100%" }}>
+        {sections.map((section) => (
+          <Button
+            key={section.id}
+            onClick={() => {
+              scrollToSection(sectionRefs[section.id]);
+              setMobileOpen(false);
+            }}
+            sx={{ color: "white", width: "100%", justifyContent: "flex-start" }}
+          >
+            {section.title}
+          </Button>
+        ))}
+      </Box>
     </Box>
   );
 
@@ -80,7 +118,7 @@ const Navbar: React.FC<NavbarProps> = ({ scrollToSection, sectionRefs }) => {
           maxWidth: "100%",
           left: 0,
           right: 0,
-          py: 1,
+          py: 1.5,
         }}
       >
         <Container
@@ -101,22 +139,17 @@ const Navbar: React.FC<NavbarProps> = ({ scrollToSection, sectionRefs }) => {
               color: "white",
             }}
           >
-            <MenuIcon />
+            <MenuOpenIcon />
           </IconButton>
-
-          <Typography
-            variant="h4"
-            component="a"
-            href="/"
-            sx={{
-              color: "white",
-              textDecoration: "none",
-              fontSize: { xs: "1.5rem", md: "2rem" },
+          <img
+            src={Logo}
+            alt="لباسی"
+            style={{
+              height: isMobile ? "25px" : "35px", // Adjust the height as needed
+              width: "auto", // Adjust the width as needed
+              color: "white", // If you want to change the color of the SVG
             }}
-          >
-            لباسی
-          </Typography>
-
+          />
           <Box
             sx={{
               display: { xs: "none", md: "flex" },
@@ -138,23 +171,33 @@ const Navbar: React.FC<NavbarProps> = ({ scrollToSection, sectionRefs }) => {
             ))}
           </Box>
 
-          <Button
-            variant="contained"
-            onClick={() => navigate("/auth/login")}
-            sx={{
-              py: 1,
-              px: { xs: 2, md: 3 },
-              fontSize: { xs: "0.75rem", md: "0.875rem" },
-            }}
-          >
-            ورود
-            <LoginIcon
-              sx={{ mr: 1, fontSize: { xs: "1rem", md: "1.25rem" } }}
-            />
-          </Button>
+          {isMobile ? (
+            <IconButton onClick={() => navigate("/auth/login")}>
+              <LoginIcon
+                sx={{
+                  color: "white",
+                }}
+              />
+            </IconButton>
+          ) : (
+            <Button
+              variant="contained"
+              onClick={() => navigate("/auth/login")}
+              sx={{
+                py: 1,
+                px: { xs: 0, md: 3 },
+                fontSize: { xs: "0.75rem", md: "0.875rem" },
+              }}
+            >
+              ورود
+              <LoginIcon
+                sx={{ mr: 1, fontSize: { xs: "1rem", md: "1.25rem" } }}
+              />
+            </Button>
+          )}
         </Container>
       </AppBar>
-      <ThemeProvider theme={mainTheme}>
+      <ThemeProvider theme={mergedTheme}>
         <Drawer
           variant="temporary"
           open={mobileOpen}
@@ -166,7 +209,7 @@ const Navbar: React.FC<NavbarProps> = ({ scrollToSection, sectionRefs }) => {
             display: { xs: "block", md: "none" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
-              width: 240,
+              width: 200,
               bgcolor: pallete.secondary[800],
             },
           }}

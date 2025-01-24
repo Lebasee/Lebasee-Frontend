@@ -1,9 +1,10 @@
-import { Avatar, Box, IconButton, Typography } from "@mui/material";
+import { Avatar, Box, IconButton } from "@mui/material";
 import { pallete } from "../../../styles/pallete.m";
 import { useEffect, useState } from "react";
 import PopupMenu from "./popupMenu";
 import getUserInfo from "../../../api/dashboard/getUserInfo";
 import { User } from "../../../types/types";
+import Logo from "../../../assets/logo_primary.svg";
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -37,13 +38,15 @@ const Header = () => {
           margin: "auto",
         }}
       >
-        <Typography
-          variant="h4"
-          fontWeight={700}
-          sx={{ color: pallete.primary[100] }}
-        >
-          لباسی
-        </Typography>
+        <img
+          src={Logo}
+          alt="لباسی"
+          style={{
+            height: "25px", // Adjust the height as needed
+            width: "auto", // Adjust the width as needed
+            color: "white", // If you want to change the color of the SVG
+          }}
+        />
         <IconButton
           size="small"
           onClick={handleClick}

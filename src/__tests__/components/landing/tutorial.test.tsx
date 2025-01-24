@@ -5,12 +5,10 @@ import "@testing-library/jest-dom";
 describe("Tutorial", () => {
   test("renders the Tutorial component", () => {
     render(<Tutorial />);
-    expect(screen.getByText(/ابعاد بدن خود را وارد کنید/i)).toBeInTheDocument();
+    expect(screen.getByText(/عکس خود را بارگذاری کنید./i)).toBeInTheDocument();
     expect(
-      screen.getByText(/مدل سه‌بعدی منحصر به فرد خود را بسازید/i)
+      screen.getByText(/لباس‌هایی که می‌خواهید امتحان کنید اضافه کنید./i)
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(/لباس‌ها را بر روی مدل خود امتحان کنید/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/تصویر نهایی را ببینید./i)).toBeInTheDocument();
   });
 });
