@@ -221,4 +221,5 @@ const Navbar: React.FC<NavbarProps> = ({ scrollToSection, sectionRefs }) => {
   );
 };
 
+
 export default Navbar;
