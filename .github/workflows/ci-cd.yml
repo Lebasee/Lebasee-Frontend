@@ -67,3 +67,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Copy docker-compose.yaml to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.PRODUCTION_SERVER }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "./docker-compose.yml"
+          target: "~/front"
+      
+      - name: Copy .env to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.PRODUCTION_SERVER }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "./.env"
+          target: "~/front"
+
+      - name: SSH into VPS and deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PRODUCTION_SERVER }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd ~/front
+            docker compose down
+            docker-compose pull  # Pull the latest image
+            docker-compose up -d  # Restart with the new image
