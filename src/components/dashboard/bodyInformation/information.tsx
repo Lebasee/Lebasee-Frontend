@@ -105,6 +105,7 @@ const Information: React.FC = () => {
         display: "flex",
         flexDirection: "row",
         justifyContent: "center",
+        p: "25px",
         height: "100vh",
         width: "100%",
       }}

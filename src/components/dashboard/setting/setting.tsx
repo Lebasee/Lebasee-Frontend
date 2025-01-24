@@ -310,6 +310,7 @@ const Setting: React.FC = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        p: "25px",
         flexDirection: "row",
         width: "100%",
         height: "100vh",
@@ -317,10 +318,9 @@ const Setting: React.FC = () => {
     >
       <Box
         sx={{
-          width: "65%",
+          width: "100%",
           height: "100vh",
           mr: 3,
-          // bgcolor: "white",
         }}
       >
         <Typography
@@ -642,12 +642,6 @@ const Setting: React.FC = () => {
         </Box>
       </Box>
 
-      <Box
-        sx={{
-          width: "35%",
-          height: "100%",
-        }}
-      ></Box>
     </Box>
   );
 };

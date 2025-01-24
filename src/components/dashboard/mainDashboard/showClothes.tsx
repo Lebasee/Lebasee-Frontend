@@ -1,4 +1,4 @@
-import { Box, Typography, Skeleton } from "@mui/material";
+import { Box, Typography, Skeleton, Grid, useMediaQuery } from "@mui/material";
 import { pallete } from "../../../styles/pallete.m";
 import { useEffect, useState, useRef } from "react";
 import Cloth from "./cloth";
@@ -11,6 +11,21 @@ const ShowClothes: React.FC = () => {
   const [fadeIn, setFadeIn] = useState(true);
   const [clothes, setClothes] = useState<ClothType[]>([]);
   const hasFetchedData = useRef(false); // Ensure fetchUserData runs only once
+
+  const isSmallScreen = useMediaQuery("(max-width: 768px)");
+  const isXSmallScreen = useMediaQuery("(max-width: 500px)");
+  const isMediumScreen = useMediaQuery("(min-width: 1025px");
+  const isLargeScreen = useMediaQuery("(min-width: 1460px)");
+
+  const chunkArray = (arr: any[], size: number) => {
+    const chunks = [];
+    for (let i = 0; i < arr.length; i += size) {
+      chunks.push(arr.slice(i, i + size));
+    }
+    return chunks;
+  };
+
+  const clothesChunks = chunkArray(clothes, isMediumScreen ? 3 : 4);
 
   // Fetch user clothes data
   useEffect(() => {
@@ -35,7 +50,7 @@ const ShowClothes: React.FC = () => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % clothes.length);
         setFadeIn(true);
       }, 800);
-    }, 5000);
+    }, 1000);
 
     return () => clearInterval(interval); // Cleanup interval on unmount
   }, [clothes.length]);
@@ -48,12 +63,15 @@ const ShowClothes: React.FC = () => {
     }, 800);
   };
 
-  const getNextIndex = (index: number) => (index + 1) % clothes.length;
+  const currentClothes = clothes.slice(currentIndex, currentIndex + 3);
+  const displayClothes =
+    currentClothes.length < 3
+      ? [...currentClothes, ...clothes.slice(0, 3 - currentClothes.length)]
+      : currentClothes;
 
   return (
     <Box
       sx={{
-        maxWidth: "1063px",
         width: "100%",
         height: "100%",
         display: "flex",
@@ -74,59 +92,47 @@ const ShowClothes: React.FC = () => {
       >
         لباس‌های شما
       </Typography>
-      <Box
+      <Grid
+        container
+        spacing={2}
         sx={{
+          width: "100%",
           display: "flex",
           justifyContent: "center",
-          width: "100%",
-          gap: "50px",
         }}
       >
-        {/* Show skeleton loader for each clothing item */}
-        {loading ? (
-          <>
-            <Skeleton
-              variant="rectangular"
-              width={230}
-              height={230}
-              sx={{ borderRadius: 3 }}
-            />
-            <Skeleton
-              variant="rectangular"
-              width={230}
-              height={230}
-              sx={{ borderRadius: 3 }}
-            />
-            <Skeleton
-              variant="rectangular"
-              width={230}
-              height={230}
-              sx={{ borderRadius: 3 }}
-            />
-          </>
-        ) : (
-          <>
-            <Cloth
-              image={clothes[currentIndex]?.image as string | undefined}
-              fadeIn={fadeIn}
-            />
-            <Cloth
-              image={
-                clothes[getNextIndex(currentIndex)]?.image as string | undefined
-              }
-              fadeIn={fadeIn}
-            />
-            <Cloth
-              image={
-                clothes[getNextIndex(getNextIndex(currentIndex))]?.image as
-                  | string
-                  | undefined
-              }
-              fadeIn={fadeIn}
-            />
-          </>
-        )}
-      </Box>
+        {/* Show skeleton loader or loaded clothes */}
+        {loading
+          ? Array.from({ length: isMediumScreen ? 3 : 4 }).map((_, index) => (
+              <Grid
+                item
+                xs={6} // 2 items per row on small screens
+                md={4} // 3 items per row on medium/large screens
+                key={index}
+              >
+                <Skeleton
+                  variant="rectangular"
+                  sx={{
+                    width: "100%",
+                    aspectRatio: "1", // Ensures the skeletons are square
+                    borderRadius: 3,
+                  }}
+                />
+              </Grid>
+            ))
+          :
+          displayClothes.map((cloth, index) => (
+            <Grid
+              item
+              xs={12} // Full-width on small screens
+              sm={6} // 2 items per row on medium screens
+              md={4} // 3 items per row on large screens
+              key={index}
+            >
+              <Cloth image={cloth.image as string | undefined} fadeIn={true} />
+            </Grid>
+          ))}
+      </Grid>
       <Box
         sx={{
           display: "flex",

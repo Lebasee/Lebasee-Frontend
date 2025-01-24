@@ -8,9 +8,10 @@ interface ClothesApiResponse {
   is_outfit: boolean | null;
 }
 
-const getUserOutfits = async (): Promise<ClothType[]> => {
+const getUserTryons = async (): Promise<ClothType[]> => {
   try {
-    const response = await baseApi.get<ClothesApiResponse>("/api/clothes/");
+    const response = await baseApi.get<ClothesApiResponse>("/api/tryon-logs/");
+    console.log(response);
     let images: ClothType[] = [];
     let datas = response;
     let j = 2;
@@ -37,4 +38,4 @@ const getUserOutfits = async (): Promise<ClothType[]> => {
   }
 };
 
-export default getUserOutfits;
+export default getUserTryons;

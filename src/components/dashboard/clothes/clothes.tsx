@@ -12,7 +12,6 @@ import getUserClothes from "../../../api/dashboard/getUserClothes";
 import { pallete } from "../../../styles/pallete.m";
 import AddIcon from "@mui/icons-material/Add";
 import postUserCloth from "../../../api/dashboard/postUserCloth";
-import "react-image-lightbox/style.css";
 import Toast from "../../base/toast";
 import FullScreenLoader from "../../base/FullScreenLoader";
 import CustomGallery from "./CustomGallery";
@@ -144,12 +143,12 @@ const Clothes: React.FC = () => {
 
       {firstLoading ? (
         <ImageList cols={getCols()} gap={16}>
-          {Array.from({ length: 8 }).map((_, index) => (
+          {Array.from({ length: 24 }).map((_, index) => (
             <ImageListItem key={index}>
               <Skeleton
                 variant="rectangular"
                 width="100%"
-                height={200}
+                height={300}
                 sx={{ borderRadius: 2 }}
               />
               <Skeleton variant="text" width="60%" sx={{ mt: 1 }} />
