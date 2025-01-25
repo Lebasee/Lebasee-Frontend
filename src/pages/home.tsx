@@ -4,6 +4,7 @@ import {
   CircularProgress,
   Skeleton,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { pallete } from "../styles/pallete.m";
 import Header from "../components/home/header/header";
@@ -29,6 +30,8 @@ const HomePage: React.FC = () => {
     message: "",
     severity: "error",
   });
+
+  const isMobile = useMediaQuery("(max-width:600px)");
 
   useEffect(() => {
     const fetchClothes = async () => {
@@ -97,8 +100,7 @@ const HomePage: React.FC = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: "100vh",
-        justifyContent: "space-between",
+        minHeight: "100vh",
         overflow: "hidden",
         backgroundColor: pallete.secondary[900],
       }}
@@ -106,118 +108,154 @@ const HomePage: React.FC = () => {
       <Header />
       <Box
         sx={{
-          maxWidth: "1226px",
           width: "100%",
-          height: " 100%",
+          flex: 1,
           margin: "auto",
-          padding: "16px",
+          px: { xs: 1, sm: 2 },
+          py: 2,
           display: "flex",
-          justifyContent: "space-between",
+          flexDirection: { xs: "column", md: "row" },
+          gap: { xs: 2, md: 4 },
         }}
       >
-        <Box sx={{ width: "60%", height: " 100%", p: "2rem 0" }}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              mb: "1rem",
-            }}
-          >
-            <Typography
-              variant="h5"
-              color="white"
-            >
-              استایل های شما
-            </Typography>
-            <Button
-              variant="outlined"
-              href="/dashboard/styles"
-            >
-              استایل جدید
-            </Button>
-          </Box>
-          <ClothSlider
-            clothes={outfits}
-            loading={loading}
-            selectedCloth={selectedOutfit}
-            setselectedCloth={setSelectedOutfit}
-          />
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              mb: "1rem",
-              mt: "2rem",
-            }}
-          >
-            <Typography
-              variant="h5"
-              color="white"
-            >
-              لباس های شما
-            </Typography>
-            <Button
-              variant="outlined"
-              href="/dashboard/clothes"
-            >
-              لباس جدید
-            </Button>
-          </Box>
-          <ClothSlider
-            clothes={clothes}
-            loading={loading}
-            selectedCloth={selectedCloth}
-            setselectedCloth={setSelectedCloth}
-          />
-        </Box>
+        {/* Left Section */}
         <Box
           sx={{
-            width: "35%",
-            height: " 100%",
-            p: "2rem 0",
+            width: { xs: "90%", md: "60%" },
+            display: "flex",
+            flexDirection: "column",
+            m: "auto",
+            gap: 3,
+          }}
+        >
+          {/* Outfits Section */}
+          <Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mb: 2,
+                flexWrap: "wrap",
+                gap: 1,
+              }}
+            >
+              <Typography
+                variant="h5"
+                color="white"
+              >
+                استایل های شما
+              </Typography>
+              <Button
+                variant="outlined"
+                href="/dashboard/styles"
+                size="small"
+                sx={{ whiteSpace: "nowrap" }}
+              >
+                استایل جدید
+              </Button>
+            </Box>
+            <ClothSlider
+              itemPerView={isMobile ? 1 : 3}
+              clothes={outfits}
+              loading={loading}
+              selectedCloth={selectedOutfit}
+              setselectedCloth={setSelectedOutfit}
+            />
+          </Box>
+
+          {/* Clothes Section */}
+          <Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mb: 2,
+                flexWrap: "wrap",
+                gap: 1,
+              }}
+            >
+              <Typography
+                variant="h5"
+                color="white"
+              >
+                لباس های شما
+              </Typography>
+              <Button
+                variant="outlined"
+                href="/dashboard/clothes"
+                size="small"
+                sx={{ whiteSpace: "nowrap" }}
+              >
+                لباس جدید
+              </Button>
+            </Box>
+            <ClothSlider
+              itemPerView={isMobile ? 1 : 3}
+              clothes={clothes}
+              loading={loading}
+              selectedCloth={selectedCloth}
+              setselectedCloth={setSelectedCloth}
+            />
+          </Box>
+        </Box>
+
+        {/* Right Section */}
+        <Box
+          sx={{
+            width: isMobile ? "90%" : "100%",
+            display: "flex",
+            flexDirection: "column",
+            m: "auto",
+            gap: 2,
           }}
         >
           <Box
             sx={{
               width: "100%",
-              minHeight: 500,
-              borderRadius: "8px",
+              borderRadius: 2,
+              overflow: "hidden",
+              position: "relative",
+              aspectRatio: "3/4",
+              bgcolor: pallete.secondary[800],
             }}
           >
             {generating || !generatedImage ? (
               <Skeleton
                 variant="rectangular"
                 width="100%"
-                height="500px"
+                height="100%"
                 animation="wave"
-                sx={{ borderRadius: "8px", bgcolor: pallete.secondary[800] }}
               />
             ) : (
               <img
                 src={generatedImage}
-                alt={""}
+                alt="Generated result"
                 style={{
-                  boxSizing: "border-box",
                   width: "100%",
                   height: "100%",
                   objectFit: "cover",
-                  borderRadius: "8px",
                 }}
                 loading="lazy"
               />
             )}
           </Box>
+
           <Button
             variant="contained"
             fullWidth
-            sx={{ mt: "10px" }}
+            size="large"
             onClick={handleClick}
+            disabled={generating}
+            sx={{
+              py: 1.5,
+              fontSize: { xs: "0.875rem", sm: "1rem" },
+            }}
           >
             {generating ? (
               <CircularProgress
-                size="32.5px"
+                size={24}
                 sx={{ color: "#ffffff" }}
               />
             ) : (
@@ -226,6 +264,7 @@ const HomePage: React.FC = () => {
           </Button>
         </Box>
       </Box>
+
       <Toast
         message={toastData.message}
         open={toastData.open}

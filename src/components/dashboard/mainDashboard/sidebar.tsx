@@ -27,9 +27,9 @@ const Sidebar: React.FC = () => {
 
   const location = useLocation();
   const isSmallScreen = useMediaQuery("(max-width: 768px)");
-  const isXSmallScreen = useMediaQuery("(max-width: 500px)");
   const isMediumScreen = useMediaQuery("(min-width: 1025px");
   const isLargeScreen = useMediaQuery("(min-width: 1460px)");
+  const isSmallScreenY = useMediaQuery("(max-height: 600px)");
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -74,12 +74,6 @@ const Sidebar: React.FC = () => {
   const tabs = [
     { name: "داشبود", id: 1, icon: DashboardIcon, href: "" },
     {
-      name: isLargeScreen ? "ابعاد بدن" : "ابعاد",
-      id: 2,
-      icon: PersonOutlineIcon,
-      href: "/info",
-    },
-    {
       name: isLargeScreen ? "استایل ها" : "استایل",
       id: 6,
       icon: AccessibilityNewIcon,
@@ -91,13 +85,19 @@ const Sidebar: React.FC = () => {
       icon: CheckroomIcon,
       href: "/clothes",
     },
-    { name: "تنظیمات", id: 3, icon: SettingsIcon, href: "/setting" },
     {
       name: isLargeScreen ? "ترکیب ها" : "ترکیب",
       id: 7,
       icon: BookmarksIcon,
       href: "/tryons",
     },
+    {
+      name: isLargeScreen ? "ابعاد بدن" : "ابعاد",
+      id: 2,
+      icon: PersonOutlineIcon,
+      href: "/info",
+    },
+    { name: "تنظیمات", id: 3, icon: SettingsIcon, href: "/setting" },
     { name: "خروج", id: 5, icon: LogoutIcon, href: "/logout" },
   ];
 
@@ -219,8 +219,41 @@ const Sidebar: React.FC = () => {
         <Grid
           container
           spacing={isSmallScreen ? 1 : 2}
-          sx={{ width: "100%", position: "relative" }}
+          sx={{ width: "100%", position: "relative", alignItems: "center" }}
         >
+          {isSmallScreen && (
+            <Grid item xs={12} key={12}>
+              <ButtonBase
+                onClick={() => navigate("/home")} // Navigate to home
+                sx={{
+                  width: "100%", // Ensure the clickable area spans the full width
+                  display: "block",
+                  borderRadius: "8px", // Apply rounded corners to the entire button
+                  mt: isSmallScreenY ? 1: 3,
+                  backgroundColor: "transparent",
+                  "&:hover": {
+                    backgroundColor: "#34495e",
+                  },
+                  "&:active": {
+                    transform: "scale(0.95)", // Scale down slightly on click
+                  },
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "100%",
+                    fontSize: 10,
+                    p: 1,
+                  }}
+                >
+                  <ArrowForwardIcon sx={{ fontSize: 24, color: "white" }} />
+                </Box>
+              </ButtonBase>
+            </Grid>
+          )}
           {tabs.map((tab) => {
             const isActive = location.pathname === `/dashboard${tab.href}`;
             return (
@@ -252,7 +285,7 @@ const Sidebar: React.FC = () => {
                       justifyContent: "center",
                       width: "100%",
                       fontSize: 10,
-                      p: 2,
+                      p: isSmallScreenY ? 1 : 2,
                     }}
                   >
                     <tab.icon

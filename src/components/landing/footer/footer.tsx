@@ -1,4 +1,4 @@
-import { Box, Divider, Link, Typography } from "@mui/material";
+import { Box, Divider, Link, Typography, useTheme } from "@mui/material";
 import { pallete } from "../../../styles/pallete.m";
 import EmailIcon from "@mui/icons-material/Email";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
@@ -8,254 +8,233 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import XIcon from "@mui/icons-material/X";
 import { toPersianNumber } from "../../../utils/toPersianNumber";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const Footer = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
   return (
     <Box
       data-testid="footer"
       sx={{
         width: "100%",
-        height: "340px",
         bgcolor: pallete.primary[500],
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
+        pt: { xs: 4, md: 6 },
+        pb: { xs: 2, md: 4 },
       }}
     >
       <Box
         sx={{
-          width: "100%",
-          maxWidth: "1063px",
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "space-evenly",
+          maxWidth: 1280,
+          mx: "auto",
+          px: { xs: 2, md: 4 },
+          color: "white",
         }}
       >
+        {/* Main Content */}
         <Box
           sx={{
-            height: "90%",
-            width: "100%",
-            p: 5,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "repeat(2, 1fr)",
+              md: "repeat(4, 1fr)",
+            },
+            gap: { xs: 4, md: 6 },
+            pb: { xs: 3, md: 6 },
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "10px",
-            }}
-          >
+          {/* Brand Column */}
+          <Box sx={{ textAlign: isMobile ? "center" : "right" }}>
             <Typography
               variant="h3"
-              color="white"
-              sx={{ mb: 2 }}
+              sx={{
+                mb: 2,
+                fontSize: { xs: "1.5rem", md: "2rem" },
+              }}
             >
               لباسی
             </Typography>
-            <Typography
-              variant="body1"
-              fontWeight={700}
-              color="white"
-              sx={{ display: "flex", gap: "5px", alignItems: "center" }}
-            >
-              <EmailIcon />
-              <Link
-                variant="body1"
-                color="#FFFFFF"
-                fontWeight={700}
-                href="mailto:lebasee@example.com"
-                underline="none"
-              >
-                lebasee@example.com
-              </Link>
-            </Typography>
-            <Typography
-              variant="body1"
-              fontWeight={700}
-              color="white"
-              sx={{ display: "flex", gap: "5px", alignItems: "center" }}
-            >
-              <LocalPhoneIcon />
-              {toPersianNumber(989123456789)}+
-            </Typography>
-            <Typography
-              variant="body1"
-              fontWeight={700}
-              color="white"
-              sx={{ display: "flex", gap: "5px", alignItems: "center" }}
-            >
-              <LocationOnIcon />
-              تهران، منطقه، خیابان
-            </Typography>
+
+            <ContactInfo
+              icon={<EmailIcon />}
+              content={
+                <Link
+                  href="mailto:lebasee@example.com"
+                  underline="none"
+                  color="inherit"
+                  sx={{ "&:hover": { color: pallete.secondary[300] } }}
+                >
+                  lebasee@example.com
+                </Link>
+              }
+            />
+
+            <ContactInfo
+              icon={<LocalPhoneIcon />}
+              content={toPersianNumber(989123456789) + "+"}
+            />
+
+            <ContactInfo
+              icon={<LocationOnIcon />}
+              content="تهران، منطقه، خیابان"
+            />
+
             <Box
               sx={{
                 display: "flex",
-                alignItems: "center",
-                justifyContent: "flex-start",
-                mt: 2,
+                gap: 2,
+                mt: 3,
+                justifyContent: { xs: "center", md: "flex-start" },
               }}
             >
-              <Link
-                color="#FFFFFF"
-                underline="none"
+              <SocialIcon
                 href="https://www.linkedin.com/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <LinkedInIcon fontSize="large" />
-              </Link>
-              <Link
-                color="#FFFFFF"
-                underline="none"
+                icon={<LinkedInIcon />}
+              />
+              <SocialIcon
                 href="https://www.instagram.com/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <InstagramIcon fontSize="large" />
-              </Link>
-              <Link
-                color="#FFFFFF"
-                underline="none"
+                icon={<InstagramIcon />}
+              />
+              <SocialIcon
                 href="https://www.telegram.com/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <TelegramIcon fontSize="large" />
-              </Link>
-              <Link
-                color="#FFFFFF"
-                underline="none"
+                icon={<TelegramIcon />}
+              />
+              <SocialIcon
                 href="https://www.x.com/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <XIcon fontSize="large" />
-              </Link>
+                icon={<XIcon />}
+              />
             </Box>
           </Box>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            <Typography
-              variant="h5"
-              color="white"
-              fontWeight={700}
-              sx={{ mb: 2 }}
-            >
-              سوالات متداول
-            </Typography>
-            <Link
-              variant="body2"
-              color="#FFFFFF"
-              href="#"
-              underline="none"
-            >
-              آیا مدل‌های سه‌بعدی دقیق هستند؟
-            </Link>
-            <Link
-              variant="body2"
-              color="#FFFFFF"
-              href="#"
-              underline="none"
-            >
-              آیا می‌توانم مدل لباس‌های خودم را اضافه کنم؟{" "}
-            </Link>
-            <Link
-              variant="body2"
-              color="#FFFFFF"
-              href="#"
-              underline="none"
-            >
-              این اپلیکیشن با چه دستگاه‌هایی سازگار است؟{" "}
-            </Link>
-          </Box>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            <Typography
-              variant="h5"
-              color="white"
-              fontWeight={700}
-              sx={{ mb: 2 }}
-            >
-              بلاگ
-            </Typography>
-            <Link
-              variant="body2"
-              color="#FFFFFF"
-              href="#"
-              underline="none"
-            >
-              بلاگ یک
-            </Link>
-            <Link
-              variant="body2"
-              color="#FFFFFF"
-              href="#"
-              underline="none"
-            >
-              بلاگ دو
-            </Link>
-            <Link
-              variant="body2"
-              color="#FFFFFF"
-              href="#"
-              underline="none"
-            >
-              بلاگ سه
-            </Link>
-          </Box>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            <Typography
-              variant="h5"
-              color="white"
-              fontWeight={700}
-              sx={{ mb: 2 }}
-            >
-              درباره لباسی
-            </Typography>
-            <Link
-              variant="body2"
-              color="#FFFFFF"
-              href="#"
-              underline="none"
-            >
-              ویژگی ها و مزایا
-            </Link>
-            <Link
-              variant="body2"
-              color="#FFFFFF"
-              href="#"
-              underline="none"
-            >
-              نظرات کاربران
-            </Link>
-            <Link
-              variant="body2"
-              color="#FFFFFF"
-              href="#"
-              underline="none"
-            >
-              درباره ما
-            </Link>
-          </Box>
+
+          {/* FAQ Column */}
+          <FooterColumn
+            title="سوالات متداول"
+            items={[
+              "آیا مدل‌های سه‌بعدی دقیق هستند؟",
+              "آیا می‌توانم مدل لباس‌های خودم را اضافه کنم؟",
+              "این اپلیکیشن با چه دستگاه‌هایی سازگار است؟",
+            ]}
+            isMobile={isMobile}
+          />
+
+          {/* About Column */}
+          <FooterColumn
+            title="درباره لباسی"
+            items={["ویژگی ها و مزایا", "نظرات کاربران", "درباره ما"]}
+            isMobile={isMobile}
+          />
         </Box>
-        <Divider
-          flexItem
-          variant="fullWidth"
-          sx={{ bgcolor: "#FFFFFF" }}
-        />
+
+        {/* Divider */}
+        <Divider sx={{ bgcolor: "white", my: { xs: 2, md: 3 } }} />
+
+        {/* Copyright */}
         <Typography
-          variant="body1"
-          color="white"
-          textAlign="center"
+          variant="body2"
+          sx={{
+            textAlign: "center",
+            fontSize: { xs: "0.75rem", md: "0.875rem" },
+            px: { xs: 1, md: 0 },
+          }}
         >
-          کلیه حقوق مادی و معنوی محفوظ است. © 1403 لباسی
+          کلیه حقوق مادی و معنوی محفوظ است. © ۱۴۰۳ لباسی
         </Typography>
       </Box>
     </Box>
   );
 };
+
+// Reusable Contact Info Component
+const ContactInfo = ({
+  icon,
+  content,
+}: {
+  icon: React.ReactNode;
+  content: React.ReactNode;
+}) => (
+  <Box
+    sx={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: { xs: "center", md: "flex-start" },
+      gap: 1,
+      mb: 1.5,
+    }}
+  >
+    {icon}
+    <Typography
+      variant="body1"
+      sx={{ fontWeight: 500 }}
+    >
+      {content}
+    </Typography>
+  </Box>
+);
+
+// Reusable Social Icon Component
+const SocialIcon = ({
+  href,
+  icon,
+}: {
+  href: string;
+  icon: React.ReactNode;
+}) => (
+  <Link
+    href={href}
+    target="_blank"
+    rel="noreferrer"
+    color="inherit"
+    sx={{
+      "&:hover": { color: pallete.secondary[300] },
+      transition: "color 0.3s ease",
+      fontSize: { xs: "1.5rem", md: "1.75rem" },
+    }}
+  >
+    {icon}
+  </Link>
+);
+
+// Reusable Footer Column Component
+const FooterColumn = ({
+  title,
+  items,
+  isMobile,
+}: {
+  title: string;
+  items: string[];
+  isMobile: boolean;
+}) => (
+  <Box sx={{ textAlign: isMobile ? "center" : "right" }}>
+    <Typography
+      variant="h5"
+      sx={{
+        mb: 2,
+        fontWeight: 700,
+        fontSize: { xs: "1.1rem", md: "1.25rem" },
+      }}
+    >
+      {title}
+    </Typography>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+      {items.map((item) => (
+        <Link
+          key={item}
+          href="#"
+          underline="none"
+          color="inherit"
+          sx={{
+            fontSize: { xs: "0.875rem", md: "1rem" },
+            "&:hover": { color: pallete.secondary[200] },
+            transition: "color 0.3s ease",
+          }}
+        >
+          {item}
+        </Link>
+      ))}
+    </Box>
+  </Box>
+);
 
 export default Footer;

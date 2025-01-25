@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery } from "@mui/material";
 import React from "react";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import { pallete } from "../../../styles/pallete.m";
@@ -10,109 +10,132 @@ interface TestimonialProps {
   fadeIn: boolean;
 }
 
+// Testimonial.tsx
 const Testimonial: React.FC<TestimonialProps> = ({
   name,
   text,
   image,
   fadeIn,
 }) => {
+  const isMobile = useMediaQuery("(max-width: 600px)");
+
   return (
     <Box
       sx={{
         display: "flex",
+        flexDirection: { xs: "column", md: "row-reverse" },
         alignItems: "center",
-        flexDirection: "row-reverse",
-        gap: 3,
-        borderRadius: 4,
-        padding: 3,
+        gap: { xs: 3, md: 6 },
+        p: 3,
         position: "relative",
         transition: "opacity 0.8s ease-in-out",
         opacity: fadeIn ? 1 : 0,
+        mx: "auto",
+        maxWidth: { md: "90%" },
       }}
     >
-      <Box
-        sx={{
-          position: "absolute",
-          width: 150,
-          height: 150,
-          borderRadius: "50%",
-          backgroundColor: `${pallete.primary[500]}`,
-          left: 10,
-          top: "32%",
-          transform: "translateY(-50%)",
-          zIndex: 0,
-        }}
-      />
-      <Box
-        sx={{
-          position: "absolute",
-          width: 100,
-          height: 100,
-          borderRadius: "50%",
-          backgroundColor: "#BABABA",
-          opacity: 0.3,
-          left: 150,
-          top: "70%",
-          transform: "translateY(-50%)",
-          zIndex: 2,
-        }}
-      />
+      {/* Decorative Circles */}
+      {!isMobile && (
+        <>
+          <Box
+            sx={{
+              position: "absolute",
+              width: { xs: 100, md: 150 },
+              height: { xs: 100, md: 150 },
+              borderRadius: "50%",
+              bgcolor: pallete.primary[500],
+              left: { md: 10 },
+              top: { md: "50%" },
+              transform: { md: "translateY(-50%)" },
+              zIndex: 0,
+            }}
+          />
+          <Box
+            sx={{
+              position: "absolute",
+              width: { xs: 80, md: 100 },
+              height: { xs: 80, md: 100 },
+              borderRadius: "50%",
+              bgcolor: "#BABABA",
+              opacity: 0.3,
+              left: { md: 150 },
+              top: { md: "70%" },
+              transform: { md: "translateY(-50%)" },
+              zIndex: 2,
+            }}
+          />
+        </>
+      )}
 
+      {/* User Image */}
       <Box
         sx={{
           position: "relative",
-          width: 210,
-          height: 210,
+          width: { xs: 150, md: 210 },
+          height: { xs: 150, md: 210 },
+          minWidth: { xs: 150, md: 210 },
           borderRadius: "50%",
           overflow: "hidden",
           border: `5px solid ${pallete.primary[500]}`,
-          bgcolor: `${pallete.primary[500]}`,
           zIndex: 1,
         }}
       >
         <img
-          width="100%"
-          height="100%"
           src={image}
           alt={name}
           style={{
-            transition: "transform 0.8s ease-in-out",
-            transform: fadeIn ? "scale(1)" : "scale(0.95)",
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
           }}
         />
       </Box>
 
-      <Box sx={{ flex: 1, textAlign: "right" }}>
+      {/* Text Content */}
+      <Box
+        sx={{
+          position: "relative",
+          textAlign: { xs: "center", md: "right" },
+          flex: 1,
+        }}
+      >
         <FormatQuoteIcon
           sx={{
-            fontSize: 80,
-            color: `${pallete.primary[500]}`,
+            fontSize: { xs: 40, md: 80 },
+            color: pallete.primary[500],
             position: "absolute",
-            top: -15,
-            right: -10,
+            top: { xs: -30, md: -65 },
+            right: { xs: -25 },
+            opacity: 0.5,
           }}
         />
+
         <Typography
           variant="body1"
           color="white"
           sx={{
+            fontSize: { xs: "0.875rem", md: "1rem" },
+            lineHeight: 1.6,
+            mb: 2,
             transition: "opacity 0.8s ease-in-out",
             opacity: fadeIn ? 1 : 0,
           }}
         >
           {text}
         </Typography>
+
         <Typography
+          variant="h6"
           sx={{
-            position: "absolute",
-            bottom: 40,
-            left: 220,
-            color: `${pallete.primary[500]}`,
+            color: pallete.primary[500],
             fontWeight: "bold",
             transition: "opacity 0.8s ease-in-out",
             opacity: fadeIn ? 1 : 0,
+            textAlign: { xs: "center" },
+            position: { md: "absolute" },
+            left: { xs: 0 },
+            bottom: { xs: -40 },
           }}
-          variant="h6"
         >
           {name}
         </Typography>

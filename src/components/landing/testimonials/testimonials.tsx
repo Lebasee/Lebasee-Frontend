@@ -58,56 +58,55 @@ const Testimonials: React.FC = () => {
     <Box
       data-testid="testimonials"
       sx={{
-        maxWidth: "1063px",
         width: "100%",
-        height: "450px",
+        py: { xs: 4, md: 8 },
+        px: { xs: 2, md: 0 },
+        minHeight: { xs: "auto", md: "450px" },
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
-        gap: "50px",
+        gap: { xs: 3, md: 5 },
       }}
     >
       <Typography
         color="white"
         variant="h3"
+        sx={{
+          fontSize: { xs: "1.5rem", md: "2rem" },
+          textAlign: "center",
+        }}
       >
         نظرات کاربران
       </Typography>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          width: "100%",
-        }}
-      >
+
+      <Box sx={{ width: "100%", maxWidth: "1063px" }}>
         <Testimonial
           name={testimonials[currentIndex].name}
           text={testimonials[currentIndex].text}
           image={testimonials[currentIndex].image}
           fadeIn={fadeIn}
         />
+
         <Box
           sx={{
             display: "flex",
-            flexDirection: "row-reverse",
-            gap: "8px",
+            justifyContent: "center",
+            gap: 1,
+            mt: { xs: 3, md: 5 },
           }}
         >
           {testimonials.map((_, index) => (
             <Box
               key={index}
               onClick={() => handleDotClick(index)}
-              aria-label={`Show item ${index + 1}`}
               sx={{
-                width: index === currentIndex ? "40px" : "12px",
-                height: "12px",
-                borderRadius: index === currentIndex ? "6px" : "50%",
+                width: index === currentIndex ? { xs: 24, md: 40 } : 12,
+                height: 12,
+                borderRadius: index === currentIndex ? 6 : "50%",
                 backgroundColor:
                   index === currentIndex ? pallete.primary[500] : "#ddd",
                 cursor: "pointer",
-                transition: "width 0.3s ",
+                transition: "all 0.3s ease",
               }}
             />
           ))}

@@ -5,35 +5,39 @@ import Feature from "./feature";
 const Features: React.FC = () => {
   return (
     <Box
+      data-testid="features"
       sx={{
-        maxWidth: "1063px",
         width: "100%",
-        height: "500px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: "50px",
+        py: { xs: 4, md: 8 },
+        px: { xs: 2, md: 0 },
       }}
     >
       <Typography
         color="white"
         variant="h3"
+        sx={{
+          mb: { xs: 3, md: 5 },
+          fontSize: { xs: "1.5rem", md: "2rem" },
+          textAlign: "center",
+        }}
       >
         مزایا و ویژگی ها
       </Typography>
       <Box
-        data-testid="features"
         sx={{
           display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          gap: { xs: 3, md: 4 },
+          justifyContent: "center",
           alignItems: "center",
-          justifyContent: "space-between",
-          width: "100%",
         }}
       >
-        <Feature text="ساخت مدل سه‌بعدی با توجه به ابعاد واقعی بدن شما" />
-        <Feature text="ساخت مدل سه‌بعدی با توجه به ابعاد واقعی بدن شما" />
-        <Feature text="ساخت مدل سه‌بعدی با توجه به ابعاد واقعی بدن شما" />
+        {[1, 2, 3].map((_, index) => (
+          <Feature
+            key={index}
+            text="ساخت مدل سه‌بعدی با توجه به ابعاد واقعی بدن شما"
+          />
+        ))}
       </Box>
     </Box>
   );

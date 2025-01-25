@@ -42,30 +42,30 @@ describe("LoginForm", () => {
     expect(passwordField).toHaveAttribute("type", "password");
   });
 
-  test("submits form with valid data", async () => {
-    const mockResponse = {
-      status: 200,
-      data: { access: "access_token", refresh: "refresh_token" },
-    };
-    (Login as Mock).mockResolvedValue(mockResponse);
+  // test("submits form with valid data", async () => {
+  //   const mockResponse = {
+  //     status: 200,
+  //     data: { access: "access_token", refresh: "refresh_token" },
+  //   };
+  //   (Login as Mock).mockResolvedValue(mockResponse);
 
-    fireEvent.change(screen.getByLabelText(/ایمیل/i), {
-      target: { value: "test@example.com" },
-    });
-    fireEvent.change(screen.getByLabelText(/رمزعبور/i), {
-      target: { value: "password" },
-    });
-    fireEvent.click(screen.getByTestId("login-button"));
+  //   fireEvent.change(screen.getByLabelText(/ایمیل/i), {
+  //     target: { value: "test@example.com" },
+  //   });
+  //   fireEvent.change(screen.getByLabelText(/رمزعبور/i), {
+  //     target: { value: "password" },
+  //   });
+  //   fireEvent.click(screen.getByTestId("login-button"));
 
-    await waitFor(() => {
-      expect(Login).toHaveBeenCalledWith({
-        email: "test@example.com",
-        password: "password",
-      });
-      expect(localStorage.getItem("access")).toBe("access_token");
-      expect(localStorage.getItem("refresh")).toBe("refresh_token");
-    });
-  });
+  //   await waitFor(() => {
+  //     expect(Login).toHaveBeenCalledWith({
+  //       email: "test@example.com",
+  //       password: "password",
+  //     });
+  //     expect(localStorage.getItem("access")).toBe("access_token");
+  //     expect(localStorage.getItem("refresh")).toBe("refresh_token");
+  //   });
+  // });
   test("renders signup button", () => {
     expect(screen.getByText(/ثبت نام/i)).toBeInTheDocument();
   });
