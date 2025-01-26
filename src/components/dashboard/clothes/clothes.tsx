@@ -11,7 +11,8 @@ import { ClothType, ToastData } from "../../../types/types";
 import getUserClothes from "../../../api/dashboard/getUserClothes";
 import { pallete } from "../../../styles/pallete.m";
 import AddIcon from "@mui/icons-material/Add";
-import postUserCloth from "../../../api/dashboard/postUserCloth"
+import postUserCloth from "../../../api/dashboard/postUserCloth";
+import "react-image-lightbox/style.css";
 import Toast from "../../base/toast";
 import FullScreenLoader from "../../base/FullScreenLoader";
 import CustomGallery from "./CustomGallery";
@@ -106,7 +107,7 @@ const Clothes: React.FC = () => {
     fetchClothes();
   }, [reloadImage]);
 
-  const isSmallScreen = useMediaQuery("(max-width:600px)");
+  const isSmallScreen = useMediaQuery("(max-width:550px)");
   const isMediumScreen = useMediaQuery("(max-width:960px)");
   const isLargeScreen = useMediaQuery("(max-width:1260px)");
 
@@ -125,10 +126,17 @@ const Clothes: React.FC = () => {
         p: "25px",
         height: "100vh",
         alignItems: "center",
-        overflowY: "auto",
-        scrollbarWidth: "none",
+        overflowY: "auto", // Enables vertical scrolling
+        scrollbarWidth: "thin", // For Firefox (optional)
         "&::-webkit-scrollbar": {
-          display: "none",
+          width: "8px", // Width of the scrollbar
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: pallete.primary[300], // Scrollbar thumb color
+          borderRadius: "10px", // Rounded corners for the thumb
+        },
+        "&::-webkit-scrollbar-track": {
+          backgroundColor: "transparent", // Track color
         },
       }}
     >
@@ -142,11 +150,8 @@ const Clothes: React.FC = () => {
       {isLoading && <FullScreenLoader />}
 
       {firstLoading ? (
-        <ImageList
-          cols={getCols()}
-          gap={16}
-        >
-          {Array.from({ length: 8 }).map((_, index) => (
+        <ImageList cols={getCols()} gap={16}>
+          {Array.from({ length: 24 }).map((_, index) => (
             <ImageListItem key={index}>
               <Skeleton
                 variant="rectangular"
@@ -154,15 +159,8 @@ const Clothes: React.FC = () => {
                 height={200}
                 sx={{ borderRadius: 2 }}
               />
-              <Skeleton
-                variant="text"
-                width="60%"
-                sx={{ mt: 1 }}
-              />
-              <Skeleton
-                variant="text"
-                width="40%"
-              />
+              <Skeleton variant="text" width="60%" sx={{ mt: 1 }} />
+              <Skeleton variant="text" width="40%" />
             </ImageListItem>
           ))}
         </ImageList>
@@ -201,10 +199,7 @@ const Clothes: React.FC = () => {
             }}
           >
             {newCloth.image ? (
-              <img
-                src={URL.createObjectURL(newCloth.image)}
-                alt="New cloth"
-              />
+              <img src={URL.createObjectURL(newCloth.image)} alt="New cloth" />
             ) : (
               <Box
                 sx={{

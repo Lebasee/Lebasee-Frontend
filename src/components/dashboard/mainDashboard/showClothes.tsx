@@ -1,4 +1,4 @@
-import { Box, Typography, Skeleton } from "@mui/material";
+import { Box, Typography, Skeleton, Grid, useMediaQuery } from "@mui/material";
 import { pallete } from "../../../styles/pallete.m";
 import { useEffect, useState, useRef } from "react";
 import Cloth from "./cloth";
@@ -11,6 +11,12 @@ const ShowClothes: React.FC = () => {
   const [fadeIn, setFadeIn] = useState(true);
   const [clothes, setClothes] = useState<ClothType[]>([]);
   const hasFetchedData = useRef(false); // Ensure fetchUserData runs only once
+
+  const isSmallScreen = useMediaQuery("(max-width: 900px)");
+  const isXSmallScreen = useMediaQuery("(max-width: 500px)");
+  const isMediumScreen = useMediaQuery("(min-width: 1256px");
+  const isLargeScreen = useMediaQuery("(min-width: 1460px)");
+  const isSmallScreenY = useMediaQuery("(max-height: 600px)");
 
   // Fetch user clothes data
   useEffect(() => {
@@ -35,7 +41,7 @@ const ShowClothes: React.FC = () => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % clothes.length);
         setFadeIn(true);
       }, 800);
-    }, 5000);
+    }, 1000);
 
     return () => clearInterval(interval); // Cleanup interval on unmount
   }, [clothes.length]);
@@ -48,109 +54,74 @@ const ShowClothes: React.FC = () => {
     }, 800);
   };
 
-  const getNextIndex = (index: number) => (index + 1) % clothes.length;
+  const currentClothes = clothes.slice(
+    currentIndex,
+    currentIndex + (isSmallScreen ? 2 : 3)
+  );
+  const displayClothes =
+    currentClothes.length < (isSmallScreen ? 2 : 3)
+      ? [
+          ...currentClothes,
+          ...clothes.slice(0, (isSmallScreen ? 2 : 3) - currentClothes.length),
+        ]
+      : currentClothes;
 
   return (
     <Box
       sx={{
-        maxWidth: "1063px",
         width: "100%",
         height: "100%",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        gap: "50px",
       }}
     >
       <Typography
         color="white"
         variant="h3"
         sx={{
-          mr: 6,
+          mr: { xs: 1, md: 3 },
           textAlign: "right",
           width: "100%",
+          fontSize: isSmallScreenY ? "1.2rem" : { xs: "1.5rem", md: "2.5rem" },
         }}
       >
         لباس‌های شما
       </Typography>
-      <Box
+      <Grid
+        container
+        spacing={isMediumScreen ? 3 : 2}
         sx={{
+          width: "100%",
           display: "flex",
           justifyContent: "center",
-          width: "100%",
-          gap: "50px",
+          mt: 1,
         }}
       >
-        {/* Show skeleton loader for each clothing item */}
-        {loading ? (
-          <>
-            <Skeleton
-              variant="rectangular"
-              width={230}
-              height={230}
-              sx={{ borderRadius: 3 }}
-            />
-            <Skeleton
-              variant="rectangular"
-              width={230}
-              height={230}
-              sx={{ borderRadius: 3 }}
-            />
-            <Skeleton
-              variant="rectangular"
-              width={230}
-              height={230}
-              sx={{ borderRadius: 3 }}
-            />
-          </>
-        ) : (
-          <>
-            <Cloth
-              image={clothes[currentIndex]?.image as string | undefined}
-              fadeIn={fadeIn}
-            />
-            <Cloth
-              image={
-                clothes[getNextIndex(currentIndex)]?.image as string | undefined
-              }
-              fadeIn={fadeIn}
-            />
-            <Cloth
-              image={
-                clothes[getNextIndex(getNextIndex(currentIndex))]?.image as
-                  | string
-                  | undefined
-              }
-              fadeIn={fadeIn}
-            />
-          </>
-        )}
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row-reverse",
-          gap: "8px",
-        }}
-      >
-        {clothes.map((_, index) => (
-          <Box
-            key={index}
-            onClick={() => handleDotClick(index)}
-            aria-label={`Show item ${index + 1}`}
-            sx={{
-              width: index === currentIndex ? "40px" : "12px",
-              height: "12px",
-              borderRadius: index === currentIndex ? "6px" : "50%",
-              backgroundColor:
-                index === currentIndex ? pallete.primary[500] : "#ddd",
-              cursor: "pointer",
-              transition: "width 0.3s",
-            }}
-          />
-        ))}
-      </Box>
+        {/* Show skeleton loader or loaded clothes */}
+        {loading
+          ? Array.from({ length: isSmallScreen ? 2 : 3 }).map((_, index) => (
+              <Grid item key={index}>
+                <Skeleton
+                  variant="rectangular"
+                  sx={{
+                    width: { xs: 120, sm: 160, md: 130, lg: 170, xl: 220 },
+                    height: { xs: 120, sm: 160, md: 130, lg: 170, xl: 220 },
+                    borderRadius: 3,
+                  }}
+                />
+              </Grid>
+            ))
+          : displayClothes.map((cloth, index) => (
+              <Grid item key={index}>
+                <Cloth
+                  image={cloth.image as string | undefined}
+                  fadeIn={true}
+                />
+              </Grid>
+            ))}
+      </Grid>
     </Box>
   );
 };

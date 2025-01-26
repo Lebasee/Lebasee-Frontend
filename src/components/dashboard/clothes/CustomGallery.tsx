@@ -42,7 +42,7 @@ const CustomGallery = ({
             alt={"Image"}
             loading="lazy"
             style={{
-              width: "100%",
+              width: "auto",
               minHeight: "300px",
               height: "auto",
               display: "block",

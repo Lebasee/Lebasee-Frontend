@@ -6,6 +6,7 @@ import {
   IconButton,
   InputAdornment,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
@@ -233,7 +234,6 @@ const Setting: React.FC = () => {
           severity: "error",
         });
       } finally {
-        // Reset the file input value
         event.target.value = "";
       }
     } else {
@@ -304,12 +304,16 @@ const Setting: React.FC = () => {
     }
   };
 
+  const isSmallScreen = useMediaQuery("(max-width: 768px)");
+  const isSmallScreenY = useMediaQuery("(max-height: 600px)");
+
   return (
     <Box
       sx={{
         display: "flex",
-        justifyContent: "center",
+        justifyContent: "row",
         alignItems: "center",
+        p: "25px",
         flexDirection: "row",
         width: "100%",
         height: "100vh",
@@ -317,17 +321,15 @@ const Setting: React.FC = () => {
     >
       <Box
         sx={{
-          width: "65%",
+          width: { sm: "100%", md: "85%", lg: "70%" },
           height: "100vh",
-          mr: 3,
-          // bgcolor: "white",
         }}
       >
         <Typography
           variant="h2"
           color="white"
           sx={{
-            mt: 7,
+            mt: 3,
           }}
         >
           تنظیمات
@@ -345,8 +347,8 @@ const Setting: React.FC = () => {
           <Avatar
             sx={{
               border: "2px solid #ecf0f1",
-              height: 220,
-              width: 220,
+              height: { xs: 90, sm: 120, md: 150, lg: 180, xl: 220 },
+              width: { xs: 90, sm: 120, md: 150, lg: 180, xl: 220 },
             }}
             src={profileImage}
           />
@@ -354,11 +356,11 @@ const Setting: React.FC = () => {
             sx={{
               position: "absolute",
               bottom: 3,
-              mr: 15,
+              mr: { xs: 8, sm: 10, md: 12, xl: 16 },
               zIndex: 1,
               backgroundColor: pallete.primary[500],
-              width: 35,
-              height: 35,
+              width: { xs: 20, sm: 24, md: 28, lg: 30, xl: 34 },
+              height: { xs: 20, sm: 24, md: 28, lg: 30, xl: 34 },
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -366,7 +368,7 @@ const Setting: React.FC = () => {
               borderRadius: 1.5,
               transition: "background-color 0.3s ease",
               "&:hover": {
-                backgroundColor: pallete.primary[700], // Change background on hover
+                backgroundColor: pallete.primary[700],
               },
             }}
           >
@@ -383,8 +385,8 @@ const Setting: React.FC = () => {
                   mt: 1.3,
                   color: "black",
                   cursor: "pointer",
-                  width: 25,
-                  height: 25,
+                  width: { xs: 14, sm: 17, md: 20, lg: 23, xl: 27 },
+                  height: { xs: 14, sm: 17, md: 20, lg: 23, xl: 27 },
                 }}
               />
             </label>
@@ -401,15 +403,13 @@ const Setting: React.FC = () => {
         {/* Form Section */}
         <Box
           sx={{
-            mt: 8,
+            mt: isSmallScreenY ? 0 : { md: 6, lg: 8 },
             p: 3,
-            borderRadius: "8px",
-            // No background color for the form section
           }}
         >
-          <Grid container spacing={2}>
+          <Grid container spacing={isSmallScreen ? 1 : 2}>
             {/* First Name and Last Name in a row */}
-            <Grid item xs={6}>
+            <Grid item xs={isSmallScreen ? 12 : 6}>
               <CustomTextField
                 fullWidth
                 label="نام"
@@ -420,18 +420,18 @@ const Setting: React.FC = () => {
                 }
                 sx={{
                   "& .MuiInputBase-input": {
-                    ml: 3,
+                    ml: { xs: 0, sm: 0.5, md: 1.5, lg: 2.2, xl: 3 },
+                    height: isSmallScreenY ? "20px" : "28px",
                   },
                   bgcolor: pallete.secondary[200],
                   borderRadius: 1,
                 }}
                 inputProps={{
                   dir: "ltr", // Align content from left-to-right
-                  // readOnly: true, // Make the input read-only
                 }}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={isSmallScreen ? 12 : 6}>
               <CustomTextField
                 fullWidth
                 label="نام خانوادگی"
@@ -444,27 +444,26 @@ const Setting: React.FC = () => {
                   bgcolor: pallete.secondary[200],
                   borderRadius: 1,
                   "& .MuiInputBase-input": {
-                    ml: 3,
+                    ml: { xs: 0, sm: 0.5, md: 1.5, lg: 2.2, xl: 3 },
                   },
                 }}
                 inputProps={{
                   dir: "ltr", // Align content from left-to-right
-                  // readOnly: true, // Make the input read-only
                 }}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={isSmallScreen ? 12 : 6}>
               <CustomTextField
                 fullWidth
                 label="ایمیل"
                 variant="filled"
                 value={email}
-                // placeholder="توضیحات مربوط به لباس جدید را وارد کنید"
                 onChange={(e) => setEmail(e.target.value)}
                 multiline
                 sx={{
                   "& .MuiInputBase-input": {
-                    ml: 3,
+                    ml: { xs: 0, sm: 0.5, md: 1.5, lg: 2.2, xl: 3 },
+                    fontSize: { xs: 15, sm: 18 },
                   },
                   bgcolor: pallete.secondary[200],
                   borderRadius: 1,
@@ -476,7 +475,7 @@ const Setting: React.FC = () => {
               />
             </Grid>
 
-            <Grid item xs={6}>
+            <Grid item xs={isSmallScreen ? 12 : 6}>
               {/* Verification Link */}
               <Box sx={{ textAlign: "right", mt: 2 }}>
                 {isVerifying ? (
@@ -491,22 +490,42 @@ const Setting: React.FC = () => {
                     {/* Verify Button */}
                     <Box
                       sx={{
-                        bgcolor: pallete.secondary[200],
                         p: 0.5,
                         borderRadius: 1,
                       }}
                     >
                       {/* Verification Fields */}
-                      <DigitInput code={code} setCode={setCode} />
+                      <DigitInput
+                        code={code}
+                        setCode={setCode}
+                        setting={true}
+                      />
                     </Box>
-                    <Button
-                      variant="contained"
-                      color="primary"
+                    <Box
                       onClick={handleVerifyCode}
-                      sx={{ mr: 4 }}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer", // Make it clickable
+                        color: "white", // Text color
+                        borderRadius: "4px",
+                        backgroundColor: pallete.primary[600], // Background color for ذخیره
+                        mr: { xs: 0.4, sm: 1 },
+                        mt: { xs: 0.2, sm: 0.4, md: 0.55 },
+                        width: { xs: 25, sm: 45, md: 55, lg: 66, xl: 76 }, // Increased width
+                        height: 40,
+                        fontSize: { xs: 12, sm: 14, md: 16, lg: 18, xl: 20 },
+                        // p: 2,
+                        transition: "all 0.3s ease", // Smooth transition for hover effects
+                        "&:active": {
+                          transform: "scale(0.95)", // Slightly shrink on click
+                        },
+                        "&:hover": { backgroundColor: pallete.primary[800] }, // Slightly lighter black on hover
+                      }}
                     >
                       تایید
-                    </Button>
+                    </Box>
                   </Box>
                 ) : (
                   <Typography
@@ -523,7 +542,7 @@ const Setting: React.FC = () => {
               </Box>
             </Grid>
 
-            <Grid item xs={6}>
+            <Grid item xs={isSmallScreen ? 12 : 6}>
               <CustomTextField
                 fullWidth
                 label="رمز عبور فعلی"
@@ -538,7 +557,7 @@ const Setting: React.FC = () => {
                   bgcolor: pallete.secondary[200],
                   borderRadius: 1,
                   "& .MuiInputBase-input": {
-                    ml: 3,
+                    ml: { xs: 0, sm: 0.5, md: 1.5, lg: 2.2, xl: 3 },
                   },
                 }}
                 InputProps={{
@@ -564,7 +583,7 @@ const Setting: React.FC = () => {
               />
             </Grid>
 
-            <Grid item xs={6}>
+            <Grid item xs={isSmallScreen ? 12 : 6}>
               <CustomTextField
                 fullWidth
                 label="رمز عبور جدید"
@@ -579,7 +598,7 @@ const Setting: React.FC = () => {
                   bgcolor: pallete.secondary[200],
                   borderRadius: 1,
                   "& .MuiInputBase-input": {
-                    ml: 3,
+                    ml: { xs: 0, sm: 0.5, md: 1.5, lg: 2.2, xl: 3 },
                   },
                 }}
                 InputProps={{
@@ -608,15 +627,15 @@ const Setting: React.FC = () => {
             {/* Buttons */}
             <Grid
               item
-              xs={12}
-              sx={{ display: "flex", justifyContent: "end", gap: 2, mt: 10 }}
+              xs={11}
+              sx={{ display: "flex", justifyContent: "end", gap: 2, mt: 2 }}
             >
               <Button
                 variant="outlined"
                 color="secondary"
                 onClick={() => handleSubmit(0)}
                 sx={{
-                  width: 120, // Increased width
+                  width: { xs: 60, sm: 75, md: 90, lg: 105, xl: 120 }, // Increased width
                   color: "black", // Text color
                   backgroundColor: pallete.secondary[400], // Background color for انصراف
                   "&:hover": { backgroundColor: pallete.secondary[600] }, // Slightly lighter black on hover
@@ -629,7 +648,7 @@ const Setting: React.FC = () => {
                 color="primary"
                 onClick={() => handleSubmit(1)}
                 sx={{
-                  width: 120, // Increased width
+                  width: { xs: 60, sm: 75, md: 90, lg: 105, xl: 120 }, // Increased width
                   backgroundColor: pallete.primary[600], // Background color for ذخیره
                   color: "white", // White text for contrast
                   "&:hover": { backgroundColor: pallete.primary[800] }, // Slightly lighter black on hover
@@ -641,13 +660,6 @@ const Setting: React.FC = () => {
           </Grid>
         </Box>
       </Box>
-
-      <Box
-        sx={{
-          width: "35%",
-          height: "100%",
-        }}
-      ></Box>
     </Box>
   );
 };

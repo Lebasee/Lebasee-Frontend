@@ -15,6 +15,7 @@ import Setting from "./components/dashboard/setting/setting";
 import Clothes from "./components/dashboard/clothes/clothes";
 import HomePage from "./pages/home";
 import Outfits from "./components/dashboard/outfits/outfit";
+import Tryons from "./components/dashboard/tryons/tryons";
 
 const router = createBrowserRouter([
   {
@@ -42,6 +43,7 @@ const router = createBrowserRouter([
       { path: "info", element: <Information /> },
       { path: "clothes", element: <Clothes /> },
       { path: "styles", element: <Outfits /> },
+      { path: "tryons", element: <Tryons />},
       { path: "setting", element: <Setting /> },
     ],
   },
