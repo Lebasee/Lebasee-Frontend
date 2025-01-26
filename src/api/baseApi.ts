@@ -6,15 +6,19 @@ if (!API_BASE_URL) {
   throw new Error("API_BASE_URL is not defined in the .env file.");
 }
 
-const token = localStorage.getItem("access");
-
 const baseApi = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
-
-    Authorization: token ? `Bearer ${token}` : null,
   },
+});
+
+baseApi.interceptors.request.use((config) => {
+  const token = localStorage.getItem("access");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 baseApi.interceptors.response.use(

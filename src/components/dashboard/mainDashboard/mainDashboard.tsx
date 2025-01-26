@@ -1,6 +1,5 @@
 import {
   Box,
-  Grid,
   Typography,
   Skeleton,
   ImageListItem,
@@ -70,7 +69,7 @@ const MainDashboard: React.FC = () => {
     >
       <Box // right part
         sx={{
-          width: "70%",
+          width: "60%",
           height: "100%",
           display: "flex",
           flexDirection: "column",
@@ -202,7 +201,7 @@ const MainDashboard: React.FC = () => {
       <Box // left part
         ref={scrollContainerRef}
         sx={{
-          width: "30%", // Adjust to your container width
+          width: "40%", // Adjust to your container width
           height: "90%", // Adjust to your desired height
           overflow: "hidden", // Hide scrollbars
           position: "relative",
@@ -223,8 +222,8 @@ const MainDashboard: React.FC = () => {
                   variant="rectangular"
                   sx={{
                     mt: 2,
-                    width: 230,
-                    height: 230,
+                    width: "100%",
+                    height: { xs: 150, md: 350 },
                     borderRadius: "10px",
                   }}
                 />

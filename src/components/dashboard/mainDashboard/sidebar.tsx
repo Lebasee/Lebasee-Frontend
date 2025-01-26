@@ -17,6 +17,8 @@ import getUserInfo from "../../../api/dashboard/getUserInfo";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
+import Logo from "../../../assets/logo_primary.svg";
+import LogoMobile from "../../../assets/icon3.svg";
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
@@ -120,6 +122,7 @@ const Sidebar: React.FC = () => {
           transition: "width 0.3s ease",
           position: "relative",
           padding: isSmallScreen ? "10px 0" : "20px 0",
+
           boxSizing: "border-box",
           zIndex: 1200,
         }}
@@ -161,23 +164,20 @@ const Sidebar: React.FC = () => {
         )}
 
         {/* Sidebar Title */}
-        {!isSmallScreen && (
-          <Typography
-            variant="h3"
-            sx={{
-              color: "white",
-              fontWeight: "bold",
-              mt: 4,
-              marginBottom: "20px",
-            }}
-          >
-            لباسی
-          </Typography>
-        )}
 
         {/* User Avatar */}
         {!isSmallScreen && (
           <>
+            <img
+              src={Logo}
+              alt="لباسی"
+              style={{
+                marginTop: "50px",
+                marginBottom: "15px",
+                height: "35px", // Adjust the height as needed
+                width: "auto", // Adjust the width as needed
+              }}
+            />
             <Avatar
               src={profileImage}
               alt="User Avatar"
@@ -218,18 +218,28 @@ const Sidebar: React.FC = () => {
         {/* Dynamic Tab Components */}
         <Grid
           container
-          spacing={isSmallScreen ? 1 : 2}
-          sx={{ width: "100%", position: "relative", alignItems: "center" }}
+          spacing={isSmallScreen ? 2 : 1}
+          sx={{
+            width: "100%",
+            position: "relative",
+            alignItems: "center",
+            mt: isSmallScreen ? 1 : 0,
+            pl: isSmallScreen ? "7px" : 1,
+          }}
         >
           {isSmallScreen && (
-            <Grid item xs={12} key={12}>
+            <Grid
+              item
+              xs={12}
+              key={12}
+            >
               <ButtonBase
                 onClick={() => navigate("/home")} // Navigate to home
                 sx={{
                   width: "100%", // Ensure the clickable area spans the full width
                   display: "block",
                   borderRadius: "8px", // Apply rounded corners to the entire button
-                  mt: isSmallScreenY ? 1: 3,
+                  mt: isSmallScreenY ? 1 : 3,
                   backgroundColor: "transparent",
                   "&:hover": {
                     backgroundColor: "#34495e",
@@ -254,19 +264,59 @@ const Sidebar: React.FC = () => {
               </ButtonBase>
             </Grid>
           )}
+          {isSmallScreen && (
+            <Grid
+              item
+              xs={12}
+              key={12}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <ButtonBase
+                onClick={() => navigate("/home")}
+                sx={{
+                  width: "95%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: "8px",
+                  mt: 1,
+                }}
+              >
+                <img
+                  src={LogoMobile}
+                  alt="لباسی"
+                  style={{
+                    height: "auto", // Adjust the height as needed
+                    width: "100%", // Adjust the width as needed
+                  }}
+                />
+              </ButtonBase>
+            </Grid>
+          )}
           {tabs.map((tab) => {
             const isActive = location.pathname === `/dashboard${tab.href}`;
             return (
               <Grid
                 item
-                xs={isSmallScreen ? 12 : tab.id === 5 ? 12 : 6}
+                xs={isSmallScreen ? 13 : tab.id === 5 ? 13 : 6}
                 key={tab.id}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
               >
                 <ButtonBase
                   onClick={() => handleClick(tab)} // Pass the full tab object
                   sx={{
                     width: "100%", // Ensure the clickable area spans the full width
-                    display: "block",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                     borderRadius: "8px", // Apply rounded corners to the entire button
                     mt: 1,
                     backgroundColor: isActive ? "#2c3e50" : "transparent",
@@ -292,8 +342,10 @@ const Sidebar: React.FC = () => {
                       sx={{
                         color: "white",
                         fontSize: isSmallScreen ? 24 : 18,
-                        ml: 0.5,
-                        mb: 0.4,
+                        ml: !isSmallScreen ? 1 : 0,
+                        "&:MuiSvgIcon-root": {
+                          m: 0,
+                        },
                       }}
                     />
                     {!isSmallScreen && !isSmallScreen && (

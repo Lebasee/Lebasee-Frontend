@@ -33,6 +33,7 @@ const ClothSlider = ({
       spaceBetween={loading ? 16 : 0}
       slidesPerView={itemPerView}
       className={`custom-swiper ${!loading && "padding"}`}
+      
     >
       {loading ? (
         Array.from({ length: 3 }, (_, i) => (
@@ -57,7 +58,7 @@ const ClothSlider = ({
         <Typography
           variant="h5"
           sx={{
-            color: pallete.primary[500],
+            color: pallete.primary[100],
             textAlign: "center",
             padding: "16px",
           }}

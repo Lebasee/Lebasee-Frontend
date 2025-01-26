@@ -11,6 +11,8 @@ import StyleIcon from "@mui/icons-material/Style";
 import CheckroomIcon from "@mui/icons-material/Checkroom";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
+import BookmarksIcon from "@mui/icons-material/Bookmarks";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import { User } from "../../../types/types";
 import { useNavigate } from "react-router-dom";
 
@@ -27,6 +29,16 @@ const PopupMenu: React.FC<PopupMenuProps> = ({
 }: PopupMenuProps) => {
   const navigator = useNavigate();
   const menuSections = [
+    {
+      tag: "داشبورد",
+      icon: <DashboardIcon fontSize="small" />,
+      href: "/dashboard",
+    },
+    {
+      tag: "ترکیب ها",
+      icon: <BookmarksIcon fontSize="small" />,
+      href: "/dashboard/tryons",
+    },
     {
       tag: "استایل ها",
       icon: <StyleIcon fontSize="small" />,

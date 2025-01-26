@@ -115,6 +115,7 @@ const HomePage: React.FC = () => {
           py: 2,
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
+          maxWidth: { xs: "auto", md: "1063px" },
           gap: { xs: 2, md: 4 },
         }}
       >
@@ -129,7 +130,13 @@ const HomePage: React.FC = () => {
           }}
         >
           {/* Outfits Section */}
-          <Box>
+          <Box
+            sx={{
+              borderBottom: toastData.open
+                ? `1px ${pallete.error[500]} solid`
+                : "",
+            }}
+          >
             <Box
               sx={{
                 display: "flex",
@@ -165,7 +172,13 @@ const HomePage: React.FC = () => {
           </Box>
 
           {/* Clothes Section */}
-          <Box>
+          <Box
+            sx={{
+              borderBottom: toastData.open
+                ? `1px ${pallete.error[500]} solid`
+                : "",
+            }}
+          >
             <Box
               sx={{
                 display: "flex",
@@ -204,10 +217,12 @@ const HomePage: React.FC = () => {
         {/* Right Section */}
         <Box
           sx={{
-            width: isMobile ? "90%" : "100%",
+            width: isMobile ? "90%" : "40%",
             display: "flex",
             flexDirection: "column",
-            m: "auto",
+            justifyContent: "flex-start",
+            mx: "auto",
+            mt: 2,
             gap: 2,
           }}
         >

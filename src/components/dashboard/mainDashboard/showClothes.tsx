@@ -1,21 +1,17 @@
 import { Box, Typography, Skeleton, Grid, useMediaQuery } from "@mui/material";
-import { pallete } from "../../../styles/pallete.m";
 import { useEffect, useState, useRef } from "react";
 import Cloth from "./cloth";
 import getUserClothes from "../../../api/dashboard/getUserClothes";
 import { ClothType } from "../../../types/types";
 
 const ShowClothes: React.FC = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const currentIndex = 0;
   const [loading, setLoading] = useState<boolean>(true);
-  const [fadeIn, setFadeIn] = useState(true);
   const [clothes, setClothes] = useState<ClothType[]>([]);
   const hasFetchedData = useRef(false); // Ensure fetchUserData runs only once
 
   const isSmallScreen = useMediaQuery("(max-width: 900px)");
-  const isXSmallScreen = useMediaQuery("(max-width: 500px)");
   const isMediumScreen = useMediaQuery("(min-width: 1256px");
-  const isLargeScreen = useMediaQuery("(min-width: 1460px)");
   const isSmallScreenY = useMediaQuery("(max-height: 600px)");
 
   // Fetch user clothes data
@@ -34,25 +30,7 @@ const ShowClothes: React.FC = () => {
       fetchUserData();
       hasFetchedData.current = true;
     }
-
-    const interval = setInterval(() => {
-      setFadeIn(false);
-      setTimeout(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % clothes.length);
-        setFadeIn(true);
-      }, 800);
-    }, 1000);
-
-    return () => clearInterval(interval); // Cleanup interval on unmount
   }, [clothes.length]);
-
-  const handleDotClick = (index: number) => {
-    setFadeIn(false);
-    setTimeout(() => {
-      setCurrentIndex(index);
-      setFadeIn(true);
-    }, 800);
-  };
 
   const currentClothes = clothes.slice(
     currentIndex,
@@ -95,14 +73,18 @@ const ShowClothes: React.FC = () => {
         sx={{
           width: "100%",
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "flex-start",
+          alignContent: "center",
           mt: 1,
         }}
       >
         {/* Show skeleton loader or loaded clothes */}
         {loading
           ? Array.from({ length: isSmallScreen ? 2 : 3 }).map((_, index) => (
-              <Grid item key={index}>
+              <Grid
+                item
+                key={index}
+              >
                 <Skeleton
                   variant="rectangular"
                   sx={{
@@ -114,7 +96,10 @@ const ShowClothes: React.FC = () => {
               </Grid>
             ))
           : displayClothes.map((cloth, index) => (
-              <Grid item key={index}>
+              <Grid
+                item
+                key={index}
+              >
                 <Cloth
                   image={cloth.image as string | undefined}
                   fadeIn={true}

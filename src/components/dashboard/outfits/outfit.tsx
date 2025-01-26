@@ -11,7 +11,6 @@ import { ClothType, ToastData } from "../../../types/types";
 import { pallete } from "../../../styles/pallete.m";
 import AddIcon from "@mui/icons-material/Add";
 import postUserCloth from "../../../api/dashboard/postUserCloth";
-import "react-image-lightbox/style.css";
 import Toast from "../../base/toast";
 import FullScreenLoader from "../../base/FullScreenLoader";
 import CustomGallery from "../clothes/CustomGallery";
@@ -151,7 +150,10 @@ const Outfits: React.FC = () => {
       {isLoading && <FullScreenLoader />}
 
       {firstLoading ? (
-        <ImageList cols={getCols()} gap={16}>
+        <ImageList
+          cols={getCols()}
+          gap={16}
+        >
           {Array.from({ length: 24 }).map((_, index) => (
             <ImageListItem key={index}>
               <Skeleton
@@ -160,8 +162,15 @@ const Outfits: React.FC = () => {
                 height={300}
                 sx={{ borderRadius: 2 }}
               />
-              <Skeleton variant="text" width="60%" sx={{ mt: 1 }} />
-              <Skeleton variant="text" width="40%" />
+              <Skeleton
+                variant="text"
+                width="60%"
+                sx={{ mt: 1 }}
+              />
+              <Skeleton
+                variant="text"
+                width="40%"
+              />
             </ImageListItem>
           ))}
         </ImageList>
@@ -200,7 +209,10 @@ const Outfits: React.FC = () => {
             }}
           >
             {newCloth.image ? (
-              <img src={URL.createObjectURL(newCloth.image)} alt="New cloth" />
+              <img
+                src={URL.createObjectURL(newCloth.image)}
+                alt="New cloth"
+              />
             ) : (
               <Box
                 sx={{
