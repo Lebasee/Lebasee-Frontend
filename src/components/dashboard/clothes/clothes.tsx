@@ -151,7 +151,7 @@ const Clothes: React.FC = () => {
 
       {firstLoading ? (
         <ImageList cols={getCols()} gap={16}>
-          {Array.from({ length: 8 }).map((_, index) => (
+          {Array.from({ length: 24 }).map((_, index) => (
             <ImageListItem key={index}>
               <Skeleton
                 variant="rectangular"

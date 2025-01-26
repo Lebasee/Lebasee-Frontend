@@ -20,10 +20,8 @@ const MainDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  const isSmallScreen = useMediaQuery("(max-width: 768px)");
-  const isXSmallScreen = useMediaQuery("(max-width: 500px)");
-  const isMediumScreen = useMediaQuery("(min-width: 1025px");
-  const isLargeScreen = useMediaQuery("(min-width: 1460px)");
+  const isSmallScreenY = useMediaQuery("(max-height: 750px)");
+  const isLargeScreenY = useMediaQuery("(min-height: 1000px)");
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -100,9 +98,11 @@ const MainDashboard: React.FC = () => {
               <Typography
                 variant="h3"
                 sx={{
-                  mt: 7,
+                  mt: isSmallScreenY ? 0 : 6,
                   mr: { xs: 1, md: 3 },
-                  fontSize: { xs: "1.5rem", md: "2.5rem" },
+                  fontSize: isSmallScreenY
+                    ? "1.2rem"
+                    : { xs: "1.5rem", md: "2.5rem" },
                   color: "white",
                   textAlign: "right", // Ensure "بدن شما" stays right-aligned
                 }}
@@ -121,7 +121,7 @@ const MainDashboard: React.FC = () => {
                   alignItems: "center",
                   justifyContent: "center",
                   flexWrap: "wrap", // Ensure items wrap neatly
-                  gap: 2, // Add space between grid items
+                  gap: isLargeScreenY ? 5 : 2, // Add space between grid items
                 }}
               >
                 {loading
@@ -130,8 +130,7 @@ const MainDashboard: React.FC = () => {
                         key={index}
                         variant="text"
                         sx={{
-                          width: { sm: 50, md: 100, lg: 130, xl: 180 },
-                          margin: "10px auto",
+                          width: { xs: 140, sm: 170, md: 220, lg: 350 },
                           borderRadius: 3,
                         }}
                       />
@@ -144,7 +143,7 @@ const MainDashboard: React.FC = () => {
                           justifyContent: "space-between",
                           alignItems: "center",
                           minWidth: {
-                            xs: "160px",
+                            xs: "140px",
                             sm: "190px",
                             md: "290px",
                             lg: "390px",
@@ -231,7 +230,7 @@ const MainDashboard: React.FC = () => {
                 />
               ))
             : // Show actual outfits when loaded
-              [...outfits, ...outfits].map((outfit, index) => (
+              [...outfits, ...outfits, ...outfits].map((outfit, index) => (
                 <ImageListItem
                   key={index}
                   sx={{ height: "100px", width: "65%", mt: 2 }}

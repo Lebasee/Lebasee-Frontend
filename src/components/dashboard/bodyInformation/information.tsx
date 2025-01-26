@@ -8,7 +8,6 @@ import { BodyInformation, ToastData } from "../../../types/types";
 import { AxiosError } from "axios";
 import Toast from "../../base/toast";
 import { useNavigate } from "react-router-dom";
-import ModelViewer from "../../base/SketchfabEmbed";
 import debounce from "lodash.debounce";
 
 const Information: React.FC = () => {
@@ -88,14 +87,11 @@ const Information: React.FC = () => {
   );
 
   const handleSliderChange = (id: string, newValue: number) => {
-    // Update the local state immediately
     setDatas((prevDatas) =>
       prevDatas.map((data) =>
         data.id === id ? { ...data, value: newValue } : data
       )
     );
-
-    // Trigger the debounced API call
     debouncedApiCall(id, newValue);
   };
 
@@ -104,7 +100,7 @@ const Information: React.FC = () => {
       sx={{
         display: "flex",
         flexDirection: "row",
-        justifyContent: "center",
+        justifyContent: "row",
         p: "25px",
         height: "100vh",
         width: "100%",
@@ -113,11 +109,30 @@ const Information: React.FC = () => {
       <Box
         sx={{
           width: "100%",
-          maxWidth: 600,
+          alignItems: "row",
+          justifyContent: "flex-end",
+          maxWidth: 1000,
           mx: "auto",
-          mt: 16,
           p: 2,
           borderRadius: 2,
+          overflowX: "hidden",
+          overflowY: "auto", // Only show scrollbar when necessary
+          position: "relative", // To control the scrollbar within the box
+          "&::-webkit-scrollbar": {
+            width: "8px", // Adjust scrollbar width
+            display: "none", // Hide by default
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: pallete.primary[400], // Thumb color
+            borderRadius: "8px", // Rounded corners for the thumb
+            border: "3px solid transparent", // Border for the thumb (optional)
+            backgroundClip: "content-box",
+          },
+          "&::-webkit-scrollbar-track": {
+            background: "#f1f1f1", // Track color
+            borderRadius: "8px", // Rounded corners for the track
+          },
+          "-ms-overflow-style": "none", // For Internet Explorer
         }}
       >
         <Typography variant="h3" color="white" mb={4}>
@@ -126,12 +141,7 @@ const Information: React.FC = () => {
 
         <Grid
           sx={{
-            overflowX: "hidden",
             height: "calc(100vh - 20rem)",
-            overflowY: "scroll",
-            "&::-webkit-scrollbar": { display: "none" },
-            "-ms-overflow-style": "none",
-            "scrollbar-width": "none",
           }}
         >
           <Toast
@@ -145,18 +155,26 @@ const Information: React.FC = () => {
               <Skeleton
                 variant="text"
                 width="70%"
-                sx={{ margin: "20px 80px", borderRadius: 3, mt: 4 }}
+                sx={{
+                  margin: "20px 80px",
+                  borderRadius: 3,
+                  mt: 4,
+                  "@media (max-width: 600px)": {
+                    width: "80%",
+                    margin: "20px auto",
+                  },
+                }}
               />
             ))}
           {datas.map((data, index) => (
             <Box key={index} sx={{ mb: 3 }}>
               <Grid container spacing={2} alignItems="center">
-                <Grid item xs={6}>
+                <Grid item xs={10} sm={8}>
                   <Box
                     sx={{
                       display: "flex",
                       justifyContent: "space-between",
-                      width: "30rem",
+                      width: "100%",
                     }}
                   >
                     <Typography color="white">{data.name}</Typography>
@@ -175,7 +193,7 @@ const Information: React.FC = () => {
                     sx={{
                       mr: 2,
                       color: pallete.primary[400],
-                      width: "30rem",
+                      width: "100%", // Make the slider full width
                       "& .MuiSlider-thumb": {
                         height: 16,
                         width: 16,
@@ -196,38 +214,6 @@ const Information: React.FC = () => {
             </Box>
           ))}
         </Grid>
-      </Box>
-
-      <Box
-        sx={{
-          display: "flex",
-          height: "100%",
-          width: "50%",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Box
-          sx={{
-            height: "90%",
-            width: "70%",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {loading ? (
-            <Skeleton
-              variant="rectangular"
-              sx={{
-                height: "100%",
-                width: "100%",
-                borderRadius: 5,
-              }}
-            />
-          ) : (
-            <ModelViewer />
-          )}
-        </Box>
       </Box>
     </Box>
   );
