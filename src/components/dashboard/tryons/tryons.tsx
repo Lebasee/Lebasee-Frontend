@@ -11,6 +11,7 @@ import Toast from "../../base/toast";
 import FullScreenLoader from "../../base/FullScreenLoader";
 import CustomGallery from "../clothes/CustomGallery";
 import getUserTryons from "../../../api/dashboard/getUserTryons";
+import { pallete } from "../../../styles/pallete.m";
 
 const Tryons: React.FC = () => {
   const [tryons, setTryons] = useState<ClothType[]>([]);
@@ -22,7 +23,6 @@ const Tryons: React.FC = () => {
     message: "",
     severity: "error",
   });
-
 
   useEffect(() => {
     const fetchClothes = async () => {
@@ -69,10 +69,17 @@ const Tryons: React.FC = () => {
         p: "25px",
         height: "100vh",
         alignItems: "center",
-        overflowY: "auto",
-        scrollbarWidth: "none",
+        overflowY: "auto", // Enables vertical scrolling
+        scrollbarWidth: "thin", // For Firefox (optional)
         "&::-webkit-scrollbar": {
-          display: "none",
+          width: "8px", // Width of the scrollbar
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: pallete.primary[300], // Scrollbar thumb color
+          borderRadius: "10px", // Rounded corners for the thumb
+        },
+        "&::-webkit-scrollbar-track": {
+          backgroundColor: "transparent", // Track color
         },
       }}
     >
@@ -116,7 +123,6 @@ const Tryons: React.FC = () => {
             setToastData={setToastData}
             setIsLoading={setIsLoading}
           />
-
         </ImageList>
       )}
     </Box>

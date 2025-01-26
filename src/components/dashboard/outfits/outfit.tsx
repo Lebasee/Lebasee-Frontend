@@ -127,10 +127,17 @@ const Outfits: React.FC = () => {
         p: "25px",
         height: "100vh",
         alignItems: "center",
-        overflowY: "auto",
-        scrollbarWidth: "none",
+        overflowY: "auto", // Enables vertical scrolling
+        scrollbarWidth: "thin", // For Firefox (optional)
         "&::-webkit-scrollbar": {
-          display: "none",
+          width: "8px", // Width of the scrollbar
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: pallete.primary[300], // Scrollbar thumb color
+          borderRadius: "10px", // Rounded corners for the thumb
+        },
+        "&::-webkit-scrollbar-track": {
+          backgroundColor: "transparent", // Track color
         },
       }}
     >

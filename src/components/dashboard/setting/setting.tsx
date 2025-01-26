@@ -305,10 +305,7 @@ const Setting: React.FC = () => {
   };
 
   const isSmallScreen = useMediaQuery("(max-width: 768px)");
-  const isMediumScreen = useMediaQuery("(min-width: 1025px");
-  const isLargeScreen = useMediaQuery("(min-width: 1460px)");
   const isSmallScreenY = useMediaQuery("(max-height: 600px)");
-  const isMediumScreenY = useMediaQuery("(min-height:900px)");
 
   return (
     <Box
@@ -320,16 +317,11 @@ const Setting: React.FC = () => {
         flexDirection: "row",
         width: "100%",
         height: "100vh",
-        overflow: "auto", // Enable scrolling
-        scrollbarWidth: "none", // Hide scrollbar for Firefox
-        "&::-webkit-scrollbar": {
-          display: "none", // Hide scrollbar for WebKit browsers
-        },
       }}
     >
       <Box
         sx={{
-          width: {sm: "100%", md: "85%", lg: "70%"},
+          width: { sm: "100%", md: "85%", lg: "70%" },
           height: "100vh",
         }}
       >
@@ -355,8 +347,8 @@ const Setting: React.FC = () => {
           <Avatar
             sx={{
               border: "2px solid #ecf0f1",
-              height: {xs: 90, sm: 120, md: 150, lg: 180, xl: 220},
-              width: {xs: 90, sm: 120, md: 150, lg: 180, xl: 220},
+              height: { xs: 90, sm: 120, md: 150, lg: 180, xl: 220 },
+              width: { xs: 90, sm: 120, md: 150, lg: 180, xl: 220 },
             }}
             src={profileImage}
           />
@@ -364,11 +356,11 @@ const Setting: React.FC = () => {
             sx={{
               position: "absolute",
               bottom: 3,
-              mr: {xs: 8, sm: 10, md: 12, xl: 16},
+              mr: { xs: 8, sm: 10, md: 12, xl: 16 },
               zIndex: 1,
               backgroundColor: pallete.primary[500],
-              width: {xs: 20, sm: 24, md: 28, lg: 30, xl: 34},
-              height: {xs: 20, sm: 24, md: 28, lg: 30, xl: 34},
+              width: { xs: 20, sm: 24, md: 28, lg: 30, xl: 34 },
+              height: { xs: 20, sm: 24, md: 28, lg: 30, xl: 34 },
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -393,8 +385,8 @@ const Setting: React.FC = () => {
                   mt: 1.3,
                   color: "black",
                   cursor: "pointer",
-                  width: {xs: 14, sm: 17, md: 20, lg: 23, xl: 27},
-                  height: {xs: 14, sm: 17, md: 20, lg: 23, xl: 27},
+                  width: { xs: 14, sm: 17, md: 20, lg: 23, xl: 27 },
+                  height: { xs: 14, sm: 17, md: 20, lg: 23, xl: 27 },
                 }}
               />
             </label>
@@ -411,7 +403,7 @@ const Setting: React.FC = () => {
         {/* Form Section */}
         <Box
           sx={{
-            mt: isSmallScreenY ? 0 : {md: 6, lg: 8},
+            mt: isSmallScreenY ? 0 : { md: 6, lg: 8 },
             p: 3,
           }}
         >
@@ -428,7 +420,7 @@ const Setting: React.FC = () => {
                 }
                 sx={{
                   "& .MuiInputBase-input": {
-                    ml: {xs: 0, sm: 0.5, md: 1.5, lg: 2.2, xl: 3},
+                    ml: { xs: 0, sm: 0.5, md: 1.5, lg: 2.2, xl: 3 },
                     height: isSmallScreenY ? "20px" : "28px",
                   },
                   bgcolor: pallete.secondary[200],
@@ -452,12 +444,11 @@ const Setting: React.FC = () => {
                   bgcolor: pallete.secondary[200],
                   borderRadius: 1,
                   "& .MuiInputBase-input": {
-                    ml: {xs: 0, sm: 0.5, md: 1.5, lg: 2.2, xl: 3}
+                    ml: { xs: 0, sm: 0.5, md: 1.5, lg: 2.2, xl: 3 },
                   },
                 }}
                 inputProps={{
                   dir: "ltr", // Align content from left-to-right
-                  // readOnly: true, // Make the input read-only
                 }}
               />
             </Grid>
@@ -471,8 +462,8 @@ const Setting: React.FC = () => {
                 multiline
                 sx={{
                   "& .MuiInputBase-input": {
-                    ml: {xs: 0, sm: 0.5, md: 1.5, lg: 2.2, xl: 3},
-                    fontSize: {xs: 15, sm: 18,}
+                    ml: { xs: 0, sm: 0.5, md: 1.5, lg: 2.2, xl: 3 },
+                    fontSize: { xs: 15, sm: 18 },
                   },
                   bgcolor: pallete.secondary[200],
                   borderRadius: 1,
@@ -485,53 +476,71 @@ const Setting: React.FC = () => {
             </Grid>
 
             <Grid item xs={isSmallScreen ? 12 : 6}>
-  {/* Verification Link */}
-  <Box sx={{ textAlign: "right", mt: 2 }}>
-    {isVerifying ? (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignContent: "center",
-          mt: -2,
-        }}
-      >
-        {/* Verify Button */}
-        <Box
-          sx={{
-            bgcolor: pallete.secondary[200],
-            p: 1,
-            borderRadius: 1,
-          }}
-        >
-          {/* Verification Fields */}
-          <DigitInput code={code} setCode={setCode} />
-        </Box>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleVerifyCode}
-          sx={{ mr: 4 }}
-        >
-          تایید
-        </Button>
-      </Box>
-    ) : (
-      <Typography
-        variant="body2"
-        sx={{
-          color: isActive ? pallete.primary[200] : "warning.main", // Styled as a link
-          cursor: "pointer",
-        }}
-        onClick={handleClick}
-      >
-        ایمیل شما تایید {isActive ? "شده" : "نشده"} است!
-      </Typography>
-    )}
-  </Box>
-</Grid>
-
-
+              {/* Verification Link */}
+              <Box sx={{ textAlign: "right", mt: 2 }}>
+                {isVerifying ? (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignContent: "center",
+                      mt: -2,
+                    }}
+                  >
+                    {/* Verify Button */}
+                    <Box
+                      sx={{
+                        p: 0.5,
+                        borderRadius: 1,
+                      }}
+                    >
+                      {/* Verification Fields */}
+                      <DigitInput
+                        code={code}
+                        setCode={setCode}
+                        setting={true}
+                      />
+                    </Box>
+                    <Box
+                      onClick={handleVerifyCode}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer", // Make it clickable
+                        color: "white", // Text color
+                        borderRadius: "4px",
+                        backgroundColor: pallete.primary[600], // Background color for ذخیره
+                        mr: { xs: 0.4, sm: 1 },
+                        mt: { xs: 0.2, sm: 0.4, md: 0.55 },
+                        width: { xs: 25, sm: 45, md: 55, lg: 66, xl: 76 }, // Increased width
+                        height: 40,
+                        fontSize: { xs: 12, sm: 14, md: 16, lg: 18, xl: 20 },
+                        // p: 2,
+                        transition: "all 0.3s ease", // Smooth transition for hover effects
+                        "&:active": {
+                          transform: "scale(0.95)", // Slightly shrink on click
+                        },
+                        "&:hover": { backgroundColor: pallete.primary[800] }, // Slightly lighter black on hover
+                      }}
+                    >
+                      تایید
+                    </Box>
+                  </Box>
+                ) : (
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: isActive ? pallete.primary[200] : "warning.main", // Styled as a link
+                      cursor: "pointer",
+                    }}
+                    onClick={handleClick}
+                  >
+                    ایمیل شما تایید {isActive ? "شده" : "نشده"} است!
+                  </Typography>
+                )}
+              </Box>
+            </Grid>
 
             <Grid item xs={isSmallScreen ? 12 : 6}>
               <CustomTextField
@@ -548,7 +557,7 @@ const Setting: React.FC = () => {
                   bgcolor: pallete.secondary[200],
                   borderRadius: 1,
                   "& .MuiInputBase-input": {
-                    ml: {xs: 0, sm: 0.5, md: 1.5, lg: 2.2, xl: 3}
+                    ml: { xs: 0, sm: 0.5, md: 1.5, lg: 2.2, xl: 3 },
                   },
                 }}
                 InputProps={{
@@ -589,7 +598,7 @@ const Setting: React.FC = () => {
                   bgcolor: pallete.secondary[200],
                   borderRadius: 1,
                   "& .MuiInputBase-input": {
-                    ml: {xs: 0, sm: 0.5, md: 1.5, lg: 2.2, xl: 3}
+                    ml: { xs: 0, sm: 0.5, md: 1.5, lg: 2.2, xl: 3 },
                   },
                 }}
                 InputProps={{
@@ -626,7 +635,7 @@ const Setting: React.FC = () => {
                 color="secondary"
                 onClick={() => handleSubmit(0)}
                 sx={{
-                  width: {xs: 60, sm: 75, md: 90, lg: 105, xl: 120}, // Increased width
+                  width: { xs: 60, sm: 75, md: 90, lg: 105, xl: 120 }, // Increased width
                   color: "black", // Text color
                   backgroundColor: pallete.secondary[400], // Background color for انصراف
                   "&:hover": { backgroundColor: pallete.secondary[600] }, // Slightly lighter black on hover
@@ -639,7 +648,7 @@ const Setting: React.FC = () => {
                 color="primary"
                 onClick={() => handleSubmit(1)}
                 sx={{
-                  width: {xs: 60, sm: 75, md: 90, lg: 105, xl: 120}, // Increased width
+                  width: { xs: 60, sm: 75, md: 90, lg: 105, xl: 120 }, // Increased width
                   backgroundColor: pallete.primary[600], // Background color for ذخیره
                   color: "white", // White text for contrast
                   "&:hover": { backgroundColor: pallete.primary[800] }, // Slightly lighter black on hover
@@ -651,7 +660,6 @@ const Setting: React.FC = () => {
           </Grid>
         </Box>
       </Box>
-
     </Box>
   );
 };
