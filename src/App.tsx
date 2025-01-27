@@ -30,11 +30,15 @@ const router = createBrowserRouter([
       { path: "login", element: <LoginForm /> },
       { path: "signup", element: <SignupForm /> },
       { path: "confirm-email", element: <EmailConfirmationForm /> },
-      {
-        path: "reset-password/:uid/:token",
-        element: <ResetPasswordForm />,
-      },
     ],
+  },
+  {
+    path: "/reset-password/:uid/:token",
+    element: (
+      <Container>
+        <ResetPasswordForm />
+      </Container>
+    ),
   },
   {
     path: "/landing",

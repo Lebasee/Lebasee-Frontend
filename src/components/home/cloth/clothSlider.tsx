@@ -96,7 +96,8 @@ const ClothSlider = ({
                 style={{
                   boxSizing: "border-box",
                   width: "100%",
-                  height: "280px",
+                  minHeight: 150,
+                  height: "auto",
                   objectFit: "cover",
                   borderRadius: "8px",
                   transform:

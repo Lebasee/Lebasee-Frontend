@@ -1,10 +1,14 @@
 import { Box, useMediaQuery, useTheme } from "@mui/material";
-import React from "react";
+import React, { ReactNode } from "react";
 import { pallete } from "../../styles/pallete.m";
 import LoginImage from "../../assets/LoginImage.png";
 import { Outlet } from "react-router";
 
-const Container: React.FC = () => {
+type ContainerProps = {
+  children?: ReactNode;
+};
+
+const Container: React.FC<ContainerProps> = ({ children }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isTablet = useMediaQuery(theme.breakpoints.down("md"));
@@ -43,7 +47,7 @@ const Container: React.FC = () => {
             justifyContent: "center",
           }}
         >
-          <Outlet />
+          {children || <Outlet />} {/* Render children or use Outlet */}
         </Box>
 
         {!isMobile && (

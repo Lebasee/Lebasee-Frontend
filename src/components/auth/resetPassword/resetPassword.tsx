@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  CircularProgress,
   IconButton,
   InputAdornment,
   Stack,
@@ -16,6 +15,7 @@ import CustomTextField from "../../base/CustomTextField";
 import { ToastData } from "../../../types/types";
 import Toast from "../../base/toast";
 import ResetPassword from "../../../api/auth/resetPassword";
+import FullScreenLoader from "../../base/FullScreenLoader";
 
 const ResetPasswordForm: React.FC = () => {
   const { uid, token } = useParams();
@@ -156,6 +156,8 @@ const ResetPasswordForm: React.FC = () => {
         تغییر رمز عبور
       </Typography>
 
+      {loading && <FullScreenLoader />}
+
       <CustomTextField
         fullWidth
         variant="outlined"
@@ -268,11 +270,7 @@ const ResetPasswordForm: React.FC = () => {
           لغو
         </Button>
         <Button variant="contained" fullWidth onClick={handleSubmit}>
-          {loading ? (
-            <CircularProgress size="32.5px" sx={{ color: "#ffffff" }} />
-          ) : (
-            "تایید"
-          )}
+          تایید
         </Button>
       </Stack>
 
