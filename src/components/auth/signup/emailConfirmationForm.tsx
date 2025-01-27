@@ -12,9 +12,10 @@ import DigitInput from "../../base/digitInput";
 import VerifyCode from "../../../api/auth/verifyCode";
 import { useNavigate } from "react-router-dom";
 import { persianToNumeric } from "../../../utils/persianToNumeric";
-import { ToastData } from "../../../types/types";
+import { ToastData, User } from "../../../types/types";
 import Toast from "../../base/toast";
 import { AxiosError } from "axios";
+import Login from "../../../api/auth/login";
 
 const EmailConfirmationForm: React.FC = () => {
   const [countdown, setCountdown] = useState(90);
@@ -40,7 +41,6 @@ const EmailConfirmationForm: React.FC = () => {
   }, [countdown]);
 
   const handleResend = () => {
-    // Logic to resend the code goes here
     setCountdown(90);
     setIsResendAvailable(false);
   };
@@ -63,6 +63,13 @@ const EmailConfirmationForm: React.FC = () => {
           message: "ایمیل با موفقیت تایید شد.",
           severity: "success",
         });
+        const user: User = {
+          first_name: localStorage.getItem("firstName"),
+          last_name: localStorage.getItem("lastName"),
+          email: localStorage.getItem("email"),
+          password: localStorage.getItem("password"),
+        };
+        await Login(user);
         navigate("/home");
       }
     } catch (error) {
@@ -97,28 +104,14 @@ const EmailConfirmationForm: React.FC = () => {
         m: "auto",
       }}
     >
-      <MarkEmailReadIcon
-        color="primary"
-        sx={{ fontSize: "120px" }}
-      />
-      <Typography
-        sx={{ mb: 2 }}
-        variant="h4"
-        color="primary.dark"
-      >
+      <MarkEmailReadIcon color="primary" sx={{ fontSize: "120px" }} />
+      <Typography sx={{ mb: 2 }} variant="h4" color="primary.dark">
         تایید کنید شما هستید
       </Typography>
-      <Typography
-        sx={{ mb: 2 }}
-        variant="body1"
-        color="primary"
-      >
+      <Typography sx={{ mb: 2 }} variant="body1" color="primary">
         کد به آدرس شما ایمیل شد
       </Typography>
-      <DigitInput
-        code={code}
-        setCode={setCode}
-      />
+      <DigitInput code={code} setCode={setCode} />
       {isResendAvailable ? (
         <Link
           component="button"
@@ -130,11 +123,7 @@ const EmailConfirmationForm: React.FC = () => {
           ارسال مجدد کد
         </Link>
       ) : (
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ mt: 2 }}
-        >
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
           ارسال مجدد کد تا {countdown} ثانیه دیگر
         </Typography>
       )}
@@ -152,16 +141,9 @@ const EmailConfirmationForm: React.FC = () => {
         >
           انصراف
         </Button>
-        <Button
-          variant="contained"
-          fullWidth
-          onClick={handleVerifyCode}
-        >
+        <Button variant="contained" fullWidth onClick={handleVerifyCode}>
           {loading ? (
-            <CircularProgress
-              size="32.5px"
-              sx={{ color: "#ffffff" }}
-            />
+            <CircularProgress size="32.5px" sx={{ color: "#ffffff" }} />
           ) : (
             "تایید"
           )}
