@@ -21,7 +21,7 @@ import Logo from "../../../assets/logo_primary.svg";
 import LogoMobile from "../../../assets/icon3.svg";
 
 const Sidebar: React.FC = () => {
-const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL;
+  const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL;
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -41,9 +41,7 @@ const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL;
         const { first_name, last_name, profile_image } = response;
         setFirstName(first_name);
         setLastName(last_name);
-        setProfileImage(
-          `${API_BASE_URL}/${profile_image}`
-        );
+        setProfileImage(`${API_BASE_URL}/${profile_image}`);
       } catch (error) {
         console.error("Error fetching user information:", error);
       }
@@ -159,12 +157,10 @@ const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL;
                 fontSize: 14,
               }}
             >
-              برگشت
+              برگشت به خانه
             </Typography>
           </ButtonBase>
         )}
-
-        {/* Sidebar Title */}
 
         {/* User Avatar */}
         {!isSmallScreen && (
@@ -229,18 +225,17 @@ const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL;
           }}
         >
           {isSmallScreen && (
-            <Grid
-              item
-              xs={12}
-              key={12}
-            >
+            <Grid item xs={13} key={12}>
               <ButtonBase
-                onClick={() => navigate("/home")} // Navigate to home
+                onClick={() => navigate("/home")}
                 sx={{
+                  mr: 0.35,
                   width: "100%", // Ensure the clickable area spans the full width
-                  display: "block",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   borderRadius: "8px", // Apply rounded corners to the entire button
-                  mt: isSmallScreenY ? 1 : 3,
+                  mt: 1,
                   backgroundColor: "transparent",
                   "&:hover": {
                     backgroundColor: "#34495e",
@@ -256,45 +251,17 @@ const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL;
                     alignItems: "center",
                     justifyContent: "center",
                     width: "100%",
-                    fontSize: 10,
-                    p: 1,
                   }}
                 >
-                  <ArrowForwardIcon sx={{ fontSize: 24, color: "white" }} />
+                  <img
+                    src={LogoMobile}
+                    alt="لباسی"
+                    style={{
+                      height: "auto", // Adjust the height as needed
+                      width: "100%", // Adjust the width as needed
+                    }}
+                  />
                 </Box>
-              </ButtonBase>
-            </Grid>
-          )}
-          {isSmallScreen && (
-            <Grid
-              item
-              xs={12}
-              key={12}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <ButtonBase
-                onClick={() => navigate("/home")}
-                sx={{
-                  width: "95%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderRadius: "8px",
-                  mt: 1,
-                }}
-              >
-                <img
-                  src={LogoMobile}
-                  alt="لباسی"
-                  style={{
-                    height: "auto", // Adjust the height as needed
-                    width: "100%", // Adjust the width as needed
-                  }}
-                />
               </ButtonBase>
             </Grid>
           )}

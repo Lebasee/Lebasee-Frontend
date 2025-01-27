@@ -1,16 +1,14 @@
 import React, { useRef, useEffect, SetStateAction, Dispatch } from "react";
-import { TextField, Stack, useMediaQuery } from "@mui/material";
+import { TextField, Stack } from "@mui/material";
 import { toPersianNumber } from "../../utils/toPersianNumber";
-import { pallete } from "../../styles/pallete.m";
 
 interface DigitInputProps {
   // count?: number;
   code: any[];
   setCode: Dispatch<SetStateAction<any[]>>;
-  setting?: boolean;
 }
 
-const DigitInput: React.FC<DigitInputProps> = ({ code, setCode, setting }) => {
+const DigitInput: React.FC<DigitInputProps> = ({ code, setCode }) => {
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
 
   useEffect(() => {
@@ -55,10 +53,8 @@ const DigitInput: React.FC<DigitInputProps> = ({ code, setCode, setting }) => {
     }
   };
 
-  const isSmallScreen = useMediaQuery("(max-width: 440px)");
-
   return (
-    <Stack direction="row-reverse" sx={{ gap: setting ? 1 : 2 }}>
+    <Stack direction="row-reverse" sx={{ gap: 2 }}>
       {code.map((digit, index) => (
         <TextField
           key={index}
@@ -72,7 +68,7 @@ const DigitInput: React.FC<DigitInputProps> = ({ code, setCode, setting }) => {
               maxLength: 1,
               style: {
                 textAlign: "center",
-                fontSize: setting ? (isSmallScreen ? "14px" : "18px") : "24px",
+                fontSize: "24px",
               },
               "data-testid": `digit-input-${index}`,
             },
@@ -80,9 +76,7 @@ const DigitInput: React.FC<DigitInputProps> = ({ code, setCode, setting }) => {
           variant="outlined"
           size="small"
           sx={{
-            width: setting ? (isSmallScreen ? "30px" : "40px") : "60px",
-            bgcolor: setting ? pallete.primary[100] : null,
-            borderRadius: setting ? 2 : 0,
+            width: "60px",
           }}
         />
       ))}

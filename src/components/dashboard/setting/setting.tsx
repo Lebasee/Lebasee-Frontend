@@ -21,8 +21,6 @@ import postUserNewPassword from "../../../api/dashboard/postUserNewPassword";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import getUserInfo from "../../../api/dashboard/getUserInfo";
-import DigitInput from "../../base/digitInput";
-import { persianToNumeric } from "../../../utils/persianToNumeric";
 import VerifyCode from "../../../api/auth/verifyCode";
 import resendVerifyCode from "../../../api/auth/resendVerifyCode";
 
@@ -54,9 +52,7 @@ const Setting: React.FC = () => {
         setFirstName(first_name);
         setLastName(last_name);
         setIsActive(is_verified);
-        setProfileImage(
-          `${API_BASE_URL}/${profile_image}`
-        );
+        setProfileImage(`${API_BASE_URL}/${profile_image}`);
       } catch (error) {
         console.error("Error fetching user information:", error);
       }
@@ -268,12 +264,20 @@ const Setting: React.FC = () => {
   };
 
   const [isVerifying, setIsVerifying] = useState(false); // Toggle between link and verification fields
-  const [code, setCode] = useState(Array(4).fill(""));
+  const [code, setCode] = useState("");
 
   const handleVerifyCode = async () => {
     try {
-      const parsedCode = persianToNumeric(code);
-      const response = await VerifyCode(parsedCode);
+      if (code.length !== 4) {
+        setCode("");
+        setToastData({
+          open: true,
+          message: "کد ورودی 4 رقم نمیباشد",
+          severity: "warning",
+        });
+        return;
+      }
+      const response = await VerifyCode(code);
 
       if (response?.status == 200) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -294,7 +298,7 @@ const Setting: React.FC = () => {
           message: "کد تایید معتبر نمی باشد.",
           severity: "error",
         });
-        setCode(Array(4).fill(""));
+        setCode("");
       } else {
         setToastData({
           open: true,
@@ -307,6 +311,13 @@ const Setting: React.FC = () => {
 
   const isSmallScreen = useMediaQuery("(max-width: 768px)");
   const isSmallScreenY = useMediaQuery("(max-height: 600px)");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    if (inputValue.length <= 4) {
+      setCode(inputValue);
+    }
+  };
 
   return (
     <Box
@@ -478,60 +489,57 @@ const Setting: React.FC = () => {
 
             <Grid item xs={isSmallScreen ? 12 : 6}>
               {/* Verification Link */}
-              <Box sx={{ textAlign: "right", mt: 2 }}>
+              <Box sx={{ textAlign: "right" }}>
                 {isVerifying ? (
                   <Box
                     sx={{
                       display: "flex",
                       justifyContent: "center",
-                      alignContent: "center",
-                      mt: -2,
+                      alignItems: "center",
+                      mt: 0.7,
                     }}
                   >
-                    {/* Verify Button */}
-                    <Box
-                      sx={{
-                        p: 0.5,
-                        borderRadius: 1,
+                    {/* Input Field */}
+                    <input
+                      type="text"
+                      value={code}
+                      onChange={handleChange}
+                      style={{
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                        padding: "8px",
+                        width: "60px",
+                        height: "auto",
+                        textAlign: "center", // Center text in input
                       }}
-                    >
-                      {/* Verification Fields */}
-                      <DigitInput
-                        code={code}
-                        setCode={setCode}
-                        setting={true}
-                      />
-                    </Box>
-                    <Box
+                    />
+
+                    {/* Verify Button */}
+                    <Button
                       onClick={handleVerifyCode}
                       sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        cursor: "pointer", // Make it clickable
-                        color: "white", // Text color
-                        borderRadius: "4px",
-                        backgroundColor: pallete.primary[600], // Background color for ذخیره
-                        mr: { xs: 0.4, sm: 1 },
-                        mt: { xs: 0.2, sm: 0.4, md: 0.55 },
-                        width: { xs: 25, sm: 45, md: 55, lg: 66, xl: 76 }, // Increased width
+                        ml: 1, // Margin left for spacing
+                        color: "white",
+                        mr: 3,
+                        backgroundColor: pallete.primary[600], // Primary color
                         height: 40,
+                        minWidth: 55, // Minimum button width
+                        borderRadius: "4px",
                         fontSize: { xs: 12, sm: 14, md: 16, lg: 18, xl: 20 },
-                        transition: "all 0.3s ease", // Smooth transition for hover effects
-                        "&:active": {
-                          transform: "scale(0.95)", // Slightly shrink on click
-                        },
-                        "&:hover": { backgroundColor: pallete.primary[800] }, // Slightly lighter black on hover
+                        transition: "all 0.3s ease",
+                        "&:hover": { backgroundColor: pallete.primary[800] },
+                        "&:active": { transform: "scale(0.95)" }, // Click effect
                       }}
                     >
                       تایید
-                    </Box>
+                    </Button>
                   </Box>
                 ) : (
                   <Typography
                     variant="body2"
                     sx={{
-                      color: isActive ? pallete.primary[200] : "warning.main", // Styled as a link
+                      mt: {xs: 0.5, lg: 1.5},
+                      color: isActive ? pallete.primary[200] : "warning.main",
                       cursor: "pointer",
                     }}
                     onClick={handleClick}
