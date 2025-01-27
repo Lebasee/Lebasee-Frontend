@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  CircularProgress,
   IconButton,
   InputAdornment,
   Link,
@@ -19,6 +18,8 @@ import { ToastData, User } from "../../../types/types";
 import CustomTextField from "../../base/CustomTextField";
 import { AxiosError } from "axios";
 import Toast from "../../base/toast";
+import ForgotPassword from "../../../api/auth/forgotPassword";
+import FullScreenLoader from "../../base/FullScreenLoader";
 
 const LoginForm: React.FC = () => {
   const [focused, setFocused] = useState({ email: false, password: false });
@@ -30,6 +31,7 @@ const LoginForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [sentCode, setSentCode] = useState(false);
   const passwordInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const [toastData, setToastData] = useState<ToastData>({
@@ -93,6 +95,43 @@ const LoginForm: React.FC = () => {
     }
   };
 
+  const handleForgotPassword = async () => {
+    try {
+      if (email.length === 0) {
+        setTextFieldError({ email: email === "", password: password !== "" });
+        return;
+      }
+      setLoading(true);
+      const response = await ForgotPassword({ email });
+      if (response.status === 200) {
+        setToastData({
+          open: true,
+          message: "ایمیل فراموشی رمز با موفقیت ارسال شد",
+          severity: "success",
+        });
+        setSentCode(true);
+        return;
+      }
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.status === 400) {
+        setToastData({
+          open: true,
+          message: "ایمیل اشتباه می باشد.",
+          severity: "warning",
+        });
+      } else {
+        setToastData({
+          open: true,
+          message: "خطا در برقراری ارتباط با سرور.",
+          severity: "error",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -104,13 +143,10 @@ const LoginForm: React.FC = () => {
         m: "auto",
       }}
     >
-      <Typography
-        sx={{ mb: 2 }}
-        variant="h4"
-        color="primary.dark"
-      >
+      <Typography sx={{ mb: 2 }} variant="h4" color="primary.dark">
         ورود به حساب کاربری
       </Typography>
+      {loading && <FullScreenLoader />}
       <CustomTextField
         fullWidth
         variant="outlined"
@@ -202,17 +238,20 @@ const LoginForm: React.FC = () => {
         }}
       />
 
-      <Link
-        typography="body2"
-        sx={{
-          pl: "14px",
-          width: "100%",
-          textAlign: "left",
-          cursor: "pointer",
-        }}
-      >
-        رمز خود را فراموش کردید؟
-      </Link>
+      {!sentCode && (
+        <Link
+          typography="body2"
+          onClick={handleForgotPassword}
+          sx={{
+            pl: "14px",
+            width: "100%",
+            textAlign: "left",
+            cursor: "pointer",
+          }}
+        >
+          رمز خود را فراموش کردید؟
+        </Link>
+      )}
       <Stack
         direction="row"
         alignItems="center"
@@ -233,14 +272,7 @@ const LoginForm: React.FC = () => {
           onClick={handleSubmit}
           data-testid="login-button"
         >
-          {loading ? (
-            <CircularProgress
-              size="32.5px"
-              sx={{ color: "#ffffff" }}
-            />
-          ) : (
-            "ورود"
-          )}
+          ورود
         </Button>
       </Stack>
       <Toast

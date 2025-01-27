@@ -129,7 +129,11 @@ const CustomImageListBar: React.FC<InputProps> = ({
     <>
       {/* ImageListItemBar */}
       <ImageListItemBar
-        title={cloth.id === -1 ? "افزودن لباس" : "T-shirt"}
+        title={
+          cloth.id === -1
+            ? "افزودن " + (cloth.is_outfit ? "استایل" : "لباس")
+            : "T-shirt"
+        }
         subtitle={caption}
         actionPosition="left"
         actionIcon={
@@ -172,7 +176,9 @@ const CustomImageListBar: React.FC<InputProps> = ({
       <Dialog open={isEditing} onClose={() => setIsEditing(false)} fullWidth>
         <DialogTitle>
           {cloth.id === -1 ? (
-            <Typography>توضیحات لباس جدید</Typography>
+            <Typography>
+              توضیحات {cloth.is_outfit ? "استایل" : "لباس"} جدید
+            </Typography>
           ) : (
             <Typography>ویرایش توضیحات</Typography>
           )}

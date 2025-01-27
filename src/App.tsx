@@ -16,6 +16,7 @@ import Clothes from "./components/dashboard/clothes/clothes";
 import HomePage from "./pages/home";
 import Outfits from "./components/dashboard/outfits/outfit";
 import Tryons from "./components/dashboard/tryons/tryons";
+import ResetPasswordForm from "./components/auth/resetPassword/resetPassword";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
       { path: "login", element: <LoginForm /> },
       { path: "signup", element: <SignupForm /> },
       { path: "confirm-email", element: <EmailConfirmationForm /> },
+      {
+        path: "reset-password/:uid/:token",
+        element: <ResetPasswordForm />,
+      },
     ],
   },
   {
@@ -43,7 +48,7 @@ const router = createBrowserRouter([
       { path: "info", element: <Information /> },
       { path: "clothes", element: <Clothes /> },
       { path: "styles", element: <Outfits /> },
-      { path: "tryons", element: <Tryons />},
+      { path: "tryons", element: <Tryons /> },
       { path: "setting", element: <Setting /> },
     ],
   },

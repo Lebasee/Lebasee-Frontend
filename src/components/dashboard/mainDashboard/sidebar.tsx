@@ -21,6 +21,7 @@ import Logo from "../../../assets/logo_primary.svg";
 import LogoMobile from "../../../assets/icon3.svg";
 
 const Sidebar: React.FC = () => {
+const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL;
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -41,7 +42,7 @@ const Sidebar: React.FC = () => {
         setFirstName(first_name);
         setLastName(last_name);
         setProfileImage(
-          `https://lebasee-backend-production.up.railway.app/${profile_image}`
+          `${API_BASE_URL}/${profile_image}`
         );
       } catch (error) {
         console.error("Error fetching user information:", error);

@@ -92,6 +92,7 @@ const Clothes: React.FC = () => {
             id: cloth.id,
             image: cloth.image,
             caption: cloth.caption,
+            is_outfit: false,
           }))
         );
       } catch (error) {
@@ -149,10 +150,7 @@ const Clothes: React.FC = () => {
       {isLoading && <FullScreenLoader />}
 
       {firstLoading ? (
-        <ImageList
-          cols={getCols()}
-          gap={16}
-        >
+        <ImageList cols={getCols()} gap={16}>
           {Array.from({ length: 24 }).map((_, index) => (
             <ImageListItem key={index}>
               <Skeleton
@@ -161,15 +159,8 @@ const Clothes: React.FC = () => {
                 height={200}
                 sx={{ borderRadius: 2 }}
               />
-              <Skeleton
-                variant="text"
-                width="60%"
-                sx={{ mt: 1 }}
-              />
-              <Skeleton
-                variant="text"
-                width="40%"
-              />
+              <Skeleton variant="text" width="60%" sx={{ mt: 1 }} />
+              <Skeleton variant="text" width="40%" />
             </ImageListItem>
           ))}
         </ImageList>
@@ -208,10 +199,7 @@ const Clothes: React.FC = () => {
             }}
           >
             {newCloth.image ? (
-              <img
-                src={URL.createObjectURL(newCloth.image)}
-                alt="New cloth"
-              />
+              <img src={URL.createObjectURL(newCloth.image)} alt="New cloth" />
             ) : (
               <Box
                 sx={{
@@ -259,6 +247,7 @@ const Clothes: React.FC = () => {
                   id: -1,
                   image: newCloth.image,
                   caption: "",
+                  is_outfit: false,
                 }}
                 setReloadImage={setReloadImage}
                 setToastData={setToastData}

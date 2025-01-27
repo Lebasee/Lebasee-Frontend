@@ -74,7 +74,7 @@ const Outfits: React.FC = () => {
     } else {
       setToastData({
         open: true,
-        message: "لطفا تصویر و توضیحات لباس را وارد کنید.",
+        message: "لطفا تصویر و توضیحات استایل را وارد کنید.",
         severity: "error",
       });
       setIsLoading(false);
@@ -93,6 +93,7 @@ const Outfits: React.FC = () => {
             id: cloth.id,
             image: cloth.image,
             caption: cloth.caption,
+            is_outfit: true
           }))
         );
       } catch (error) {
@@ -260,6 +261,7 @@ const Outfits: React.FC = () => {
                   id: -1,
                   image: newCloth.image,
                   caption: "",
+                  is_outfit: true
                 }}
                 setReloadImage={setReloadImage}
                 setToastData={setToastData}

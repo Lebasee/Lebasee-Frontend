@@ -95,7 +95,7 @@ const SignUpForm: React.FC = () => {
       localStorage.clear();
       const response = await SignUp(user);
       if (response?.status == 201) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        localStorage.setItem("password", password);
         setToastData({
           open: true,
           message: "ثبت‌‌نام موفقیت آمیز بود",
@@ -134,11 +134,7 @@ const SignUpForm: React.FC = () => {
         m: "auto",
       }}
     >
-      <Typography
-        sx={{ mb: 2 }}
-        variant="h4"
-        color="primary.dark"
-      >
+      <Typography sx={{ mb: 2 }} variant="h4" color="primary.dark">
         ثبت نام
       </Typography>
       <Stack
@@ -321,10 +317,7 @@ const SignUpForm: React.FC = () => {
           data-testid="signup-button"
         >
           {loading ? (
-            <CircularProgress
-              size="32.5px"
-              sx={{ color: "#ffffff" }}
-            />
+            <CircularProgress size="32.5px" sx={{ color: "#ffffff" }} />
           ) : (
             "ثبت نام"
           )}

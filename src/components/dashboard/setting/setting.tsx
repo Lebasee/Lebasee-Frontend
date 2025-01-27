@@ -27,6 +27,7 @@ import VerifyCode from "../../../api/auth/verifyCode";
 import resendVerifyCode from "../../../api/auth/resendVerifyCode";
 
 const Setting: React.FC = () => {
+  const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL;
   const [isActive, setIsActive] = useState<boolean>(false);
   const [firstName, setFirstName] = useState(localStorage.getItem("firstName"));
   const [lastName, setLastName] = useState(localStorage.getItem("lastName"));
@@ -54,7 +55,7 @@ const Setting: React.FC = () => {
         setLastName(last_name);
         setIsActive(is_verified);
         setProfileImage(
-          `https://lebasee-backend-production.up.railway.app/${profile_image}`
+          `${API_BASE_URL}/${profile_image}`
         );
       } catch (error) {
         console.error("Error fetching user information:", error);
@@ -516,7 +517,6 @@ const Setting: React.FC = () => {
                         width: { xs: 25, sm: 45, md: 55, lg: 66, xl: 76 }, // Increased width
                         height: 40,
                         fontSize: { xs: 12, sm: 14, md: 16, lg: 18, xl: 20 },
-                        // p: 2,
                         transition: "all 0.3s ease", // Smooth transition for hover effects
                         "&:active": {
                           transform: "scale(0.95)", // Slightly shrink on click
