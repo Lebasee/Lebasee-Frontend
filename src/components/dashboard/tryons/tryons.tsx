@@ -10,7 +10,7 @@ import { ClothType, ToastData } from "../../../types/types";
 import Toast from "../../base/toast";
 import FullScreenLoader from "../../base/FullScreenLoader";
 import CustomGallery from "../clothes/CustomGallery";
-import getUserTryons from "../../../api/dashboard/getUserTry";
+import getUserTryons from "../../../api/dashboard/getUserTryons";
 import { pallete } from "../../../styles/pallete.m";
 
 const Tryons: React.FC = () => {
