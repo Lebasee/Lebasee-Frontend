@@ -10,7 +10,7 @@ import { ClothType, ToastData } from "../../../types/types";
 import Toast from "../../base/toast";
 import FullScreenLoader from "../../base/FullScreenLoader";
 import CustomGallery from "../clothes/CustomGallery";
-import getUserTryons from "../../../api/dashboard/getUserTryons";
+import getUserTryons from "../../../api/dashboard/getUserTry";
 import { pallete } from "../../../styles/pallete.m";
 
 const Tryons: React.FC = () => {
@@ -93,7 +93,10 @@ const Tryons: React.FC = () => {
       {isLoading && <FullScreenLoader />}
 
       {firstLoading ? (
-        <ImageList cols={getCols()} gap={16}>
+        <ImageList
+          cols={getCols()}
+          gap={16}
+        >
           {Array.from({ length: 24 }).map((_, index) => (
             <ImageListItem key={index}>
               <Skeleton
@@ -102,8 +105,15 @@ const Tryons: React.FC = () => {
                 height={300}
                 sx={{ borderRadius: 2 }}
               />
-              <Skeleton variant="text" width="60%" sx={{ mt: 1 }} />
-              <Skeleton variant="text" width="40%" />
+              <Skeleton
+                variant="text"
+                width="60%"
+                sx={{ mt: 1 }}
+              />
+              <Skeleton
+                variant="text"
+                width="40%"
+              />
             </ImageListItem>
           ))}
         </ImageList>

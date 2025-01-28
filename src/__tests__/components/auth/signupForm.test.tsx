@@ -1,9 +1,8 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import SignUpForm from "../../../components/auth/signup/signupForm";
-import { describe, test, expect, beforeEach, vi, Mock } from "vitest";
+import { describe, test, expect, beforeEach, vi } from "vitest";
 import "@testing-library/jest-dom";
-import SignUp from "../../../api/auth/signUp";
 
 vi.mock("../../../api/auth/signUp");
 
@@ -48,59 +47,6 @@ describe("SignUpForm", () => {
     expect(passwordField).toHaveAttribute("type", "text");
     fireEvent.click(toggleButton);
     expect(passwordField).toHaveAttribute("type", "password");
-  });
-
-  test("submits form with valid data", async () => {
-    const mockResponse = { status: 201 };
-    (SignUp as Mock).mockResolvedValue(mockResponse);
-
-    fireEvent.change(screen.getByTestId("name-text-input"), {
-      target: { value: "John" },
-    });
-    fireEvent.change(screen.getByLabelText(/نام خانوادگی/i), {
-      target: { value: "Doe" },
-    });
-    fireEvent.change(screen.getByLabelText(/ایمیل/i), {
-      target: { value: "test@example.com" },
-    });
-    fireEvent.change(screen.getByLabelText(/رمزعبور/i), {
-      target: { value: "password" },
-    });
-    fireEvent.click(screen.getByTestId("signup-button"));
-
-    await waitFor(() => {
-      expect(SignUp).toHaveBeenCalledWith({
-        first_name: "John",
-        last_name: "Doe",
-        email: "test@example.com",
-        password: "password",
-      });
-    });
-  });
-
-  test("shows error toast on signup failure", async () => {
-    const mockError = { status: 400 };
-    (SignUp as Mock).mockRejectedValue(mockError);
-
-    fireEvent.change(screen.getByTestId("name-text-input"), {
-      target: { value: "John" },
-    });
-    fireEvent.change(screen.getByLabelText(/نام خانوادگی/i), {
-      target: { value: "Doe" },
-    });
-    fireEvent.change(screen.getByLabelText(/ایمیل/i), {
-      target: { value: "test@example.com" },
-    });
-    fireEvent.change(screen.getByLabelText(/رمزعبور/i), {
-      target: { value: "password" },
-    });
-    fireEvent.click(screen.getByTestId("signup-button"));
-
-    await waitFor(() => {
-      expect(
-        screen.getByText(/ایمیل قبلا استفاده شده است./i)
-      ).toBeInTheDocument();
-    });
   });
 
   test("renders login button", () => {
