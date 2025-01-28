@@ -14,7 +14,7 @@ import getUserClothes from "../api/dashboard/getUserClothes";
 import { ClothType, generatedImage, ToastData } from "../types/types";
 import Toast from "../components/base/toast";
 import { AxiosError } from "axios";
-import tryon from "../api/home/tryon";
+import tryon from "../api/home/try";
 import getUserOutfits from "../api/dashboard/getUserOutfits";
 
 const HomePage: React.FC = () => {
