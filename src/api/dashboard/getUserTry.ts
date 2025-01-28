@@ -2,7 +2,7 @@ import { AxiosError } from "axios";
 import axios from "axios";
 import { ClothType } from "../../types/types";
 
-const token = localStorage.getItem("access");
+const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MTQ4NDk3LCJpYXQiOjE3MzgwNjIwOTcsImp0aSI6IjUxMWQyYTk3N2E3YzQwOWE4MjQwNGNkYWZkZDk2ZTk0IiwidXNlcl9pZCI6M30.04AsuvKu5LyUfpYu3sE2P0o24JcjO22vNFf_9Fwteew";
 
 const baseApi = axios.create({
   baseURL: "https://lebasee-backend-production.up.railway.app",
