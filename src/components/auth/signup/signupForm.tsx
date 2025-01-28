@@ -83,6 +83,47 @@ const SignUpForm: React.FC = () => {
       return;
     }
 
+    const moreThan8 = password.length >= 8;
+    const haveLowerCase = /[a-z]/.test(password);
+    const haveUpperCase = /[A-Z]/.test(password);
+    const haveSymbol = /[^a-zA-Z0-9]/.test(password);
+
+    if (!moreThan8) {
+      setToastData({
+        open: true,
+        message: "رمز عبور شما کمتر از 8 کاراکتر است",
+        severity: "warning",
+      });
+      return;
+    }
+
+    if (!haveLowerCase) {
+      setToastData({
+        open: true,
+        message: "رمز عبور شما حرف کوچک ندارد",
+        severity: "warning",
+      });
+      return;
+    }
+
+    if (!haveUpperCase) {
+      setToastData({
+        open: true,
+        message: "رمز عبور شما حرف بزرگ ندارد",
+        severity: "warning",
+      });
+      return;
+    }
+
+    if (!haveSymbol) {
+      setToastData({
+        open: true,
+        message: "رمز عبور شما فقط شامل حروف و عدد است",
+        severity: "warning",
+      });
+      return;
+    }
+
     const user = {
       first_name: firstName,
       last_name: lastName,
